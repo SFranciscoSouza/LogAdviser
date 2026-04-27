@@ -42,7 +42,7 @@ The activity, slot, and NPC tables ship bundled with the plugin as JSON resource
 The bundled JSON is generated from a maintained spreadsheet (`docs/Collection Log Adviser.xlsx`) by the helper script `tools/generate_log_data.py`. To regenerate after editing the spreadsheet:
 
 ```bash
-./gradlew generateLogData
+python tools/generate_log_data.py
 ```
 
 ## Networking
@@ -57,9 +57,8 @@ No data is sent to either service beyond your character name; nothing is written
 ## Building locally
 
 ```bash
-./gradlew build       # compile + tests
-./gradlew runSanity   # headless engine sanity check against bundled data
-./gradlew run         # boots a RuneLite client with the plugin loaded
+./gradlew build   # compile + unit tests
+./gradlew run     # boots a RuneLite client with the plugin loaded (also runs static-data sanity asserts on startup)
 ```
 
 Targets Java 11. Pulls the latest released RuneLite client (`net.runelite:client:latest.release`).
