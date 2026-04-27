@@ -14,10 +14,9 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
 /**
- * Quest-Helper-style box rendered on top of the game viewport (top-right by default,
- * draggable). Mirrors the InfoBox content but is much harder to miss — useful when
- * you want the active step staring at you while you're playing rather than buried
- * in the corner tray.
+ * Box rendered on top of the game viewport (top-right by default, draggable). Mirrors
+ * the InfoBox content but is much harder to miss — useful when you want the active
+ * step staring at you while you're playing rather than buried in the corner tray.
  */
 public class TargetTextOverlay extends OverlayPanel
 {

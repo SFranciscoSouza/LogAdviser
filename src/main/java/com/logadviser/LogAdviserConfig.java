@@ -22,7 +22,7 @@ public interface LogAdviserConfig extends Config
 	enum DisplayMode
 	{
 		INFOBOX("Info box (top-left tray)"),
-		OVERLAY_PANEL("Overlay box (Quest Helper style)"),
+		OVERLAY_PANEL("Overlay box"),
 		BOTH("Both"),
 		NONE("None");
 
@@ -53,7 +53,7 @@ public interface LogAdviserConfig extends Config
 	@ConfigItem(
 		keyName = "displayMode",
 		name = "Show next slot as",
-		description = "Where to surface the next collection log target. The info box lives in the top-left tray; the overlay box is a Quest-Helper-style panel rendered on top of the game viewport."
+		description = "Where to surface the next collection log target. The info box lives in the top-left tray; the overlay box renders on top of the game viewport."
 	)
 	default DisplayMode displayMode()
 	{
