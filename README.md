@@ -4,8 +4,6 @@ A RuneLite plugin that tells you which collection log slot to chase next.
 
 Log Adviser ranks every remaining collection-log activity by **Time-To-Next-Slot** — the expected wall-clock time until your next unique drop — and surfaces the recommendation through a sidebar panel, an info box, and an in-world highlight on the relevant NPC.
 
-<img src="docs/Collection_log_detail.png" alt="Log Adviser overview" width="360">
-
 ## Features
 
 - **Sidebar panel** listing your top upcoming activities, ranked by expected time to the next unique slot
@@ -39,11 +37,7 @@ The activity, slot, and NPC tables ship bundled with the plugin as JSON resource
 - `activity_map.json` — slot ↔ activity drop-rate map
 - `activity_npcs.json` — NPCs associated with each activity (for the world highlight)
 
-The bundled JSON is generated from a maintained spreadsheet (`docs/Collection Log Adviser.xlsx`) by the helper script `tools/generate_log_data.py`. To regenerate after editing the spreadsheet:
-
-```bash
-python tools/generate_log_data.py
-```
+The bundled JSON is generated from a maintained spreadsheet via a Python helper kept outside the plugin repo (in `../LogAdviser-extras/tools/`). The generated JSON is committed to this repo, so a fresh build never needs Python.
 
 ## Networking
 
@@ -65,19 +59,7 @@ Targets Java 11. Pulls the latest released RuneLite client (`net.runelite:client
 
 ## Releasing
 
-Updates to the Plugin Hub are bumped via a single helper script — no rebuild, no manual hash editing:
-
-```bash
-# 1. Make changes, commit, push to origin/master
-git push
-
-# 2. From a sibling clone of your plugin-hub fork on a fresh branch:
-./bump-pluginhub.sh
-
-# 3. Open a small PR titled "log-adviser: bump to <short-sha>" against runelite/plugin-hub
-```
-
-The script reads the latest commit on `origin/master` of this repo, rewrites `plugins/log-adviser` in the sibling plugin-hub clone with the **full 40-character** SHA, then commits and pushes.
+To publish an update to the Plugin Hub: commit and push to `origin/master`, then update the manifest in your fork of `runelite/plugin-hub` so its `plugins/log-adviser` file points at the new commit (full 40-char SHA). Open a small PR titled `log-adviser: bump to <short-sha>` against `runelite/plugin-hub:master`.
 
 ## License
 
