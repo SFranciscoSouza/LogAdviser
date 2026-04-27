@@ -1,0 +1,2002 @@
+[
+  {
+    "index": 1,
+    "name": "Killing abyssal sire (on task)",
+    "completionsPerHrMain": 50.0,
+    "completionsPerHrIron": 45.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 2,
+    "name": "Killing alchemical hydra (on task)",
+    "completionsPerHrMain": 30.0,
+    "completionsPerHrIron": 29.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 3,
+    "name": "Killing amoxliatl",
+    "completionsPerHrMain": 85.0,
+    "completionsPerHrIron": 75.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 4,
+    "name": "Killing araxxor (on task)",
+    "completionsPerHrMain": 45.0,
+    "completionsPerHrIron": 40.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 5,
+    "name": "Opening barrows chests",
+    "completionsPerHrMain": 22.0,
+    "completionsPerHrIron": 22.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 6,
+    "name": "Killing bryophyta",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 100.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 7,
+    "name": "Killing artio",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 50.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 8,
+    "name": "Killing cerberus (on task)",
+    "completionsPerHrMain": 65.0,
+    "completionsPerHrIron": 54.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 9,
+    "name": "Killing chaos elemental",
+    "completionsPerHrMain": 120.0,
+    "completionsPerHrIron": 48.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 10,
+    "name": "Killing chaos fanatic",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 11,
+    "name": "Killing commander zilyana",
+    "completionsPerHrMain": 58.0,
+    "completionsPerHrIron": 30.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 12,
+    "name": "Killing corporeal beast",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 8.5,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 13,
+    "name": "Killing crazy archaeologist",
+    "completionsPerHrMain": 75.0,
+    "completionsPerHrIron": 75.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 14,
+    "name": "Killing dagganoth kings (3 kills = 1 of each king)",
+    "completionsPerHrMain": 105.0,
+    "completionsPerHrIron": 100.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 15,
+    "name": "Killing deranged archaeologist",
+    "completionsPerHrMain": 80.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 16,
+    "name": "Delving to depth 10 (doom of mokhaiotl)",
+    "completionsPerHrMain": 3.5,
+    "completionsPerHrIron": 3.5,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 17,
+    "name": "Killing duke sucellus",
+    "completionsPerHrMain": 41.0,
+    "completionsPerHrIron": 41.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 18,
+    "name": "Finishing fight caves (and gambling cape, on task)",
+    "completionsPerHrMain": 2.5,
+    "completionsPerHrIron": 2.2,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 19,
+    "name": "Killing sol heredit (and gambling quiver, fortis colosseum)",
+    "completionsPerHrMain": 2.5,
+    "completionsPerHrIron": 2.5,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 20,
+    "name": "Opening reward chest (gauntlet)",
+    "completionsPerHrMain": 10.0,
+    "completionsPerHrIron": 10.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 21,
+    "name": "Opening reward chest (corrupted gauntlet)",
+    "completionsPerHrMain": 7.0,
+    "completionsPerHrIron": 7.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 22,
+    "name": "Killing general graardor",
+    "completionsPerHrMain": 58.0,
+    "completionsPerHrIron": 31.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 23,
+    "name": "Killing giant mole",
+    "completionsPerHrMain": 125.0,
+    "completionsPerHrIron": 97.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 24,
+    "name": "Killing grotesque guardians (on task)",
+    "completionsPerHrMain": 37.0,
+    "completionsPerHrIron": 34.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 25,
+    "name": "Harvesting hespori",
+    "completionsPerHrMain": 95.0,
+    "completionsPerHrIron": 50.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 26,
+    "name": "Killing the hueycoatl (1+2)",
+    "completionsPerHrMain": 11.0,
+    "completionsPerHrIron": 11.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 27,
+    "name": "Finishing inferno (and gambling cape, on task)",
+    "completionsPerHrMain": 1.0,
+    "completionsPerHrIron": 0.9,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 28,
+    "name": "Killing kalphite queen",
+    "completionsPerHrMain": 55.0,
+    "completionsPerHrIron": 37.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 29,
+    "name": "Killing king black dragon",
+    "completionsPerHrMain": 130.0,
+    "completionsPerHrIron": 75.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 30,
+    "name": "Killing kraken (on task)",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 31,
+    "name": "Killing kree'arra",
+    "completionsPerHrMain": 40.0,
+    "completionsPerHrIron": 30.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 32,
+    "name": "Killing k'ril tsutsaroth",
+    "completionsPerHrMain": 65.0,
+    "completionsPerHrIron": 28.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 33,
+    "name": "Killing the leviathan",
+    "completionsPerHrMain": 30.0,
+    "completionsPerHrIron": 25.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 34,
+    "name": "Killing eclipse moon (moons of peril)",
+    "completionsPerHrMain": 18.0,
+    "completionsPerHrIron": 18.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 35,
+    "name": "Killing blue moon (moons of peril)",
+    "completionsPerHrMain": 18.0,
+    "completionsPerHrIron": 18.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 36,
+    "name": "Killing blood moon (moons of peril)",
+    "completionsPerHrMain": 18.0,
+    "completionsPerHrIron": 18.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 37,
+    "name": "Killing nex (6 person team)",
+    "completionsPerHrMain": 15.0,
+    "completionsPerHrIron": 14.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 38,
+    "name": "Killing the nightmare of ashihama (5 person team)",
+    "completionsPerHrMain": 11.0,
+    "completionsPerHrIron": 11.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 39,
+    "name": "Killing phosani's nightmare",
+    "completionsPerHrMain": 8.0,
+    "completionsPerHrIron": 8.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 40,
+    "name": "Killing obor",
+    "completionsPerHrMain": 120.0,
+    "completionsPerHrIron": 120.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 41,
+    "name": "Killing phantom muspah",
+    "completionsPerHrMain": 26.0,
+    "completionsPerHrIron": 25.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 42,
+    "name": "Looting branda, the fire queen (royal titans)",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 43,
+    "name": "Looting eldric, the ice king (royal titans)",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 44,
+    "name": "Killing sarachnis",
+    "completionsPerHrMain": 80.0,
+    "completionsPerHrIron": 67.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 45,
+    "name": "Killing scorpia",
+    "completionsPerHrMain": 130.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 46,
+    "name": "Killing scurrius",
+    "completionsPerHrMain": 85.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 47,
+    "name": "Killing shellbane gryphon (on task)",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 48,
+    "name": "Killing skotizo",
+    "completionsPerHrMain": 0.45,
+    "completionsPerHrIron": 0.45,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 49,
+    "name": "Fishing from the reward pool (tempoross)",
+    "completionsPerHrMain": 80.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 50,
+    "name": "Killing thermonuclear smoke devil (on task)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 100.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 51,
+    "name": "Killing vardorvis",
+    "completionsPerHrMain": 37.0,
+    "completionsPerHrIron": 33.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 52,
+    "name": "Killing spindel",
+    "completionsPerHrMain": 55.0,
+    "completionsPerHrIron": 50.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 53,
+    "name": "Killing calvar'ion",
+    "completionsPerHrMain": 55.0,
+    "completionsPerHrIron": 45.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 54,
+    "name": "Killing vorkath",
+    "completionsPerHrMain": 34.0,
+    "completionsPerHrIron": 34.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 55,
+    "name": "Killing the whisperer",
+    "completionsPerHrMain": 21.0,
+    "completionsPerHrIron": 21.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 56,
+    "name": "Searching the reward cart (wintertodt)",
+    "completionsPerHrMain": 42.0,
+    "completionsPerHrIron": 42.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 57,
+    "name": "Defeating yama (duo)",
+    "completionsPerHrMain": 20.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 58,
+    "name": "Killing zalcano (1-down teams)",
+    "completionsPerHrMain": 40.0,
+    "completionsPerHrIron": 40.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 59,
+    "name": "Killing zulrah",
+    "completionsPerHrMain": 44.0,
+    "completionsPerHrIron": 39.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 60,
+    "name": "Ancient chest (chambers of xeric)",
+    "completionsPerHrMain": 3.5,
+    "completionsPerHrIron": 2.9,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 61,
+    "name": "Ancient chest (chambers of xeric challenge mode)",
+    "completionsPerHrMain": 3.0,
+    "completionsPerHrIron": 2.4,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 62,
+    "name": "Theater of blood (4 person team)",
+    "completionsPerHrMain": 3.2,
+    "completionsPerHrIron": 2.9,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 63,
+    "name": "Theater of blood hard mode (4 person team)",
+    "completionsPerHrMain": 2.7,
+    "completionsPerHrIron": 2.7,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 64,
+    "name": "Tombs of amascut reward chests (150)",
+    "completionsPerHrMain": 3.7,
+    "completionsPerHrIron": 3.7,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 65,
+    "name": "Tombs of amascut reward chests (300)",
+    "completionsPerHrMain": 3.0,
+    "completionsPerHrIron": 3.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 66,
+    "name": "Tombs of amascut reward chests (500)",
+    "completionsPerHrMain": 1.7,
+    "completionsPerHrIron": 1.7,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 67,
+    "name": "Completing tombs of amascut challenges",
+    "completionsPerHrMain": 1.0,
+    "completionsPerHrIron": 1.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 68,
+    "name": "Opening beginner caskets",
+    "completionsPerHrMain": 50.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 69,
+    "name": "Opening easy caskets",
+    "completionsPerHrMain": 45.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 70,
+    "name": "Opening medium caskets",
+    "completionsPerHrMain": 30.0,
+    "completionsPerHrIron": 10.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 71,
+    "name": "Opening hard caskets",
+    "completionsPerHrMain": 20.0,
+    "completionsPerHrIron": 5.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 72,
+    "name": "Opening elite caskets",
+    "completionsPerHrMain": 1.66,
+    "completionsPerHrIron": 0.6,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 73,
+    "name": "Opening master caskets",
+    "completionsPerHrMain": 1.5,
+    "completionsPerHrIron": 0.5,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 74,
+    "name": "Barbarian assault high gambles (or 500 points)",
+    "completionsPerHrMain": 3.1,
+    "completionsPerHrIron": 3.1,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 75,
+    "name": "Completing tempor tantrum barracuda trials",
+    "completionsPerHrMain": 17.5,
+    "completionsPerHrIron": 17.5,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 76,
+    "name": "Completing jubbly jive barracuda trials",
+    "completionsPerHrMain": 16.0,
+    "completionsPerHrIron": 16.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 77,
+    "name": "Completing gwenith glide barracuda trials",
+    "completionsPerHrMain": 12.0,
+    "completionsPerHrIron": 12.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 78,
+    "name": "Getting brimhaven vouchers",
+    "completionsPerHrMain": 66.0,
+    "completionsPerHrIron": 66.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 79,
+    "name": "Getting castle wars tickets",
+    "completionsPerHrMain": 12.7,
+    "completionsPerHrIron": 12.7,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 80,
+    "name": "Completing rounds of fishing trawler",
+    "completionsPerHrMain": 8.0,
+    "completionsPerHrIron": 8.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 81,
+    "name": "Earning giants' foundry reputation",
+    "completionsPerHrMain": 2000.0,
+    "completionsPerHrIron": 2000.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 82,
+    "name": "Gnome restaurant deliveries (seed pods)",
+    "completionsPerHrMain": 20.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 83,
+    "name": "Gnome restaurant deliveries (scarfs and goggles)",
+    "completionsPerHrMain": 20.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 84,
+    "name": "Pulling from the reward guardian (guardians of the rift)",
+    "completionsPerHrMain": 33.0,
+    "completionsPerHrIron": 33.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 85,
+    "name": "Looting hallowed marks (hallowed sepulchre)",
+    "completionsPerHrMain": 160.0,
+    "completionsPerHrIron": 160.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 86,
+    "name": "Looting the grand hallowed coffin (hallowed sepulchre)",
+    "completionsPerHrMain": 8.5,
+    "completionsPerHrIron": 8.5,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 87,
+    "name": "Earning last man standing points",
+    "completionsPerHrMain": 28.0,
+    "completionsPerHrIron": 28.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 88,
+    "name": "Surviving the round (last man standing)",
+    "completionsPerHrMain": 4.0,
+    "completionsPerHrIron": 4.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 89,
+    "name": "Wasting hours at the magic training arena",
+    "completionsPerHrMain": 1.0,
+    "completionsPerHrIron": 1.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 90,
+    "name": "Earning mahogany homes carpenter points",
+    "completionsPerHrMain": 285.0,
+    "completionsPerHrIron": 235.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 91,
+    "name": "Collecting resin (mastering mixology)",
+    "completionsPerHrMain": 12000.0,
+    "completionsPerHrIron": 12000.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 92,
+    "name": "Getting commendation points (pest control)",
+    "completionsPerHrMain": 270.0,
+    "completionsPerHrIron": 270.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 93,
+    "name": "Stealing from the rogues' den maze",
+    "completionsPerHrMain": 15.0,
+    "completionsPerHrIron": 15.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 94,
+    "name": "Opening chests with shades of mort'ton keys",
+    "completionsPerHrMain": 175.0,
+    "completionsPerHrIron": 175.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 95,
+    "name": "Earning soul wars zeal",
+    "completionsPerHrMain": 375.0,
+    "completionsPerHrIron": 375.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 96,
+    "name": "Finding lumberjack zombie events (temple trekking)",
+    "completionsPerHrMain": 10.0,
+    "completionsPerHrIron": 10.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 97,
+    "name": "Earning tithe farm reward points",
+    "completionsPerHrMain": 95.0,
+    "completionsPerHrIron": 95.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 98,
+    "name": "Earning pieces of eight (trouble brewing)",
+    "completionsPerHrMain": 1200.0,
+    "completionsPerHrIron": 1200.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 99,
+    "name": "Rummaging vale offerings (vale totems)",
+    "completionsPerHrMain": 90.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 100,
+    "name": "Earning volcanic mine reward points",
+    "completionsPerHrMain": 10000.0,
+    "completionsPerHrIron": 10000.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 101,
+    "name": "Collecting pearls while aerial fishing",
+    "completionsPerHrMain": 32.0,
+    "completionsPerHrIron": 32.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 102,
+    "name": "Opening barronite deposits in camdozaal",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 103,
+    "name": "Fishing in camdozaal",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 104,
+    "name": "Killing chaos golems in camdozaal",
+    "completionsPerHrMain": 200.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 105,
+    "name": "Killing earth warriors (champion's challenge)",
+    "completionsPerHrMain": 350.0,
+    "completionsPerHrIron": 350.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 106,
+    "name": "Killing ghouls (champion's challenge)",
+    "completionsPerHrMain": 750.0,
+    "completionsPerHrIron": 750.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 107,
+    "name": "Killing giants (champion's challenge)",
+    "completionsPerHrMain": 900.0,
+    "completionsPerHrIron": 900.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 108,
+    "name": "Killing goblins (champion's challenge)",
+    "completionsPerHrMain": 1600.0,
+    "completionsPerHrIron": 1600.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 109,
+    "name": "Killing hobgoblins (champion's challenge)",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 110,
+    "name": "Killing imps (champion's challenge)",
+    "completionsPerHrMain": 650.0,
+    "completionsPerHrIron": 650.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 111,
+    "name": "Killing jogres (champion's challenge)",
+    "completionsPerHrMain": 650.0,
+    "completionsPerHrIron": 650.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 112,
+    "name": "Killing lesser demons (champion's challenge)",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 113,
+    "name": "Killing skeletons (champion's challenge)",
+    "completionsPerHrMain": 1300.0,
+    "completionsPerHrIron": 1300.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 114,
+    "name": "Killing zombies (champion's challenge)",
+    "completionsPerHrMain": 1000.0,
+    "completionsPerHrIron": 1000.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 115,
+    "name": "Killing elder chaos druids",
+    "completionsPerHrMain": 480.0,
+    "completionsPerHrIron": 480.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 116,
+    "name": "Killing chompies",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 117,
+    "name": "Collecting termites (colossal wyrm agility)",
+    "completionsPerHrMain": 235.0,
+    "completionsPerHrIron": 235.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 118,
+    "name": "Killing frogeels (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 119,
+    "name": "Killing unicows (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 120,
+    "name": "Killing spidines (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 121,
+    "name": "Killing swordchicks (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 122,
+    "name": "Killing jubsters (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 123,
+    "name": "Killing newtroosts (creature creation)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 124,
+    "name": "Killing cyclopes at the warriors' guild",
+    "completionsPerHrMain": 200.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 125,
+    "name": "Collecting anima-infused bark (forestry)",
+    "completionsPerHrMain": 1800.0,
+    "completionsPerHrIron": 1800.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 126,
+    "name": "Doing entling events for god eggs",
+    "completionsPerHrMain": 7.0,
+    "completionsPerHrIron": 7.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 127,
+    "name": "Spending 100 numulite at the fossil island notes chest",
+    "completionsPerHrMain": 1000.0,
+    "completionsPerHrIron": 1000.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 128,
+    "name": "Killing demonic gorillas",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 129,
+    "name": "Opening hunters' loot sacks (hunters' rumours)",
+    "completionsPerHrMain": 30.0,
+    "completionsPerHrIron": 30.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 130,
+    "name": "Exploring sailing islands",
+    "completionsPerHrMain": 12.0,
+    "completionsPerHrIron": 12.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 131,
+    "name": "Running laps of monkey agility",
+    "completionsPerHrMain": 95.0,
+    "completionsPerHrIron": 95.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 132,
+    "name": "Collecting gold nuggets at the motherlode mine",
+    "completionsPerHrMain": 10.0,
+    "completionsPerHrIron": 10.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 133,
+    "name": "Looting skeletons in the ancient cavern (my notes / ancient page)",
+    "completionsPerHrMain": 360.0,
+    "completionsPerHrIron": 360.0,
+    "extraTimeFirst": 0.2,
+    "category": "combat"
+  },
+  {
+    "index": 134,
+    "name": "Giving items to the clam (ocean encounters)",
+    "completionsPerHrMain": 0.5,
+    "completionsPerHrIron": 0.5,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 135,
+    "name": "Waiting for random events",
+    "completionsPerHrMain": 0.66,
+    "completionsPerHrIron": 0.66,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 136,
+    "name": "Killing revenants (demon cyclops quads, skulled, off task)",
+    "completionsPerHrMain": 260.0,
+    "completionsPerHrIron": 260.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 137,
+    "name": "Killing revenants (demon cyclops quads, skulled, skipping for task)",
+    "completionsPerHrMain": 107.0,
+    "completionsPerHrIron": 107.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 138,
+    "name": "Collecting marks of grace (rooftop agility)",
+    "completionsPerHrMain": 25.0,
+    "completionsPerHrIron": 25.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 139,
+    "name": "Killing frost dragons",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 140,
+    "name": "Killing orcas (boat combat)",
+    "completionsPerHrMain": 90.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 141,
+    "name": "Killing albatross (boat combat)",
+    "completionsPerHrMain": 190.0,
+    "completionsPerHrIron": 140.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 142,
+    "name": "Killing narwhal (boat combat)",
+    "completionsPerHrMain": 165.0,
+    "completionsPerHrIron": 110.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 143,
+    "name": "Killing stingray (boat combat)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 144,
+    "name": "Killing great white shark (boat combat)",
+    "completionsPerHrMain": 180.0,
+    "completionsPerHrIron": 120.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 145,
+    "name": "Killing vampyre kraken (boat combat)",
+    "completionsPerHrMain": 110.0,
+    "completionsPerHrIron": 54.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 146,
+    "name": "Sorting through small salvage",
+    "completionsPerHrMain": 920.0,
+    "completionsPerHrIron": 920.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 147,
+    "name": "Sorting through fishy salvage",
+    "completionsPerHrMain": 900.0,
+    "completionsPerHrIron": 900.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 148,
+    "name": "Sorting through barracuda salvage",
+    "completionsPerHrMain": 840.0,
+    "completionsPerHrIron": 840.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 149,
+    "name": "Sorting through large salvage",
+    "completionsPerHrMain": 780.0,
+    "completionsPerHrIron": 780.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 150,
+    "name": "Sorting through plundered salvage",
+    "completionsPerHrMain": 820.0,
+    "completionsPerHrIron": 820.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 151,
+    "name": "Sorting through martial salvage",
+    "completionsPerHrMain": 700.0,
+    "completionsPerHrIron": 700.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 152,
+    "name": "Sorting through fremennik salvage",
+    "completionsPerHrMain": 750.0,
+    "completionsPerHrIron": 750.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 153,
+    "name": "Sorting through opulent salvage",
+    "completionsPerHrMain": 550.0,
+    "completionsPerHrIron": 550.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 154,
+    "name": "Killing soldiers in the shayzien combat ring",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 100.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 155,
+    "name": "Mining stardust from shooting stars",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 156,
+    "name": "Fishing (2-tick tuna and swordfish) ",
+    "completionsPerHrMain": 1500.0,
+    "completionsPerHrIron": 1500.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 157,
+    "name": "Mining (gemstone rocks)",
+    "completionsPerHrMain": 1770.0,
+    "completionsPerHrIron": 1770.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 158,
+    "name": "Woodcutting (1.5-tick teaks)",
+    "completionsPerHrMain": 2350.0,
+    "completionsPerHrIron": 2350.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 159,
+    "name": "Hunting chinchompas (black chinchompas)",
+    "completionsPerHrMain": 850.0,
+    "completionsPerHrIron": 850.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 160,
+    "name": "Agility (penguin course)",
+    "completionsPerHrMain": 55.0,
+    "completionsPerHrIron": 55.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 161,
+    "name": "Farming (fruit trees)",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 162,
+    "name": "Thieving (seed stalls)",
+    "completionsPerHrMain": 1915.0,
+    "completionsPerHrIron": 1915.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 163,
+    "name": "Runecrafting (fire runes)",
+    "completionsPerHrMain": 26400.0,
+    "completionsPerHrIron": 26400.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 164,
+    "name": "Sailing (port tasks)",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 165,
+    "name": "Killing crawling hands",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 166,
+    "name": "Killing cockatrice",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 167,
+    "name": "Killing basilisks",
+    "completionsPerHrMain": 350.0,
+    "completionsPerHrIron": 350.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 168,
+    "name": "Killing basilisk knights (on task)",
+    "completionsPerHrMain": 90.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 169,
+    "name": "Killing kurask",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 170,
+    "name": "Killing abyssal demons (on task)",
+    "completionsPerHrMain": 350.0,
+    "completionsPerHrIron": 350.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 171,
+    "name": "Killing dust devils (on task)",
+    "completionsPerHrMain": 650.0,
+    "completionsPerHrIron": 650.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 172,
+    "name": "Killing waterfiends",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 173,
+    "name": "Killing gargoyles",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 174,
+    "name": "Killing mogres",
+    "completionsPerHrMain": 90.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 175,
+    "name": "Killing brine rats",
+    "completionsPerHrMain": 675.0,
+    "completionsPerHrIron": 675.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 176,
+    "name": "Killing turoth",
+    "completionsPerHrMain": 300.0,
+    "completionsPerHrIron": 300.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 177,
+    "name": "Killing cave horrors",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 178,
+    "name": "Killing fossil island wyverns",
+    "completionsPerHrMain": 145.0,
+    "completionsPerHrIron": 145.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 179,
+    "name": "Killing ancient wyverns",
+    "completionsPerHrMain": 75.0,
+    "completionsPerHrIron": 75.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 180,
+    "name": "Killing skeletal wyverns",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 100.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 181,
+    "name": "Killing terror dogs",
+    "completionsPerHrMain": 200.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 182,
+    "name": "Killing cave crawlers",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 183,
+    "name": "Killing cave slimes",
+    "completionsPerHrMain": 600.0,
+    "completionsPerHrIron": 600.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 184,
+    "name": "Killing pyrefiends",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 185,
+    "name": "Killing harpie bug swarms",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 186,
+    "name": "Killing bloodvelds",
+    "completionsPerHrMain": 300.0,
+    "completionsPerHrIron": 300.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 187,
+    "name": "Killing warped jellies",
+    "completionsPerHrMain": 650.0,
+    "completionsPerHrIron": 650.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 188,
+    "name": "Killing greater nechryael (on task)",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 189,
+    "name": "Killing spiritual mages (non-zaros)",
+    "completionsPerHrMain": 180.0,
+    "completionsPerHrIron": 180.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 190,
+    "name": "Killing spiritual mages (zaros)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 191,
+    "name": "Killing cave kraken (non-boss, on task)",
+    "completionsPerHrMain": 240.0,
+    "completionsPerHrIron": 240.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 192,
+    "name": "Killing dark beasts",
+    "completionsPerHrMain": 190.0,
+    "completionsPerHrIron": 190.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 193,
+    "name": "Killing smoke devils (on task)",
+    "completionsPerHrMain": 700.0,
+    "completionsPerHrIron": 700.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 194,
+    "name": "Killing wyrms (on task)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 195,
+    "name": "Opening the brimstone chest",
+    "completionsPerHrMain": 4.0,
+    "completionsPerHrIron": 4.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 196,
+    "name": "Killing drakes (on task)",
+    "completionsPerHrMain": 155.0,
+    "completionsPerHrIron": 155.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 197,
+    "name": "Killing sulphur lizards",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 198,
+    "name": "Killing infernal mages",
+    "completionsPerHrMain": 450.0,
+    "completionsPerHrIron": 450.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 199,
+    "name": "Killing banshees",
+    "completionsPerHrMain": 800.0,
+    "completionsPerHrIron": 800.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 200,
+    "name": "Killing aberrant spectres",
+    "completionsPerHrMain": 450.0,
+    "completionsPerHrIron": 450.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 201,
+    "name": "Killing aquanites (on task)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 202,
+    "name": "Opening larran's big chest",
+    "completionsPerHrMain": 1500.0,
+    "completionsPerHrIron": 3.5,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 203,
+    "name": "Pickpocketing from darkmeyer vyres",
+    "completionsPerHrMain": 540.0,
+    "completionsPerHrIron": 540.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 204,
+    "name": "Killing vyrewatch sentinels",
+    "completionsPerHrMain": 160.0,
+    "completionsPerHrIron": 160.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 205,
+    "name": "Killing warped terrorbirds",
+    "completionsPerHrMain": 200.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 206,
+    "name": "Killing sulphur naguas",
+    "completionsPerHrMain": 300.0,
+    "completionsPerHrIron": 300.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 207,
+    "name": "Looting zombie pirate's lockers",
+    "completionsPerHrMain": 1500.0,
+    "completionsPerHrIron": 30.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 208,
+    "name": "Killing araxytes (level 146, on task)",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 209,
+    "name": "Killing earthen naguas",
+    "completionsPerHrMain": 270.0,
+    "completionsPerHrIron": 270.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 210,
+    "name": "Killing elder custodian stalkers",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 211,
+    "name": "Killing gryphons (on task)",
+    "completionsPerHrMain": 600.0,
+    "completionsPerHrIron": 600.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 212,
+    "name": "Killing tormented demons",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 213,
+    "name": "Killing bulk tzhaar",
+    "completionsPerHrMain": 750.0,
+    "completionsPerHrIron": 750.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 214,
+    "name": "Killing tzhaar-mej",
+    "completionsPerHrMain": 350.0,
+    "completionsPerHrIron": 350.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 215,
+    "name": "Plucking herbiboar",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 216,
+    "name": "Killing lizardmen",
+    "completionsPerHrMain": 240.0,
+    "completionsPerHrIron": 240.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 217,
+    "name": "Killing lizardman shamans",
+    "completionsPerHrMain": 125.0,
+    "completionsPerHrIron": 125.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 218,
+    "name": "Fishing shark",
+    "completionsPerHrMain": 960.0,
+    "completionsPerHrIron": 960.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 219,
+    "name": "Fishing bass",
+    "completionsPerHrMain": 360.0,
+    "completionsPerHrIron": 360.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 220,
+    "name": "Fishing giant krill (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 221,
+    "name": "Fishing haddock (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 222,
+    "name": "Fishing yellowfin (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 223,
+    "name": "Fishing halibut (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 224,
+    "name": "Fishing bluefin (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 225,
+    "name": "Fishing marlin (deep sea trawling)",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 226,
+    "name": "Killing in the wilderness god wars dungeon (barrage)",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 227,
+    "name": "Looting grand gold chests (pyramid plunder)",
+    "completionsPerHrMain": 192.0,
+    "completionsPerHrIron": 192.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 228,
+    "name": "Killing mithril dragons",
+    "completionsPerHrMain": 84.0,
+    "completionsPerHrIron": 84.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 229,
+    "name": "Killing adamant dragons",
+    "completionsPerHrMain": 85.0,
+    "completionsPerHrIron": 85.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 230,
+    "name": "Killing rune dragons",
+    "completionsPerHrMain": 75.0,
+    "completionsPerHrIron": 75.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 231,
+    "name": "Charging glories at the fountain of rune",
+    "completionsPerHrMain": 1700.0,
+    "completionsPerHrIron": 1700.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 232,
+    "name": "Killing ogress shamans",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 233,
+    "name": "Collecting unidentified minerals at the mining guild",
+    "completionsPerHrMain": 20.0,
+    "completionsPerHrIron": 20.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 234,
+    "name": "Killing minotaurs (stronghold of security)",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 235,
+    "name": "Killing flesh crawlers (stronghold of security)",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 236,
+    "name": "Killing catablepons (stronghold of security)",
+    "completionsPerHrMain": 300.0,
+    "completionsPerHrIron": 300.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 237,
+    "name": "Killing ankou (stronghold of security)",
+    "completionsPerHrMain": 200.0,
+    "completionsPerHrIron": 200.0,
+    "extraTimeFirst": 0.0,
+    "category": "minigame"
+  },
+  {
+    "index": 238,
+    "name": "Killing moss giants",
+    "completionsPerHrMain": 450.0,
+    "completionsPerHrIron": 450.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 239,
+    "name": "Killing hill giants",
+    "completionsPerHrMain": 900.0,
+    "completionsPerHrIron": 900.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 240,
+    "name": "Killing underwater crabs (level 23)",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 241,
+    "name": "Killing undead druids",
+    "completionsPerHrMain": 240.0,
+    "completionsPerHrIron": 240.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 242,
+    "name": "Looting crystal implings",
+    "completionsPerHrMain": 30.0,
+    "completionsPerHrIron": 30.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 243,
+    "name": "Killing the prifddinas rabbit",
+    "completionsPerHrMain": 7.0,
+    "completionsPerHrIron": 7.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 244,
+    "name": "Pickpocketing from prifddinas elves",
+    "completionsPerHrMain": 450.0,
+    "completionsPerHrIron": 450.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 245,
+    "name": "Killing elves (prifddinas)",
+    "completionsPerHrMain": 540.0,
+    "completionsPerHrIron": 540.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 246,
+    "name": "Opening the elven crystal chest",
+    "completionsPerHrMain": 1500.0,
+    "completionsPerHrIron": 6.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 247,
+    "name": "Collecting mermaid tears (fossil island underwater)",
+    "completionsPerHrMain": 230.0,
+    "completionsPerHrIron": 230.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 248,
+    "name": "Killing armoured zombies (zemouregal)",
+    "completionsPerHrMain": 500.0,
+    "completionsPerHrIron": 500.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 249,
+    "name": "Opening the moon chest",
+    "completionsPerHrMain": 0.4,
+    "completionsPerHrIron": 0.3,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 250,
+    "name": "Cutting squid",
+    "completionsPerHrMain": 1800.0,
+    "completionsPerHrIron": 235.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  }
+]

@@ -1,0 +1,206 @@
+{
+  "_comment": "Maps activity index -> { npcIds, hint }. NPC IDs are matched against npc.getId() and npc.getComposition().getId() at runtime. The hint is shown verbatim in the InfoBox tooltip and the sidebar's current-target card.",
+
+  "1": {
+    "npcIds": [5886, 5887, 5888, 5889, 5890, 5891],
+    "hint": "Abyssal Sire — Slayer Tower / Abyssal Nexus. Slayer task to enter (must be on task)."
+  },
+  "2": {
+    "npcIds": [8615, 8616, 8617, 8618, 8619, 8620, 8621, 8622],
+    "hint": "Alchemical Hydra — Karuulm Slayer Dungeon. Hydra slayer task required."
+  },
+  "4": {
+    "npcIds": [13668, 13669, 13670, 13671, 13672],
+    "hint": "Araxxor — Morytania spider lair. Slayer task on araxytes."
+  },
+  "6": {
+    "npcIds": [7541, 7542],
+    "hint": "Bryophyta — Varrock Sewers. Mossy key required per kill."
+  },
+  "7": {
+    "npcIds": [11992, 11993],
+    "hint": "Artio — non-Wilderness Callisto, north of Falador."
+  },
+  "8": {
+    "npcIds": [5862, 5866, 5867, 5868],
+    "hint": "Cerberus — Taverley dungeon, hellhound task required."
+  },
+  "9": {
+    "npcIds": [2054],
+    "hint": "Chaos Elemental — deep wilderness (level 51)."
+  },
+  "10": {
+    "npcIds": [6619],
+    "hint": "Chaos Fanatic — wilderness ruins (level 38)."
+  },
+  "11": {
+    "npcIds": [6260, 6261, 6262, 6263],
+    "hint": "Commander Zilyana — Saradomin GWD."
+  },
+  "12": {
+    "npcIds": [319],
+    "hint": "Corporeal Beast — corp cave east of trollheim."
+  },
+  "13": {
+    "npcIds": [6618],
+    "hint": "Crazy Archaeologist — wilderness ruins (level 33)."
+  },
+  "14": {
+    "npcIds": [2882, 2883, 2884],
+    "hint": "Dagannoth Kings — Waterbirth Island dungeon, third floor."
+  },
+  "15": {
+    "npcIds": [7806],
+    "hint": "Deranged Archaeologist — Fossil Island."
+  },
+  "17": {
+    "npcIds": [12166, 12167, 12191, 12192, 12195],
+    "hint": "Duke Sucellus — Ghorrock prison (DT2 boss)."
+  },
+  "22": {
+    "npcIds": [6494, 6495, 6496, 6497],
+    "hint": "General Graardor — Bandos GWD."
+  },
+  "23": {
+    "npcIds": [5779, 6499],
+    "hint": "Giant Mole — Falador Park trapdoor → Mole lair."
+  },
+  "24": {
+    "npcIds": [7565, 7566, 7569],
+    "hint": "Grotesque Guardians — Slayer Tower roof. Brittle key required."
+  },
+  "26": {
+    "npcIds": [14012, 14013, 14014, 14015],
+    "hint": "The Hueycoatl — Varlamore."
+  },
+  "28": {
+    "npcIds": [965, 4303, 4304, 4305, 4306],
+    "hint": "Kalphite Queen — Kharidian Desert lair (rope into hole)."
+  },
+  "29": {
+    "npcIds": [239, 240],
+    "hint": "King Black Dragon — wilderness lair (level 28)."
+  },
+  "30": {
+    "npcIds": [494, 496],
+    "hint": "Kraken — Kraken Cove. Cave kraken slayer task required."
+  },
+  "31": {
+    "npcIds": [6222, 6223, 6224, 6225],
+    "hint": "Kree'arra — Armadyl GWD."
+  },
+  "32": {
+    "npcIds": [6203, 6204, 6205, 6206],
+    "hint": "K'ril Tsutsaroth — Zamorak GWD."
+  },
+  "33": {
+    "npcIds": [12214, 12215, 12219, 12220, 12221, 12222, 12223],
+    "hint": "The Leviathan — DT2 boss, Lassar Undercity."
+  },
+  "37": {
+    "npcIds": [11278, 11279, 11280, 11281, 11282],
+    "hint": "Nex — Ancient Prison (Zaros), GWD lower level."
+  },
+  "40": {
+    "npcIds": [7822],
+    "hint": "Obor — Edgeville Dungeon hill giant area. Giant key required."
+  },
+  "41": {
+    "npcIds": [12077, 12078, 12080, 12081, 12082, 12214],
+    "hint": "Phantom Muspah — accessed via Eclectic impling."
+  },
+  "44": {
+    "npcIds": [8713, 8714, 8715],
+    "hint": "Sarachnis — Forthos dungeon."
+  },
+  "45": {
+    "npcIds": [6615, 6616, 6617],
+    "hint": "Scorpia — wilderness Scorpion Pit (level 56)."
+  },
+  "46": {
+    "npcIds": [7222, 7223],
+    "hint": "Scurrius — Varrock Sewers (rat boss)."
+  },
+  "47": {
+    "npcIds": [13838, 13839, 13840],
+    "hint": "Shellbane Gryphon — Aldarin (Varlamore). On task."
+  },
+  "48": {
+    "npcIds": [7286, 7287, 7288, 7289],
+    "hint": "Skotizo — Catacombs of Kourend. Dark Totem required."
+  },
+  "50": {
+    "npcIds": [493],
+    "hint": "Thermonuclear Smoke Devil — Smoke Devil dungeon. On task."
+  },
+  "51": {
+    "npcIds": [12224, 12225, 12226, 12227, 12228, 12229],
+    "hint": "Vardorvis — Stranglewood (DT2 boss)."
+  },
+  "52": {
+    "npcIds": [11988, 11989, 11990, 11991],
+    "hint": "Spindel — non-Wilderness Venenatis, south of Yanille."
+  },
+  "53": {
+    "npcIds": [11994, 11995, 11996, 11997, 11998, 11999],
+    "hint": "Calvar'ion — non-Wilderness Vet'ion, near Edgeville."
+  },
+  "54": {
+    "npcIds": [8059, 8060, 8061, 8058],
+    "hint": "Vorkath — Ungael island (post-DSII)."
+  },
+  "55": {
+    "npcIds": [12205, 12206, 12207, 12208, 12209, 12210, 12211, 12212, 12213],
+    "hint": "The Whisperer — Forthos Mausoleum (DT2 boss)."
+  },
+  "57": {
+    "npcIds": [14176, 14177, 14178, 14179, 14180],
+    "hint": "Yama — Mount Karuulm (duo recommended)."
+  },
+  "59": {
+    "npcIds": [2042, 2043, 2044, 2045, 2046],
+    "hint": "Zulrah — Zul-Andra (south of Tirannwn)."
+  },
+
+  "115": {
+    "npcIds": [2056],
+    "hint": "Elder Chaos Druid — wilderness chaos temple."
+  },
+  "128": {
+    "npcIds": [7144, 7145, 7146],
+    "hint": "Demonic Gorillas — Crash Site Cavern (Monkey Madness II)."
+  },
+  "139": {
+    "npcIds": [471],
+    "hint": "Frost Dragons — Asgarnian Ice Dungeon resource area."
+  },
+
+  "165": { "npcIds": [4191], "hint": "Crawling hands — Slayer Tower 1F." },
+  "167": { "npcIds": [416], "hint": "Basilisks — Fremennik Slayer Cave." },
+  "168": { "npcIds": [11944, 11945], "hint": "Basilisk Knights — Jormungand's Prison. On task." },
+  "169": { "npcIds": [410], "hint": "Kurask — Fremennik Slayer Cave." },
+  "170": { "npcIds": [415, 7235, 7236], "hint": "Abyssal Demons — Slayer Tower or Catacombs." },
+  "171": { "npcIds": [422, 423, 424, 7250], "hint": "Dust Devils — Smoke Devil Dungeon." },
+  "172": { "npcIds": [5361, 5362, 5363], "hint": "Waterfiends — Ancient Cavern (lower)." },
+  "173": { "npcIds": [412], "hint": "Gargoyles — Slayer Tower top floor. Rock hammer required." },
+  "176": { "npcIds": [422, 5993], "hint": "Turoth — Fremennik Slayer Cave." },
+  "177": { "npcIds": [418], "hint": "Cave Horrors — Mos Le'Harmless cave." },
+  "180": { "npcIds": [471, 472, 473, 474, 475], "hint": "Skeletal Wyverns — Asgarnian Ice Dungeon." },
+  "188": { "npcIds": [8923], "hint": "Greater Nechryael — Catacombs of Kourend." },
+  "192": { "npcIds": [7150, 7151], "hint": "Dark Beasts — Mourner Tunnels (Mourning's Ends Pt 2)." },
+  "193": { "npcIds": [493], "hint": "Smoke Devils — Smoke Devil Dungeon. On task." },
+  "194": { "npcIds": [8610, 8611, 8612, 8613, 8614], "hint": "Wyrms — Karuulm Slayer Dungeon." },
+  "196": { "npcIds": [8612, 8613, 8614], "hint": "Drakes — Karuulm Slayer Dungeon." },
+  "200": { "npcIds": [56, 11883], "hint": "Aberrant Spectres — Slayer Tower or Catacombs." },
+  "204": { "npcIds": [9711, 9712, 9713], "hint": "Vyrewatch Sentinels — Darkmeyer." },
+  "208": { "npcIds": [13668, 13669, 13670, 13671, 13672], "hint": "Araxytes (lvl 146) — Morytania spider lair. On task." },
+  "211": { "npcIds": [13836, 13837, 13838], "hint": "Gryphons — Aldarin, Varlamore. Slayer task required." },
+  "212": { "npcIds": [7250, 7252, 7253, 7254], "hint": "Tormented Demons — Forinthry Dungeon (post-While Guthix Sleeps)." },
+
+  "228": { "npcIds": [5363, 5779], "hint": "Mithril Dragons — Ancient Cavern (lower)." },
+  "229": { "npcIds": [9667, 9668], "hint": "Adamant Dragons — Lithkren Vault." },
+  "230": { "npcIds": [9669, 9670], "hint": "Rune Dragons — Lithkren Vault." },
+  "240": { "npcIds": [10976, 10977], "hint": "Underwater crabs — Fossil Island underwater." },
+  "241": { "npcIds": [9774, 9775], "hint": "Undead Druids — Forthos Dungeon." },
+  "248": { "npcIds": [9626, 9627, 9628, 9629, 9630], "hint": "Armoured Zombies — Zemouregal's Fort." }
+}

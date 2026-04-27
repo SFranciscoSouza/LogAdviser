@@ -32,9 +32,36 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+// Regenerates JSON data resources from Collection Log Adviser.xlsx. The generated
+// files are committed to the repo so contributors without Python can still build;
+// run this task manually after editing the spreadsheet.
+//   ./gradlew generateLogData
+task generateLogData(type: Exec) {
+    description = 'Regenerate JSON data resources from the spreadsheet (requires Python with openpyxl).'
+    group = 'build'
+    inputs.file 'Collection Log Adviser.xlsx'
+    inputs.file 'tools/generate_log_data.py'
+    inputs.file 'tools/category_overrides.json'
+    outputs.dir 'src/main/resources/com/logadviser/data'
+    workingDir project.projectDir
+    commandLine 'python', 'tools/generate_log_data.py'
+}
+
 task run(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.logadviser.LogAdviserPluginTest'
+    enableAssertions = true
+    jvmArgs = ['-ea']
+}
+
+// Headless sanity check: load static data, run engine on an empty log,
+// and print the top of the main / iron rankings. Useful for validating
+// changes to AdviserEngine or the JSON data without booting RuneLite.
+task runSanity(type: JavaExec) {
+    description = 'Load static data and dump top-ranked activities (no RuneLite).'
+    group = 'verification'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.logadviser.EngineSanityCheck'
     enableAssertions = true
     jvmArgs = ['-ea']
 }
