@@ -1,5 +1,6 @@
 package com.logadviser.ui;
 
+import com.logadviser.LogAdviserConfig;
 import com.logadviser.data.ActivityNpcInfo;
 import com.logadviser.data.StaticData;
 import com.logadviser.engine.AdviserEngine;
@@ -41,16 +42,18 @@ public class TargetWorldOverlay extends Overlay
 	private final Client client;
 	private final AdviserEngine engine;
 	private final StaticData staticData;
+	private final LogAdviserConfig config;
 
 	private final List<NPC> matched = new ArrayList<>();
 	private Set<Integer> activeNpcIds = Collections.emptySet();
 
 	@Inject
-	public TargetWorldOverlay(Client client, AdviserEngine engine, StaticData staticData)
+	public TargetWorldOverlay(Client client, AdviserEngine engine, StaticData staticData, LogAdviserConfig config)
 	{
 		this.client = client;
 		this.engine = engine;
 		this.staticData = staticData;
+		this.config = config;
 		setLayer(OverlayLayer.ABOVE_SCENE);
 		setPosition(OverlayPosition.DYNAMIC);
 		engine.addListener(this::onRankingChanged);
@@ -60,7 +63,7 @@ public class TargetWorldOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (matched.isEmpty())
+		if (!config.highlightNpcs() || matched.isEmpty())
 		{
 			return null;
 		}

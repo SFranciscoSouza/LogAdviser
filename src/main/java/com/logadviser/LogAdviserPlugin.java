@@ -97,7 +97,7 @@ public class LogAdviserPlugin extends Plugin
 
 		engine.addListener(this::onRankingChanged);
 
-		worldOverlay = new TargetWorldOverlay(client, engine, staticData);
+		worldOverlay = new TargetWorldOverlay(client, engine, staticData, config);
 		overlayManager.add(worldOverlay);
 
 		textOverlay = new TargetTextOverlay(engine);
@@ -209,7 +209,7 @@ public class LogAdviserPlugin extends Plugin
 			return;
 		}
 		String key = event.getKey();
-		if ("displayMode".equals(key) || "highlightNpcs".equals(key))
+		if ("displayMode".equals(key))
 		{
 			// Reapply the most recent ranking to add/remove infobox or clear overlay matches.
 			if (engine != null)

@@ -4,7 +4,7 @@ A RuneLite plugin that tells you which collection log slot to chase next.
 
 Log Adviser ranks every remaining collection-log activity by **Time-To-Next-Slot** — the expected wall-clock time until your next unique drop — and surfaces the recommendation through a sidebar panel, an info box, and an in-world highlight on the relevant NPC.
 
-![Log Adviser overview](docs/Collection_log_detail.png)
+<img src="docs/Collection_log_detail.png" alt="Log Adviser overview" width="360">
 
 ## Features
 
