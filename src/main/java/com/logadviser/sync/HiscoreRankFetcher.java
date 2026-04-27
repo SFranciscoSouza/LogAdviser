@@ -29,7 +29,6 @@ import okhttp3.ResponseBody;
 public class HiscoreRankFetcher
 {
 	private static final long CACHE_TTL_MS = 5 * 60 * 1000L;
-	private static final Gson GSON = new Gson();
 
 	@Value
 	public static class Result
@@ -59,14 +58,16 @@ public class HiscoreRankFetcher
 	}
 
 	private final OkHttpClient http;
+	private final Gson gson;
 	private long lastFetchAt = 0L;
 	private String lastPlayer = "";
 	private Result lastResult = null;
 
 	@Inject
-	public HiscoreRankFetcher(OkHttpClient http)
+	public HiscoreRankFetcher(OkHttpClient http, Gson gson)
 	{
 		this.http = http;
+		this.gson = gson;
 	}
 
 	public void fetchAsync(String playerName, Endpoint endpoint, BiConsumer<Result, Throwable> done)
@@ -109,7 +110,7 @@ public class HiscoreRankFetcher
 						done.accept(null, null);
 						return;
 					}
-					Result r = parseCollectionsLogged(body.string());
+					Result r = parseCollectionsLogged(body.string(), gson);
 					if (r != null)
 					{
 						lastFetchAt = System.currentTimeMillis();
@@ -134,9 +135,9 @@ public class HiscoreRankFetcher
 		lastResult = null;
 	}
 
-	private static Result parseCollectionsLogged(String json)
+	private static Result parseCollectionsLogged(String json, Gson gson)
 	{
-		JsonElement root = GSON.fromJson(json, JsonElement.class);
+		JsonElement root = gson.fromJson(json, JsonElement.class);
 		if (root == null || !root.isJsonObject())
 		{
 			return null;

@@ -20,18 +20,17 @@ import lombok.extern.slf4j.Slf4j;
 public final class StaticDataLoader
 {
 	private static final String BASE = "/com/logadviser/data/";
-	private static final Gson GSON = new Gson();
 
 	private StaticDataLoader()
 	{
 	}
 
-	public static StaticData loadAll() throws IOException
+	public static StaticData loadAll(Gson gson) throws IOException
 	{
-		List<Activity> activities = loadActivities();
-		List<ActivityItem> items = loadActivityItems();
-		List<LogSlot> slots = loadSlots();
-		Map<Integer, ActivityNpcInfo> npcInfo = loadNpcInfo();
+		List<Activity> activities = loadActivities(gson);
+		List<ActivityItem> items = loadActivityItems(gson);
+		List<LogSlot> slots = loadSlots(gson);
+		Map<Integer, ActivityNpcInfo> npcInfo = loadNpcInfo(gson);
 		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps",
 			activities.size(), items.size(), slots.size(), npcInfo.size());
 		return new StaticData(
@@ -41,12 +40,12 @@ public final class StaticDataLoader
 			Collections.unmodifiableMap(npcInfo));
 	}
 
-	private static List<Activity> loadActivities() throws IOException
+	private static List<Activity> loadActivities(Gson gson) throws IOException
 	{
 		Type listType = new TypeToken<List<RawActivity>>(){}.getType();
 		try (InputStreamReader r = open("activities.json"))
 		{
-			List<RawActivity> raw = GSON.fromJson(r, listType);
+			List<RawActivity> raw = gson.fromJson(r, listType);
 			List<Activity> out = new ArrayList<>(raw.size());
 			for (RawActivity a : raw)
 			{
@@ -62,12 +61,12 @@ public final class StaticDataLoader
 		}
 	}
 
-	private static List<ActivityItem> loadActivityItems() throws IOException
+	private static List<ActivityItem> loadActivityItems(Gson gson) throws IOException
 	{
 		Type listType = new TypeToken<List<RawActivityItem>>(){}.getType();
 		try (InputStreamReader r = open("activity_map.json"))
 		{
-			List<RawActivityItem> raw = GSON.fromJson(r, listType);
+			List<RawActivityItem> raw = gson.fromJson(r, listType);
 			List<ActivityItem> out = new ArrayList<>(raw.size());
 			for (RawActivityItem ri : raw)
 			{
@@ -85,12 +84,12 @@ public final class StaticDataLoader
 		}
 	}
 
-	private static List<LogSlot> loadSlots() throws IOException
+	private static List<LogSlot> loadSlots(Gson gson) throws IOException
 	{
 		Type listType = new TypeToken<List<RawSlot>>(){}.getType();
 		try (InputStreamReader r = open("slots.json"))
 		{
-			List<RawSlot> raw = GSON.fromJson(r, listType);
+			List<RawSlot> raw = gson.fromJson(r, listType);
 			List<LogSlot> out = new ArrayList<>(raw.size());
 			for (RawSlot rs : raw)
 			{
@@ -100,11 +99,11 @@ public final class StaticDataLoader
 		}
 	}
 
-	private static Map<Integer, ActivityNpcInfo> loadNpcInfo() throws IOException
+	private static Map<Integer, ActivityNpcInfo> loadNpcInfo(Gson gson) throws IOException
 	{
 		try (InputStreamReader r = open("activity_npcs.json"))
 		{
-			JsonObject root = GSON.fromJson(r, JsonObject.class);
+			JsonObject root = gson.fromJson(r, JsonObject.class);
 			Map<Integer, ActivityNpcInfo> out = new HashMap<>();
 			for (Map.Entry<String, JsonElement> e : root.entrySet())
 			{

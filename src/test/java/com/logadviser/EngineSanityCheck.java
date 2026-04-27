@@ -1,5 +1,6 @@
 package com.logadviser;
 
+import com.google.gson.Gson;
 import com.logadviser.data.StaticData;
 import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AccountMode;
@@ -12,7 +13,7 @@ public class EngineSanityCheck
 {
 	public static void main(String[] args) throws Exception
 	{
-		StaticData data = StaticDataLoader.loadAll();
+		StaticData data = StaticDataLoader.loadAll(new Gson());
 		System.out.println("activities:   " + data.getActivities().size());
 		System.out.println("activityItems:" + data.getActivityItems().size());
 		System.out.println("slots:        " + data.getSlots().size());

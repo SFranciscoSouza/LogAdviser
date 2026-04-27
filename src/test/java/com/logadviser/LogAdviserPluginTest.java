@@ -1,5 +1,6 @@
 package com.logadviser;
 
+import com.google.gson.Gson;
 import com.logadviser.data.StaticData;
 import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AccountMode;
@@ -14,7 +15,7 @@ public class LogAdviserPluginTest
 	public static void main(String[] args) throws Exception
 	{
 		// Sanity-check static data + engine before launching the dev client.
-		StaticData data = StaticDataLoader.loadAll();
+		StaticData data = StaticDataLoader.loadAll(new Gson());
 		assert data.getActivities().size() == 250
 			: "expected 250 activities, got " + data.getActivities().size();
 		assert data.getActivityItems().size() == 2486

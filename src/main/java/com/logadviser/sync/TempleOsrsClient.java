@@ -27,14 +27,15 @@ public class TempleOsrsClient
 {
 	private static final HttpUrl ENDPOINT = HttpUrl.parse(
 		"https://templeosrs.com/api/collection-log/player_collection_log.php");
-	private static final Gson GSON = new Gson();
 
 	private final OkHttpClient http;
+	private final Gson gson;
 
 	@Inject
-	public TempleOsrsClient(OkHttpClient http)
+	public TempleOsrsClient(OkHttpClient http, Gson gson)
 	{
 		this.http = http;
+		this.gson = gson;
 	}
 
 	public void fetchObtainedAsync(String playerName, Consumer<Set<Integer>> onResult)
@@ -68,7 +69,7 @@ public class TempleOsrsClient
 						onResult.accept(null);
 						return;
 					}
-					Set<Integer> obtained = parseObtained(body.string());
+					Set<Integer> obtained = parseObtained(body.string(), gson);
 					onResult.accept(obtained);
 				}
 				catch (RuntimeException ex)
@@ -80,10 +81,10 @@ public class TempleOsrsClient
 		});
 	}
 
-	private static Set<Integer> parseObtained(String json)
+	private static Set<Integer> parseObtained(String json, Gson gson)
 	{
 		Set<Integer> out = new HashSet<>();
-		JsonElement root = GSON.fromJson(json, JsonElement.class);
+		JsonElement root = gson.fromJson(json, JsonElement.class);
 		if (root == null || !root.isJsonObject())
 		{
 			return out;

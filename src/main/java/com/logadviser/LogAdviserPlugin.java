@@ -1,5 +1,6 @@
 package com.logadviser;
 
+import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.logadviser.data.StaticData;
 import com.logadviser.data.StaticDataLoader;
@@ -50,6 +51,7 @@ public class LogAdviserPlugin extends Plugin
 	@Inject private ClientToolbar clientToolbar;
 	@Inject private ConfigManager configManager;
 	@Inject private LogAdviserConfig config;
+	@Inject private Gson gson;
 	@Inject private ItemManager itemManager;
 	@Inject private InfoBoxManager infoBoxManager;
 	@Inject private OverlayManager overlayManager;
@@ -73,7 +75,7 @@ public class LogAdviserPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		staticData = StaticDataLoader.loadAll();
+		staticData = StaticDataLoader.loadAll(gson);
 		engine = new AdviserEngine(staticData, this::detectedIronman);
 
 		// Construct tracker manually — its @Inject ctor needs StaticData/AdviserEngine,
