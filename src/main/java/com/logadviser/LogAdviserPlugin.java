@@ -56,7 +56,6 @@ public class LogAdviserPlugin extends Plugin
 	@Inject private InfoBoxManager infoBoxManager;
 	@Inject private OverlayManager overlayManager;
 	@Inject private HiscoreRankFetcher hiscoreFetcher;
-	@Inject private com.logadviser.sync.TempleOsrsClient templeClient;
 	@Inject private net.runelite.client.eventbus.EventBus eventBus;
 
 	private StaticData staticData;
@@ -86,8 +85,7 @@ public class LogAdviserPlugin extends Plugin
 			clientThread,
 			configManager,
 			staticData,
-			engine,
-			templeClient);
+			engine);
 		panel = new LogAdviserPanel(
 			engine,
 			itemManager,

@@ -9,16 +9,6 @@ public interface LogAdviserConfig extends Config
 {
 	String GROUP = "logadviser";
 
-	@ConfigItem(
-		keyName = "templeWarmStart",
-		name = "TempleOSRS warm-start",
-		description = "On first launch with empty cache, query TempleOSRS to seed the obtained-items list before you click through the in-game collection log."
-	)
-	default boolean templeWarmStart()
-	{
-		return true;
-	}
-
 	enum DisplayMode
 	{
 		INFOBOX("Info box (top-left tray)"),

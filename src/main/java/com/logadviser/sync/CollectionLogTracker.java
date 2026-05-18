@@ -24,11 +24,10 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.util.Text;
 
 /**
- * Three-way input pump that converges into AdviserEngine.markObtained:
+ * Two-way input pump that converges into AdviserEngine.markObtained:
  *   1) ChatMessage "New item added to your collection log" — live drop notifications.
  *   2) ScriptPostFired id 2731 — fires every time the in-game collection log widget
  *      redraws a tab; we walk the items list and mark every faded child as obtained.
- *   3) TempleOSRS warm-start (one-shot) when local cache is empty.
  *
  * Persists per-character via RSProfile config so each alt has its own state.
  */
@@ -47,11 +46,8 @@ public class CollectionLogTracker
 	private final ConfigManager configManager;
 	private final StaticData staticData;
 	private final AdviserEngine engine;
-	private final TempleOsrsClient temple;
 
 	private final Map<String, Integer> itemIdsByName;
-
-	private boolean warmStartAttempted = false;
 
 	@Inject
 	public CollectionLogTracker(
@@ -59,15 +55,13 @@ public class CollectionLogTracker
 		ClientThread clientThread,
 		ConfigManager configManager,
 		StaticData staticData,
-		AdviserEngine engine,
-		TempleOsrsClient temple)
+		AdviserEngine engine)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.configManager = configManager;
 		this.staticData = staticData;
 		this.engine = engine;
-		this.temple = temple;
 		this.itemIdsByName = staticData.itemIdsByName();
 	}
 
@@ -109,7 +103,6 @@ public class CollectionLogTracker
 			clientThread.invokeLater(() ->
 			{
 				load();
-				maybeWarmStart();
 				return true;
 			});
 		}
@@ -189,55 +182,6 @@ public class CollectionLogTracker
 		{
 			persist();
 		}
-	}
-
-	private void maybeWarmStart()
-	{
-		if (warmStartAttempted)
-		{
-			return;
-		}
-		warmStartAttempted = true;
-		if (!engine.obtainedItems().isEmpty())
-		{
-			return;
-		}
-		String displayName = client.getLocalPlayer() == null ? null : client.getLocalPlayer().getName();
-		if (displayName == null || displayName.isEmpty())
-		{
-			return;
-		}
-		temple.fetchObtainedAsync(displayName, ids ->
-		{
-			if (ids == null || ids.isEmpty())
-			{
-				return;
-			}
-			clientThread.invoke(() ->
-			{
-				if (!engine.obtainedItems().isEmpty())
-				{
-					return;
-				}
-				engine.replaceObtained(filterToKnownSlots(ids));
-				persist();
-				log.debug("TempleOSRS warm-start populated {} obtained items for {}", ids.size(), displayName);
-			});
-		});
-	}
-
-	private Set<Integer> filterToKnownSlots(Set<Integer> ids)
-	{
-		Set<Integer> known = staticData.slotsByItemId().keySet();
-		Set<Integer> out = new HashSet<>(ids.size());
-		for (Integer id : ids)
-		{
-			if (known.contains(id))
-			{
-				out.add(id);
-			}
-		}
-		return out;
 	}
 
 	private static Set<Integer> parseCsv(String csv)

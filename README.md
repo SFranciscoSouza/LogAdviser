@@ -11,14 +11,12 @@ Log Adviser ranks every remaining collection-log activity by **Time-To-Next-Slot
 - **Overlay box** rendered on the game viewport with the current target and ETA
 - **NPC highlight** — light-blue convex hull around any NPC that drops the current target slot
 - **Account-mode aware** — auto-detects Standard / Ironman / Hardcore Ironman / Ultimate Ironman from your in-game varbits and the OSRS Hiscores
-- **Optional TempleOSRS warm-start** — on first launch, seeds your obtained-items list from the public [TempleOSRS](https://templeosrs.com) collection log so you don't have to click through every collection log page
 
 ## Configuration
 
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Show next slot as** | Overlay box | Where to render the recommendation: `Info box`, `Overlay box`, `Both`, or `None` |
-| **TempleOSRS warm-start** | On | One-time query to TempleOSRS to seed obtained items if the local cache is empty |
 | **Highlight target NPCs** | On | Draws a hull around NPCs that drop the active target slot |
 | **Upcoming list size** | 30 | How many activities the sidebar lists |
 
@@ -41,12 +39,11 @@ The bundled JSON is generated from a maintained spreadsheet via a Python helper 
 
 ## Networking
 
-Log Adviser makes two read-only HTTP calls, both via the RuneLite-injected `OkHttpClient`:
+Log Adviser makes one read-only HTTP call, via the RuneLite-injected `OkHttpClient`:
 
 - **OSRS Hiscores** (`secure.runescape.com`) — to fetch your Collections Logged rank/score and confirm account mode. Cached for 5 minutes.
-- **TempleOSRS** (`templeosrs.com`) — *optional, opt-in* — used only for the one-time warm-start seeding of obtained items.
 
-No data is sent to either service beyond your character name; nothing is written anywhere outside the standard RuneLite config dir.
+This is Jagex's own public Hiscores endpoint (the same one RuneLite itself uses); no data is sent to any third-party service. Nothing is written anywhere outside the standard RuneLite config dir.
 
 ## Building locally
 
