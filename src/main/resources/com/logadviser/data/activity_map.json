@@ -2000,6 +2000,16 @@
     "dropRateAttempts": 10492.0
   },
   {
+    "activityIndex": 23,
+    "itemId": 33382,
+    "itemName": "Immaculate mole skin",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 50.0
+  },
+  {
     "activityIndex": 24,
     "itemId": 21748,
     "itemName": "Noon",
@@ -3558,6 +3568,16 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 375.0
+  },
+  {
+    "activityIndex": 44,
+    "itemId": 33133,
+    "itemName": "Pristine spider silk",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 384.0
   },
   {
     "activityIndex": 45,
@@ -19160,6 +19180,16 @@
     "dropRateAttempts": 1.0
   },
   {
+    "activityIndex": 130,
+    "itemId": 33143,
+    "itemName": "Ballistic attractor schematic",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": true,
+    "independent": true,
+    "dropRateAttempts": 1.0
+  },
+  {
     "activityIndex": 131,
     "itemId": 24862,
     "itemName": "Karamjan monkey",
@@ -20610,6 +20640,16 @@
     "dropRateAttempts": 3000.0
   },
   {
+    "activityIndex": 149,
+    "itemId": 33074,
+    "itemName": "Facility bottle (empty)",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1000.0
+  },
+  {
     "activityIndex": 150,
     "itemId": 31916,
     "itemName": "Dragon cannonball",
@@ -20638,6 +20678,16 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 3000.0
+  },
+  {
+    "activityIndex": 150,
+    "itemId": 33074,
+    "itemName": "Facility bottle (empty)",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 900.0
   },
   {
     "activityIndex": 151,
@@ -20680,6 +20730,16 @@
     "dropRateAttempts": 3000.0
   },
   {
+    "activityIndex": 151,
+    "itemId": 33074,
+    "itemName": "Facility bottle (empty)",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 700.0
+  },
+  {
     "activityIndex": 152,
     "itemId": 32398,
     "itemName": "Sailors' amulet (inert)",
@@ -20698,6 +20758,16 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 3000.0
+  },
+  {
+    "activityIndex": 152,
+    "itemId": 33074,
+    "itemName": "Facility bottle (empty)",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 500.0
   },
   {
     "activityIndex": 153,
@@ -20768,6 +20838,16 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 13780.0
+  },
+  {
+    "activityIndex": 153,
+    "itemId": 33074,
+    "itemName": "Facility bottle (empty)",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 300.0
   },
   {
     "activityIndex": 154,
@@ -24858,5 +24938,45 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 512.0
+  },
+  {
+    "activityIndex": 251,
+    "itemId": 33101,
+    "itemName": "Mooleta",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 30.0
+  },
+  {
+    "activityIndex": 251,
+    "itemId": 33091,
+    "itemName": "Bottomless milk bucket (empty)",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 37.5
+  },
+  {
+    "activityIndex": 251,
+    "itemId": 33093,
+    "itemName": "Cow slippers",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 150.0
+  },
+  {
+    "activityIndex": 251,
+    "itemId": 33124,
+    "itemName": "Beef",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1000.0
   }
 ]

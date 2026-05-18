@@ -8458,5 +8458,45 @@
     "itemId": 32921,
     "slotName": "Jar of feathers",
     "activityCount": 1
+  },
+  {
+    "itemId": 33074,
+    "slotName": "Facility bottle (empty)",
+    "activityCount": 5
+  },
+  {
+    "itemId": 33091,
+    "slotName": "Bottomless milk bucket (empty)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33093,
+    "slotName": "Cow slippers",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33101,
+    "slotName": "Mooleta",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33124,
+    "slotName": "Beef",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33133,
+    "slotName": "Pristine spider silk",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33143,
+    "slotName": "Ballistic attractor schematic",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33382,
+    "slotName": "Immaculate mole skin",
+    "activityCount": 1
   }
 ]

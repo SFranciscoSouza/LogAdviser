@@ -14,8 +14,10 @@ public class TargetInfoBox extends InfoBox
 	private final double timeHours;
 	private final int slotsLeft;
 	private final int slotsTotal;
+	private final boolean fullySynced;
 
-	public TargetInfoBox(BufferedImage image, Plugin plugin, RankedActivity ranked, String itemName, String hint)
+	public TargetInfoBox(BufferedImage image, Plugin plugin, RankedActivity ranked, String itemName, String hint,
+		boolean fullySynced)
 	{
 		super(image, plugin);
 		this.itemName = itemName;
@@ -24,18 +26,22 @@ public class TargetInfoBox extends InfoBox
 		this.timeHours = ranked.getTimeToNextSlotHours();
 		this.slotsLeft = ranked.getSlotsLeft();
 		this.slotsTotal = ranked.getSlotsTotal();
+		this.fullySynced = fullySynced;
 	}
+
+	private static final Color STALE = new Color(255, 152, 0);
 
 	@Override
 	public String getText()
 	{
-		return null;
+		// Visible stale marker on the icon itself when the collection log isn't synced.
+		return fullySynced ? null : "!";
 	}
 
 	@Override
 	public Color getTextColor()
 	{
-		return Color.WHITE;
+		return fullySynced ? Color.WHITE : STALE;
 	}
 
 	@Override
@@ -52,6 +58,10 @@ public class TargetInfoBox extends InfoBox
 		}
 		sb.append("Time to slot: <col=9bc7ff>").append(formatHours(timeHours)).append("</col><br>");
 		sb.append("Progress: ").append(slotsTotal - slotsLeft).append(" / ").append(slotsTotal);
+		if (!fullySynced)
+		{
+			sb.append("<br><col=8a8a8a>Data may be stale — open unopened collection log pages to sync</col>");
+		}
 		return sb.toString();
 	}
 
@@ -71,14 +81,12 @@ public class TargetInfoBox extends InfoBox
 			return String.format("%.0fm", totalSeconds / 60.0);
 		}
 		long h = (long) hours;
-		long m = (long) ((hours - h) * 60.0);
-		if (h < 24)
+		if (h > 10)
 		{
-			return m == 0 ? h + "h" : h + "h " + m + "m";
+			return h + "h";
 		}
-		long d = h / 24;
-		long hr = h % 24;
-		return hr == 0 ? d + "d" : d + "d " + hr + "h";
+		long m = (long) ((hours - h) * 60.0);
+		return m == 0 ? h + "h" : h + "h " + m + "m";
 	}
 
 }

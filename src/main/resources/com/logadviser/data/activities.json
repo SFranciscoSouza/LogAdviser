@@ -1998,5 +1998,13 @@
     "completionsPerHrIron": 235.0,
     "extraTimeFirst": 0.0,
     "category": "miscellaneous"
+  },
+  {
+    "index": 251,
+    "name": "Killing Brutus",
+    "completionsPerHrMain": 250.0,
+    "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
   }
 ]

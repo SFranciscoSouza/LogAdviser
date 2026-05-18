@@ -17,6 +17,7 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -46,6 +47,7 @@ public class CollectionLogTracker
 	private final ConfigManager configManager;
 	private final StaticData staticData;
 	private final AdviserEngine engine;
+	private final CollectionLogSyncState syncState;
 
 	private final Map<String, Integer> itemIdsByName;
 
@@ -55,13 +57,15 @@ public class CollectionLogTracker
 		ClientThread clientThread,
 		ConfigManager configManager,
 		StaticData staticData,
-		AdviserEngine engine)
+		AdviserEngine engine,
+		CollectionLogSyncState syncState)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.configManager = configManager;
 		this.staticData = staticData;
 		this.engine = engine;
+		this.syncState = syncState;
 		this.itemIdsByName = staticData.itemIdsByName();
 	}
 
@@ -181,6 +185,15 @@ public class CollectionLogTracker
 		if (any)
 		{
 			persist();
+		}
+		// The page was just opened and fully scraped — mark it synced by the game's own
+		// (tab, category) indices (COLLECTION_LAST_TAB / COLLECTION_LAST_CATEGORY), which
+		// match the entry's position in the tab list. No name/colour matching needed.
+		CollectionLogWidgets.ClogTab tab = CollectionLogWidgets.activeTab(client);
+		if (tab != null)
+		{
+			int categoryIndex = client.getVarbitValue(VarbitID.COLLECTION_LAST_CATEGORY);
+			syncState.recordOpenedPage(tab.tabIndex(), categoryIndex);
 		}
 	}
 

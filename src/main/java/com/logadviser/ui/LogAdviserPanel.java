@@ -8,6 +8,7 @@ import com.logadviser.data.StaticData;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
+import com.logadviser.sync.CollectionLogSyncState;
 import com.logadviser.sync.CollectionLogTracker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,6 +49,7 @@ public class LogAdviserPanel extends PluginPanel
 	private final AdviserEngine engine;
 	private final ItemManager itemManager;
 	private final CollectionLogTracker tracker;
+	private final CollectionLogSyncState syncState;
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
 	private final IntSupplier upcomingListSize;
@@ -58,6 +60,9 @@ public class LogAdviserPanel extends PluginPanel
 	private final JLabel modeBadge = new JLabel("");
 	// Filter row — single dropdown: {All, Combat, Minigame, Misc}.
 	private final JComboBox<FilterChoice> filterBox = new JComboBox<>(FilterChoice.values());
+	// Progress lines shown directly under the "Show:" filter.
+	private final JLabel progressCountLabel = new JLabel(" ");
+	private final JLabel syncCountLabel = new JLabel(" ");
 	// Current target card
 	private final JLabel currentIcon = new JLabel();
 	private final JLabel currentItem = new JLabel("—");
@@ -78,6 +83,7 @@ public class LogAdviserPanel extends PluginPanel
 		AdviserEngine engine,
 		ItemManager itemManager,
 		CollectionLogTracker tracker,
+		CollectionLogSyncState syncState,
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
 		IntSupplier upcomingListSize)
@@ -89,6 +95,7 @@ public class LogAdviserPanel extends PluginPanel
 		this.engine = engine;
 		this.itemManager = itemManager;
 		this.tracker = tracker;
+		this.syncState = syncState;
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
 		this.upcomingListSize = upcomingListSize;
@@ -123,6 +130,7 @@ public class LogAdviserPanel extends PluginPanel
 
 		engine.addListener(this::onRankingChanged);
 		onRankingChanged(engine.getRanking());
+		updateCounts();
 	}
 
 	private JPanel buildHeader()
@@ -166,15 +174,52 @@ public class LogAdviserPanel extends PluginPanel
 
 	private JPanel buildFilterRow()
 	{
-		JPanel p = new JPanel(new BorderLayout(4, 0));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		JPanel row = new JPanel(new BorderLayout(4, 0));
+		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		JLabel label = new JLabel("Show:");
 		label.setForeground(Color.LIGHT_GRAY);
 		filterBox.setSelectedItem(FilterChoice.ALL);
 		filterBox.addActionListener(e -> applyFilter());
-		p.add(label, BorderLayout.WEST);
-		p.add(filterBox, BorderLayout.CENTER);
+		row.add(label, BorderLayout.WEST);
+		row.add(filterBox, BorderLayout.CENTER);
+
+		progressCountLabel.setForeground(Color.WHITE);
+		progressCountLabel.setFont(progressCountLabel.getFont().deriveFont(Font.BOLD, 16f));
+		progressCountLabel.setAlignmentX(LEFT_ALIGNMENT);
+		syncCountLabel.setForeground(Color.LIGHT_GRAY);
+		syncCountLabel.setFont(syncCountLabel.getFont().deriveFont(13f));
+		syncCountLabel.setAlignmentX(LEFT_ALIGNMENT);
+
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setAlignmentX(LEFT_ALIGNMENT);
+		p.add(row);
+		p.add(verticalGap(4));
+		p.add(progressCountLabel);
+		p.add(syncCountLabel);
 		return p;
+	}
+
+	/** Refreshes the item-progress and page-sync counter lines. Must run on the EDT. */
+	private void updateCounts()
+	{
+		progressCountLabel.setText(engine.collectedSlotCount() + " / " + engine.totalSlots() + " log slots");
+		int known = syncState.knownCount();
+		if (known == 0)
+		{
+			syncCountLabel.setText("Synced: open the collection log to begin");
+		}
+		else
+		{
+			syncCountLabel.setText("Synced: " + syncState.syncedCount() + " / " + known + " pages");
+		}
+	}
+
+	/** Called by the plugin when page-sync state changes with no item change. */
+	public void onSyncStateChanged()
+	{
+		SwingUtilities.invokeLater(this::updateCounts);
 	}
 
 	private JPanel buildCurrentCard()
@@ -347,6 +392,7 @@ public class LogAdviserPanel extends PluginPanel
 			currentIcon.setIcon(null);
 			skipButton.setEnabled(false);
 			listModel.clear();
+			updateCounts();
 			return;
 		}
 
@@ -373,6 +419,7 @@ public class LogAdviserPanel extends PluginPanel
 		{
 			listModel.addElement(ranking.get(i));
 		}
+		updateCounts();
 	}
 
 	private String safeName(int itemId, String fallback)

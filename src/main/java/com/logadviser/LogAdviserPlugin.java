@@ -7,7 +7,9 @@ import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
+import com.logadviser.sync.CollectionLogSyncState;
 import com.logadviser.sync.CollectionLogTracker;
+import com.logadviser.ui.CollectionLogSyncOverlay;
 import com.logadviser.ui.LogAdviserPanel;
 import com.logadviser.ui.TargetInfoBox;
 import com.logadviser.ui.TargetTextOverlay;
@@ -59,6 +61,8 @@ public class LogAdviserPlugin extends Plugin
 	private StaticData staticData;
 	private AdviserEngine engine;
 	private CollectionLogTracker tracker;
+	private CollectionLogSyncState syncState;
+	private CollectionLogSyncOverlay syncOverlay;
 	private LogAdviserPanel panel;
 	private NavigationButton navButton;
 	private TargetInfoBox currentInfoBox;
@@ -78,16 +82,19 @@ public class LogAdviserPlugin extends Plugin
 		// Construct tracker manually — its @Inject ctor needs StaticData/AdviserEngine,
 		// which aren't Guice bindings. Guice would fail with "no implementation for ..."
 		// and the plugin toggle would refuse to enable.
+		syncState = new CollectionLogSyncState(configManager, clientThread);
 		tracker = new CollectionLogTracker(
 			client,
 			clientThread,
 			configManager,
 			staticData,
-			engine);
+			engine,
+			syncState);
 		panel = new LogAdviserPanel(
 			engine,
 			itemManager,
 			tracker,
+			syncState,
 			staticData,
 			this::onAccountModeSelected,
 			config::upcomingListSize);
@@ -100,6 +107,9 @@ public class LogAdviserPlugin extends Plugin
 		textOverlay = new TargetTextOverlay(engine);
 		overlayManager.add(textOverlay);
 
+		syncOverlay = new CollectionLogSyncOverlay(client, syncState);
+		overlayManager.add(syncOverlay);
+
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/com/logadviser/icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Log Adviser")
@@ -110,7 +120,17 @@ public class LogAdviserPlugin extends Plugin
 		clientToolbar.addNavigation(navButton);
 
 		eventBus.register(tracker);
+		eventBus.register(syncState);
 		eventBus.register(worldOverlay);
+
+		syncState.addChangeListener(panel::onSyncStateChanged);
+		// A page sync with no new item doesn't fire the engine, so re-run the infobox /
+		// overlay rebuild on the client thread to refresh the "data may be stale" line.
+		syncState.addChangeListener(() -> clientThread.invokeLater(() ->
+		{
+			onRankingChanged(engine.getRanking());
+			return true;
+		}));
 
 		// If we're already logged in when the plugin enables (toggling at runtime), pull
 		// state on the client thread — including the first read of the account-type varbit.
@@ -120,6 +140,7 @@ public class LogAdviserPlugin extends Plugin
 			{
 				refreshDetectedIronman();
 				tracker.load();
+				syncState.load();
 				applyAccountModeFromConfig();
 				updatePlayerLabel();
 				return true;
@@ -133,6 +154,15 @@ public class LogAdviserPlugin extends Plugin
 		if (tracker != null)
 		{
 			eventBus.unregister(tracker);
+		}
+		if (syncState != null)
+		{
+			eventBus.unregister(syncState);
+		}
+		if (syncOverlay != null)
+		{
+			overlayManager.remove(syncOverlay);
+			syncOverlay = null;
 		}
 		if (worldOverlay != null)
 		{
@@ -313,7 +343,7 @@ public class LogAdviserPlugin extends Plugin
 		if (mode.infoBox() && displayItemId > 0)
 		{
 			BufferedImage img = itemManager.getImage(displayItemId);
-			currentInfoBox = new TargetInfoBox(img, this, top, itemName, hint);
+			currentInfoBox = new TargetInfoBox(img, this, top, itemName, hint, syncState.fullySynced());
 			infoBoxManager.addInfoBox(currentInfoBox);
 		}
 	}
