@@ -30,6 +30,16 @@ public class StaticData
 		{
 			m.put(s.getItemId(), s);
 		}
+		// Map alternate (e.g. Body-type-B) item ids onto their canonical slot so the
+		// collection-log widget scrape recognises them too.
+		for (Map.Entry<Integer, Integer> e : ItemAliases.canonicalByAlt().entrySet())
+		{
+			LogSlot canonical = m.get(e.getValue());
+			if (canonical != null)
+			{
+				m.put(e.getKey(), canonical);
+			}
+		}
 		return Collections.unmodifiableMap(m);
 	}
 
@@ -40,7 +50,14 @@ public class StaticData
 		{
 			m.put(s.getSlotName().toLowerCase(), s.getItemId());
 		}
+		// Chat-message names that the canonical slotName never matches verbatim.
+		m.putAll(ItemAliases.extraNames());
 		return Collections.unmodifiableMap(m);
+	}
+
+	public int canonicalItemId(int itemId)
+	{
+		return ItemAliases.canonical(itemId);
 	}
 
 	public ActivityNpcInfo npcInfoFor(int activityIndex)

@@ -75,7 +75,10 @@ public class AdviserEngine
 	public void replaceObtained(Set<Integer> ids)
 	{
 		obtained.clear();
-		obtained.addAll(ids);
+		for (int id : ids)
+		{
+			obtained.add(data.canonicalItemId(id));
+		}
 		recomputeAll();
 		fire();
 	}
@@ -92,6 +95,7 @@ public class AdviserEngine
 
 	public void markObtained(int itemId)
 	{
+		itemId = data.canonicalItemId(itemId);
 		if (!obtained.add(itemId))
 		{
 			return;
