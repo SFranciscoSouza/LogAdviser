@@ -69,7 +69,7 @@ public class TargetInfoBox extends InfoBox
 	{
 		if (Double.isInfinite(hours) || Double.isNaN(hours))
 		{
-			return "—";
+			return "n/a";
 		}
 		double totalSeconds = hours * 3600.0;
 		if (totalSeconds < 90)

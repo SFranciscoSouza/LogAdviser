@@ -404,7 +404,7 @@ public class LogAdviserPanel extends PluginPanel
 		currentActivity.setText(top.getActivity().getName());
 		ActivityNpcInfo info = staticData.npcInfoFor(top.getActivity().getIndex());
 		currentHint.setText(info.getHint().isEmpty() ? "(see activity name)" : info.getHint());
-		currentTime.setText("≈ " + TargetInfoBox.formatHours(top.getTimeToNextSlotHours()) + " to slot");
+		currentTime.setText("~ " + TargetInfoBox.formatHours(top.getTimeToNextSlotHours()) + " to slot");
 		setIconAsync(currentIcon, display != null ? display.getItemId() : 0);
 		skipButton.setEnabled(true);
 
@@ -473,8 +473,8 @@ public class LogAdviserPanel extends PluginPanel
 				// instead of pushing the cell past the viewport (and adding a hscroll).
 				label.setText("<html><body style='width:" + TEXT_WIDTH + "px'>"
 					+ "<b>" + escape(name) + "</b><br>"
-					+ "<span style='color:#9bc7ff'>≈ " + time + "</span>"
-					+ " · " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal()
+					+ "<span style='color:#9bc7ff'>~ " + time + "</span>"
+					+ " - " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal()
 					+ "</body></html>");
 				label.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 				label.setVerticalAlignment(SwingConstants.TOP);
