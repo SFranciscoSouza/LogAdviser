@@ -1986,8 +1986,8 @@
   {
     "index": 249,
     "name": "Opening the moon chest",
-    "completionsPerHrMain": 0.4,
-    "completionsPerHrIron": 0.3,
+    "completionsPerHrMain": 0.946463,
+    "completionsPerHrIron": 0.543956,
     "extraTimeFirst": 0.0,
     "category": "miscellaneous"
   },
