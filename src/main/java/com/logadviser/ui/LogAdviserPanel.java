@@ -9,7 +9,6 @@ import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
 import com.logadviser.sync.CollectionLogTracker;
-import com.logadviser.sync.HiscoreRankFetcher;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,7 +16,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -46,23 +44,18 @@ import net.runelite.client.ui.PluginPanel;
 public class LogAdviserPanel extends PluginPanel
 {
 	private static final int ICON_SIZE = 32;
-	private static final NumberFormat RANK_FMT = NumberFormat.getIntegerInstance();
 
 	private final AdviserEngine engine;
 	private final ItemManager itemManager;
 	private final CollectionLogTracker tracker;
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
-	private final Runnable refreshHiscores;
 	private final IntSupplier upcomingListSize;
 
 	// Header
 	private final JLabel playerLabel = new JLabel("(not logged in)");
 	private final JComboBox<AccountMode> accountModeBox = new JComboBox<>(AccountMode.values());
 	private final JLabel modeBadge = new JLabel("");
-	// Stats row
-	private final JLabel slotsLabel = new JLabel("0 / 0 slots");
-	private final JLabel rankLabel = new JLabel("Rank: —");
 	// Filter row — single dropdown: {All, Combat, Minigame, Misc}.
 	private final JComboBox<FilterChoice> filterBox = new JComboBox<>(FilterChoice.values());
 	// Current target card
@@ -87,7 +80,6 @@ public class LogAdviserPanel extends PluginPanel
 		CollectionLogTracker tracker,
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
-		Runnable refreshHiscores,
 		IntSupplier upcomingListSize)
 	{
 		// Skip PluginPanel's built-in outer JScrollPane — we manage our own scrolling
@@ -99,7 +91,6 @@ public class LogAdviserPanel extends PluginPanel
 		this.tracker = tracker;
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
-		this.refreshHiscores = refreshHiscores;
 		this.upcomingListSize = upcomingListSize;
 
 		setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -112,8 +103,6 @@ public class LogAdviserPanel extends PluginPanel
 		top.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		top.add(buildHeader());
 		top.add(verticalGap(8));
-		top.add(buildStatsRow());
-		top.add(verticalGap(6));
 		top.add(buildFilterRow());
 		top.add(verticalGap(8));
 		top.add(buildCurrentCard());
@@ -172,18 +161,6 @@ public class LogAdviserPanel extends PluginPanel
 		});
 		modePanel.add(accountModeBox, BorderLayout.CENTER);
 		p.add(modePanel, BorderLayout.SOUTH);
-		return p;
-	}
-
-	private JPanel buildStatsRow()
-	{
-		JPanel p = new JPanel(new BorderLayout(8, 2));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		slotsLabel.setForeground(Color.LIGHT_GRAY);
-		rankLabel.setForeground(Color.LIGHT_GRAY);
-		rankLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		p.add(slotsLabel, BorderLayout.WEST);
-		p.add(rankLabel, BorderLayout.EAST);
 		return p;
 	}
 
@@ -293,25 +270,6 @@ public class LogAdviserPanel extends PluginPanel
 		});
 	}
 
-	public void setHiscoreRank(Long rank, Long score)
-	{
-		SwingUtilities.invokeLater(() ->
-		{
-			if (rank == null || rank < 0)
-			{
-				rankLabel.setText("Rank: —");
-			}
-			else
-			{
-				rankLabel.setText("Rank: #" + RANK_FMT.format(rank));
-			}
-			if (score != null && score >= 0)
-			{
-				slotsLabel.setText(score + " / " + engine.totalSlots() + " slots");
-			}
-		});
-	}
-
 	private String modeBadgeText(AccountMode mode, boolean detectedIronman)
 	{
 		String detected = detectedIronman ? "Iron" : "Main";
@@ -379,8 +337,6 @@ public class LogAdviserPanel extends PluginPanel
 
 	private void applyRanking(List<RankedActivity> ranking)
 	{
-		slotsLabel.setText(engine.collectedSlotCount() + " / " + engine.totalSlots() + " slots");
-
 		if (ranking.isEmpty())
 		{
 			currentTopRanked = null;

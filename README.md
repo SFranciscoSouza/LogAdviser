@@ -10,7 +10,7 @@ Log Adviser ranks every remaining collection-log activity by **Time-To-Next-Slot
 - **Info box** in the top-left tray showing the current target activity at a glance
 - **Overlay box** rendered on the game viewport with the current target and ETA
 - **NPC highlight** — light-blue convex hull around any NPC that drops the current target slot
-- **Account-mode aware** — auto-detects Standard / Ironman / Hardcore Ironman / Ultimate Ironman from your in-game varbits and the OSRS Hiscores
+- **Account-mode aware** — auto-detects Standard / Ironman / Hardcore Ironman / Ultimate Ironman from your in-game varbits (with a manual override)
 
 ## Configuration
 
@@ -24,7 +24,7 @@ Settings live under **RuneLite → Configuration → Log Adviser** in the standa
 
 ## Account modes
 
-Account type is detected from in-game varbits when you log in and cross-checked against the OSRS Hiscores endpoint that matches your account (standard / ironman / HCIM / UIM). Drops that are blocked by your mode are filtered out of the ranking automatically.
+Account type is detected from in-game varbits when you log in (standard / ironman / HCIM / UIM), with a manual override available in the sidebar. Drops that are blocked by your mode are filtered out of the ranking automatically.
 
 ## Data sources
 
@@ -39,11 +39,7 @@ The bundled JSON is generated from a maintained spreadsheet via a Python helper 
 
 ## Networking
 
-Log Adviser makes one read-only HTTP call, via the RuneLite-injected `OkHttpClient`:
-
-- **OSRS Hiscores** (`secure.runescape.com`) — to fetch your Collections Logged rank/score and confirm account mode. Cached for 5 minutes.
-
-This is Jagex's own public Hiscores endpoint (the same one RuneLite itself uses); no data is sent to any third-party service. Nothing is written anywhere outside the standard RuneLite config dir.
+Log Adviser makes **no network requests**. All data ships bundled with the plugin, and collection-log progress is tracked entirely from in-game events. Nothing is sent anywhere; nothing is written outside the standard RuneLite config dir.
 
 ## Building locally
 

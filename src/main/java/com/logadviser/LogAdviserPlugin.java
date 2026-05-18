@@ -8,7 +8,6 @@ import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
 import com.logadviser.sync.CollectionLogTracker;
-import com.logadviser.sync.HiscoreRankFetcher;
 import com.logadviser.ui.LogAdviserPanel;
 import com.logadviser.ui.TargetInfoBox;
 import com.logadviser.ui.TargetTextOverlay;
@@ -55,7 +54,6 @@ public class LogAdviserPlugin extends Plugin
 	@Inject private ItemManager itemManager;
 	@Inject private InfoBoxManager infoBoxManager;
 	@Inject private OverlayManager overlayManager;
-	@Inject private HiscoreRankFetcher hiscoreFetcher;
 	@Inject private net.runelite.client.eventbus.EventBus eventBus;
 
 	private StaticData staticData;
@@ -92,7 +90,6 @@ public class LogAdviserPlugin extends Plugin
 			tracker,
 			staticData,
 			this::onAccountModeSelected,
-			this::refreshHiscores,
 			config::upcomingListSize);
 
 		engine.addListener(this::onRankingChanged);
@@ -125,7 +122,6 @@ public class LogAdviserPlugin extends Plugin
 				tracker.load();
 				applyAccountModeFromConfig();
 				updatePlayerLabel();
-				refreshHiscores();
 				return true;
 			});
 		}
@@ -175,7 +171,6 @@ public class LogAdviserPlugin extends Plugin
 				refreshDetectedIronman();
 				applyAccountModeFromConfig();
 				updatePlayerLabel();
-				refreshHiscores();
 				return true;
 			});
 		}
@@ -185,7 +180,6 @@ public class LogAdviserPlugin extends Plugin
 			{
 				panel.setPlayerLabel(null, false);
 			}
-			hiscoreFetcher.invalidate();
 		}
 	}
 
@@ -277,51 +271,6 @@ public class LogAdviserPlugin extends Plugin
 		}
 		String name = client.getLocalPlayer() == null ? null : client.getLocalPlayer().getName();
 		panel.setPlayerLabel(name, detectedIronman());
-	}
-
-	private void refreshHiscores()
-	{
-		if (panel == null || client.getLocalPlayer() == null)
-		{
-			return;
-		}
-		String name = client.getLocalPlayer().getName();
-		if (name == null || name.isEmpty())
-		{
-			return;
-		}
-		HiscoreRankFetcher.Endpoint endpoint = endpointForDetectedType();
-		hiscoreFetcher.fetchAsync(name, endpoint, (result, err) ->
-		{
-			if (result == null)
-			{
-				panel.setHiscoreRank(null, null);
-				return;
-			}
-			panel.setHiscoreRank(result.getRank(), result.getScore());
-		});
-	}
-
-	private HiscoreRankFetcher.Endpoint endpointForDetectedType()
-	{
-		AccountType type = client.getAccountType();
-		if (type == null)
-		{
-			return HiscoreRankFetcher.Endpoint.MAIN;
-		}
-		switch (type)
-		{
-			case ULTIMATE_IRONMAN:
-				return HiscoreRankFetcher.Endpoint.ULTIMATE_IRONMAN;
-			case HARDCORE_IRONMAN:
-				return HiscoreRankFetcher.Endpoint.HARDCORE_IRONMAN;
-			case IRONMAN:
-			case GROUP_IRONMAN:
-			case HARDCORE_GROUP_IRONMAN:
-				return HiscoreRankFetcher.Endpoint.IRONMAN;
-			default:
-				return HiscoreRankFetcher.Endpoint.MAIN;
-		}
 	}
 
 	private void onRankingChanged(List<RankedActivity> ranking)
