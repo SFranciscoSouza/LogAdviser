@@ -14,8 +14,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -34,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +81,15 @@ public class LogAdviserPanel extends PluginPanel
 	private final DefaultListModel<RankedActivity> listModel = new DefaultListModel<>();
 	private final JList<RankedActivity> list = new JList<>(listModel);
 	// Footer
-	private final JButton resetSkipsButton = new JButton("Reset skips");
+	private final JButton skipSelectedButton = new JButton("Skip");
+	private final JToggleButton viewSkipListButton = new JToggleButton("Skipped");
+	private final JButton resetSkipsButton = new JButton("Reset");
+
+	// When true the list box shows the skipped activities instead of the ranking.
+	private boolean showingSkipList = false;
+	// Most recent normal ranking, so the skip-list toggle can rebuild the default
+	// view without re-querying the engine.
+	private List<RankedActivity> lastRanking = new ArrayList<>();
 
 	private RankedActivity currentTopRanked;
 	private boolean accountModeBoxLoading = false;
@@ -303,14 +313,66 @@ public class LogAdviserPanel extends PluginPanel
 
 	private JPanel buildFooter()
 	{
-		JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		// The plugin panel is narrow, so all three controls share one equal-thirds
+		// row. GridLayout forces equal column widths that fill the row and never
+		// overlap regardless of label length; short labels + tooltips keep meaning.
+		JPanel p = new JPanel(new GridLayout(1, 3, 4, 0));
 		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+		Insets tight = new Insets(2, 4, 2, 4);
+
+		skipSelectedButton.setMargin(tight);
+		skipSelectedButton.setToolTipText("Skip the selected activities "
+			+ "— unskip them while viewing the skip list");
+		skipSelectedButton.addActionListener(e ->
+		{
+			List<RankedActivity> sel = list.getSelectedValuesList();
+			if (sel.isEmpty())
+			{
+				return;
+			}
+			for (RankedActivity r : sel)
+			{
+				int idx = r.getActivity().getIndex();
+				if (showingSkipList)
+				{
+					engine.unskip(idx);
+				}
+				else
+				{
+					engine.skip(idx);
+				}
+			}
+			tracker.persistSkipped();
+		});
+
+		viewSkipListButton.setMargin(tight);
+		viewSkipListButton.setToolTipText("Show the activities you've skipped; "
+			+ "click again to return to the list");
+		viewSkipListButton.addActionListener(e ->
+		{
+			// JToggleButton's selected state is the affordance for "viewing the
+			// skip list", so its own label stays constant.
+			showingSkipList = viewSkipListButton.isSelected();
+			skipSelectedButton.setText(showingSkipList ? "Unskip" : "Skip");
+			list.clearSelection();
+			refreshListView();
+		});
+
+		resetSkipsButton.setMargin(tight);
+		resetSkipsButton.setToolTipText("Clear all skips");
 		resetSkipsButton.addActionListener(e ->
 		{
 			engine.unskipAll();
 			tracker.persistSkipped();
 		});
+
+		p.add(skipSelectedButton);
+		p.add(viewSkipListButton);
 		p.add(resetSkipsButton);
+		// Bottom region is a Y_AXIS BoxLayout — cap the height so the row keeps its
+		// natural button height instead of stretching tall to fill spare space.
+		p.setMaximumSize(new Dimension(Integer.MAX_VALUE, p.getPreferredSize().height));
 		return p;
 	}
 
@@ -439,6 +501,8 @@ public class LogAdviserPanel extends PluginPanel
 				System.identityHashCode(this), ranking.size(), lockedAt.toString().trim());
 		}
 
+		lastRanking = ranking;
+
 		// The current-target card should never point at a locked activity — surface the
 		// first one the player can actually do.
 		RankedActivity top = null;
@@ -462,13 +526,7 @@ public class LogAdviserPanel extends PluginPanel
 			currentTime.setText(" ");
 			currentIcon.setIcon(null);
 			skipButton.setEnabled(false);
-			listModel.clear();
-			// Still show the locked rows so the player can see what to unlock next.
-			int lockedMax = Math.min(ranking.size(), Math.max(upcomingListSize.getAsInt(), 1));
-			for (int i = 0; i < lockedMax; i++)
-			{
-				listModel.addElement(ranking.get(i));
-			}
+			refreshListView();
 			updateCounts();
 			return;
 		}
@@ -484,7 +542,23 @@ public class LogAdviserPanel extends PluginPanel
 		setIconAsync(currentIcon, display != null ? display.getItemId() : 0);
 		skipButton.setEnabled(true);
 
+		refreshListView();
+		updateCounts();
+	}
+
+	/** Repopulates the list box for the active mode: the skipped activities when
+	 *  the skip list is toggled on, otherwise the normal ranking. Must run on the EDT. */
+	private void refreshListView()
+	{
 		listModel.clear();
+		if (showingSkipList)
+		{
+			for (RankedActivity r : engine.getSkippedRanking())
+			{
+				listModel.addElement(r);
+			}
+			return;
+		}
 		int desired = upcomingListSize.getAsInt();
 		if (desired <= 0)
 		{
@@ -495,7 +569,7 @@ public class LogAdviserPanel extends PluginPanel
 		// next instead of them being buried past the cap.
 		int shownUnlocked = 0;
 		List<RankedActivity> lockedRows = new ArrayList<>();
-		for (RankedActivity r : ranking)
+		for (RankedActivity r : lastRanking)
 		{
 			if (r.isLocked())
 			{
@@ -514,7 +588,6 @@ public class LogAdviserPanel extends PluginPanel
 		{
 			listModel.addElement(r);
 		}
-		updateCounts();
 	}
 
 	private String safeName(int itemId, String fallback)

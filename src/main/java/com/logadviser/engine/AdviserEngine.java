@@ -133,6 +133,14 @@ public class AdviserEngine
 		}
 	}
 
+	public void unskip(int activityIndex)
+	{
+		if (skipped.remove(activityIndex))
+		{
+			fire();
+		}
+	}
+
 	public void unskipAll()
 	{
 		if (!skipped.isEmpty())
@@ -295,6 +303,46 @@ public class AdviserEngine
 		}
 		// Unlocked first (by time-to-slot), then locked activities demoted to the
 		// bottom — themselves still ordered by time so the closest unlock floats up.
+		out.sort((x, y) ->
+		{
+			if (x.isLocked() != y.isLocked())
+			{
+				return x.isLocked() ? 1 : -1;
+			}
+			return Double.compare(x.getTimeToNextSlotHours(), y.getTimeToNextSlotHours());
+		});
+		return out;
+	}
+
+	/** The skipped activities, ranked like {@link #getRanking()} but containing
+	 *  only what the player has skipped. Ignores the category filter so a
+	 *  filtered-out skip is still visible (and recoverable) in the skip list. */
+	public List<RankedActivity> getSkippedRanking()
+	{
+		List<RankedActivity> out = new ArrayList<>();
+		for (Activity a : data.getActivities())
+		{
+			if (!skipped.contains(a.getIndex()))
+			{
+				continue;
+			}
+			Double t = cachedTime.get(a.getIndex());
+			if (t == null || Double.isInfinite(t) || Double.isNaN(t))
+			{
+				continue;
+			}
+			int[] slots = cachedSlotCounts.getOrDefault(a.getIndex(), new int[]{0, 0});
+			String missing = unmetRequirementLabel(a.getIndex());
+			out.add(new RankedActivity(
+				a,
+				t,
+				cachedEasiest.get(a.getIndex()),
+				cachedFastest.get(a.getIndex()),
+				slots[0],
+				slots[1],
+				missing != null,
+				missing));
+		}
 		out.sort((x, y) ->
 		{
 			if (x.isLocked() != y.isLocked())
