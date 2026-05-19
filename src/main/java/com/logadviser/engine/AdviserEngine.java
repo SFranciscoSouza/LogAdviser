@@ -49,6 +49,18 @@ public class AdviserEngine
 	private final Map<Integer, ActivityItem> cachedEasiest = new HashMap<>();
 	private final Map<Integer, int[]> cachedSlotCounts = new HashMap<>();
 
+	/**
+	 * Slots that ONLY an ironman obtains automatically as a by-product of other logs,
+	 * so they must not be advised on iron accounts but a main account still has to
+	 * chase normally. The activity_map row is therefore kept (mains see it unchanged)
+	 * and filtered out here only when iron rates are in effect.
+	 *
+	 * This is distinct from slots like Champion's cape / Barronite mace, which are
+	 * auto-completed for EVERY account type — those simply have no activity_map row
+	 * and need no code; do not add them here.
+	 */
+	private static final Set<Integer> IRON_AUTO_COMPLETED = Collections.singleton(32110); // Merchant's paint
+
 	private final List<Consumer<List<RankedActivity>>> listeners = new CopyOnWriteArrayList<>();
 
 	public AdviserEngine(StaticData data, BooleanSupplier detectedIronman)
@@ -395,6 +407,15 @@ public class AdviserEngine
 			cachedTime.put(activityIndex, Double.POSITIVE_INFINITY);
 			return;
 		}
+		items = visibleItems(items);
+		if (items.isEmpty())
+		{
+			// Every item this activity drops is iron-auto-completed: treat the
+			// activity as having nothing to chase, mirroring an absent activity_map row.
+			cachedTime.put(activityIndex, Double.POSITIVE_INFINITY);
+			cachedSlotCounts.put(activityIndex, new int[]{0, 0});
+			return;
+		}
 		double cph = isUsingIronRates() ? activity.getCompletionsPerHrIron() : activity.getCompletionsPerHrMain();
 		if (cph <= 0.0)
 		{
@@ -520,6 +541,38 @@ public class AdviserEngine
 			cachedEasiest.put(activityIndex, fastest);
 		}
 		cachedSlotCounts.put(activityIndex, slotCounts(items));
+	}
+
+	/**
+	 * The items an activity should be evaluated against for the current account type.
+	 * On iron rates this drops {@link #IRON_AUTO_COMPLETED} slots so they neither show
+	 * up in the ranking nor count toward the activity's slot total; mains get the list
+	 * untouched. Recomputed via {@link #refreshRates()} whenever the iron/main signal
+	 * settles, so toggling account type re-includes/excludes these correctly.
+	 */
+	private List<ActivityItem> visibleItems(List<ActivityItem> items)
+	{
+		if (!isUsingIronRates())
+		{
+			return items;
+		}
+		List<ActivityItem> out = null;
+		for (int i = 0; i < items.size(); i++)
+		{
+			ActivityItem it = items.get(i);
+			if (IRON_AUTO_COMPLETED.contains(it.getItemId()))
+			{
+				if (out == null)
+				{
+					out = new ArrayList<>(items.subList(0, i));
+				}
+			}
+			else if (out != null)
+			{
+				out.add(it);
+			}
+		}
+		return out == null ? items : out;
 	}
 
 	private int[] slotCounts(List<ActivityItem> items)

@@ -31,6 +31,7 @@
   "51":  { "skills": {}, "quests": ["Desert Treasure II - The Fallen Empire"] },
   "54":  { "skills": {}, "quests": ["Dragon Slayer II"] },
   "55":  { "skills": {}, "quests": ["Desert Treasure II - The Fallen Empire"] },
+  "56":  { "skills": { "FIREMAKING": 50 }, "quests": [] },
   "57":  { "skills": {}, "quests": ["A Kingdom Divided"] },
   "58":  { "skills": {}, "quests": ["Song of the Elves"] },
   "59":  { "skills": {}, "quests": ["Regicide"] },
