@@ -13,6 +13,8 @@ public class RankedActivity
 	ActivityItem fastestItem;
 	int slotsLeft;
 	int slotsTotal;
+	boolean locked;
+	String requirementLabel;
 
 	public double percentComplete()
 	{

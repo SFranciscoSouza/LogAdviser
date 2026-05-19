@@ -1,0 +1,7 @@
+{
+  "_comment": "Per-activity skill/quest requirements, keyed by activity index. Only activities with requirements need an entry. 'skills' maps a RuneLite Skill enum name to the required real level; 'quests' lists quest names (enum constant or display name, case/space-insensitive). All listed requirements must be met (AND).",
+  "1": { "skills": { "SLAYER": 85 }, "quests": ["Cook's Assistant"] },
+  "2": { "skills": { "SLAYER": 95 }, "quests": ["Recipe for Disaster"] },
+  "47": { "skills": { "SLAYER": 51 }, "quests": ["Troubled Tortugans"] },
+  "211": { "skills": { "SLAYER": 51 }, "quests": [] }
+}

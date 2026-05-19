@@ -28,6 +28,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -52,6 +53,7 @@ public class LogAdviserPanel extends PluginPanel
 	private final CollectionLogSyncState syncState;
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
+	private final Consumer<Boolean> onIgnoreRequirementsChanged;
 	private final IntSupplier upcomingListSize;
 
 	// Header
@@ -60,6 +62,9 @@ public class LogAdviserPanel extends PluginPanel
 	private final JLabel modeBadge = new JLabel("");
 	// Filter row — single dropdown: {All, Combat, Minigame, Misc}.
 	private final JComboBox<FilterChoice> filterBox = new JComboBox<>(FilterChoice.values());
+	// When ticked, activities you don't meet skill/quest requirements for are ranked
+	// normally instead of being demoted to the locked section.
+	private final JCheckBox ignoreReqBox = new JCheckBox("Ignore requirements", false);
 	// Progress lines shown directly under the "Show:" filter.
 	private final JLabel progressCountLabel = new JLabel(" ");
 	private final JLabel syncCountLabel = new JLabel(" ");
@@ -78,6 +83,7 @@ public class LogAdviserPanel extends PluginPanel
 
 	private RankedActivity currentTopRanked;
 	private boolean accountModeBoxLoading = false;
+	private boolean ignoreReqBoxLoading = false;
 
 	public LogAdviserPanel(
 		AdviserEngine engine,
@@ -86,6 +92,7 @@ public class LogAdviserPanel extends PluginPanel
 		CollectionLogSyncState syncState,
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
+		Consumer<Boolean> onIgnoreRequirementsChanged,
 		IntSupplier upcomingListSize)
 	{
 		// Skip PluginPanel's built-in outer JScrollPane — we manage our own scrolling
@@ -98,6 +105,7 @@ public class LogAdviserPanel extends PluginPanel
 		this.syncState = syncState;
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
+		this.onIgnoreRequirementsChanged = onIgnoreRequirementsChanged;
 		this.upcomingListSize = upcomingListSize;
 
 		setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -190,11 +198,28 @@ public class LogAdviserPanel extends PluginPanel
 		syncCountLabel.setFont(syncCountLabel.getFont().deriveFont(13f));
 		syncCountLabel.setAlignmentX(LEFT_ALIGNMENT);
 
+		ignoreReqBox.setForeground(Color.LIGHT_GRAY);
+		ignoreReqBox.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		ignoreReqBox.setFocusable(false);
+		ignoreReqBox.setToolTipText("Show activities you don't meet the skill/quest "
+			+ "requirements for in the normal ranking instead of the locked section");
+		ignoreReqBox.setAlignmentX(LEFT_ALIGNMENT);
+		ignoreReqBox.addActionListener(e ->
+		{
+			if (ignoreReqBoxLoading || onIgnoreRequirementsChanged == null)
+			{
+				return;
+			}
+			onIgnoreRequirementsChanged.accept(ignoreReqBox.isSelected());
+		});
+
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		row.setAlignmentX(LEFT_ALIGNMENT);
 		p.add(row);
+		p.add(verticalGap(4));
+		p.add(ignoreReqBox);
 		p.add(verticalGap(4));
 		p.add(progressCountLabel);
 		p.add(syncCountLabel);
@@ -315,6 +340,22 @@ public class LogAdviserPanel extends PluginPanel
 		});
 	}
 
+	public void setIgnoreRequirements(boolean ignore)
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			ignoreReqBoxLoading = true;
+			try
+			{
+				ignoreReqBox.setSelected(ignore);
+			}
+			finally
+			{
+				ignoreReqBoxLoading = false;
+			}
+		});
+	}
+
 	private String modeBadgeText(AccountMode mode, boolean detectedIronman)
 	{
 		String detected = detectedIronman ? "Iron" : "Main";
@@ -382,21 +423,56 @@ public class LogAdviserPanel extends PluginPanel
 
 	private void applyRanking(List<RankedActivity> ranking)
 	{
-		if (ranking.isEmpty())
+		if (log.isDebugEnabled())
+		{
+			StringBuilder lockedAt = new StringBuilder();
+			for (int i = 0; i < ranking.size(); i++)
+			{
+				RankedActivity r = ranking.get(i);
+				if (r.isLocked())
+				{
+					lockedAt.append(' ').append('#').append(i)
+						.append("=idx").append(r.getActivity().getIndex());
+				}
+			}
+			log.debug("Panel#{} applyRanking: size={}, lockedPositions=[{}]",
+				System.identityHashCode(this), ranking.size(), lockedAt.toString().trim());
+		}
+
+		// The current-target card should never point at a locked activity — surface the
+		// first one the player can actually do.
+		RankedActivity top = null;
+		for (RankedActivity r : ranking)
+		{
+			if (!r.isLocked())
+			{
+				top = r;
+				break;
+			}
+		}
+
+		if (top == null)
 		{
 			currentTopRanked = null;
-			currentItem.setText("All filtered activities complete");
-			currentActivity.setText(" ");
+			currentItem.setText(ranking.isEmpty()
+				? "All filtered activities complete"
+				: "All available activities complete");
+			currentActivity.setText(ranking.isEmpty() ? " " : "(remaining activities are locked)");
 			currentHint.setText(" ");
 			currentTime.setText(" ");
 			currentIcon.setIcon(null);
 			skipButton.setEnabled(false);
 			listModel.clear();
+			// Still show the locked rows so the player can see what to unlock next.
+			int lockedMax = Math.min(ranking.size(), Math.max(upcomingListSize.getAsInt(), 1));
+			for (int i = 0; i < lockedMax; i++)
+			{
+				listModel.addElement(ranking.get(i));
+			}
 			updateCounts();
 			return;
 		}
 
-		RankedActivity top = ranking.get(0);
 		currentTopRanked = top;
 		ActivityItem display = top.getEasiestItem() != null ? top.getEasiestItem() : top.getFastestItem();
 		String itemName = display != null ? safeName(display.getItemId(), display.getItemName()) : "—";
@@ -414,10 +490,29 @@ public class LogAdviserPanel extends PluginPanel
 		{
 			desired = 30;
 		}
-		int max = Math.min(ranking.size(), desired);
-		for (int i = 0; i < max; i++)
+		// Only unlocked activities count toward the size cap; locked ones are always
+		// appended at the bottom (also capped) so the player can see what to unlock
+		// next instead of them being buried past the cap.
+		int shownUnlocked = 0;
+		List<RankedActivity> lockedRows = new ArrayList<>();
+		for (RankedActivity r : ranking)
 		{
-			listModel.addElement(ranking.get(i));
+			if (r.isLocked())
+			{
+				if (lockedRows.size() < desired)
+				{
+					lockedRows.add(r);
+				}
+			}
+			else if (shownUnlocked < desired)
+			{
+				listModel.addElement(r);
+				shownUnlocked++;
+			}
+		}
+		for (RankedActivity r : lockedRows)
+		{
+			listModel.addElement(r);
 		}
 		updateCounts();
 	}
@@ -468,13 +563,24 @@ public class LogAdviserPanel extends PluginPanel
 				RankedActivity r = (RankedActivity) value;
 				ActivityItem display = r.getEasiestItem() != null ? r.getEasiestItem() : r.getFastestItem();
 				String name = r.getActivity().getName();
-				String time = TargetInfoBox.formatHours(r.getTimeToNextSlotHours());
+				String secondLine;
+				if (r.isLocked())
+				{
+					String req = r.getRequirementLabel() == null ? "" : escape(r.getRequirementLabel());
+					secondLine = "<span style='color:#c08a3e'>LOCKED</span>"
+						+ " - req: " + req;
+				}
+				else
+				{
+					String time = TargetInfoBox.formatHours(r.getTimeToNextSlotHours());
+					secondLine = "<span style='color:#9bc7ff'>~ " + time + "</span>"
+						+ " - " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal();
+				}
 				// Explicit body width so Swing's HTML renderer word-wraps long names
 				// instead of pushing the cell past the viewport (and adding a hscroll).
 				label.setText("<html><body style='width:" + TEXT_WIDTH + "px'>"
 					+ "<b>" + escape(name) + "</b><br>"
-					+ "<span style='color:#9bc7ff'>~ " + time + "</span>"
-					+ " - " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal()
+					+ secondLine
 					+ "</body></html>");
 				label.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 				label.setVerticalAlignment(SwingConstants.TOP);
@@ -495,7 +601,8 @@ public class LogAdviserPanel extends PluginPanel
 			if (!selected)
 			{
 				label.setBackground(ColorScheme.DARK_GRAY_COLOR);
-				label.setForeground(Color.LIGHT_GRAY);
+				boolean locked = value instanceof RankedActivity && ((RankedActivity) value).isLocked();
+				label.setForeground(locked ? new Color(130, 130, 130) : Color.LIGHT_GRAY);
 			}
 			return label;
 		}

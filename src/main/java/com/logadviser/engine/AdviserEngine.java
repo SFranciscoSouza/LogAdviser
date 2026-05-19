@@ -2,8 +2,11 @@ package com.logadviser.engine;
 
 import com.logadviser.data.Activity;
 import com.logadviser.data.ActivityItem;
+import com.logadviser.data.ActivityRequirements;
 import com.logadviser.data.Category;
 import com.logadviser.data.StaticData;
+import net.runelite.api.Quest;
+import net.runelite.api.Skill;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -38,6 +41,8 @@ public class AdviserEngine
 	private final Set<Integer> skipped = new HashSet<>();
 	private EnumSet<Category> categoryFilter = EnumSet.allOf(Category.class);
 	private AccountMode accountMode = AccountMode.AUTO;
+	private boolean ignoreRequirements = false;
+	private PlayerProgress playerProgress = PlayerProgress.EMPTY;
 
 	private final Map<Integer, Double> cachedTime = new HashMap<>();
 	private final Map<Integer, ActivityItem> cachedFastest = new HashMap<>();
@@ -177,6 +182,65 @@ public class AdviserEngine
 		return accountMode;
 	}
 
+	public void setIgnoreRequirements(boolean ignore)
+	{
+		if (ignore == this.ignoreRequirements)
+		{
+			return;
+		}
+		this.ignoreRequirements = ignore;
+		fire();
+	}
+
+	public boolean isIgnoreRequirements()
+	{
+		return ignoreRequirements;
+	}
+
+	/** Pushed from the plugin on the client thread. No-op (no listener fan-out) when
+	 *  the snapshot is unchanged, so a quiet GameTick poll costs nothing downstream. */
+	public void setPlayerProgress(PlayerProgress progress)
+	{
+		PlayerProgress next = progress == null ? PlayerProgress.EMPTY : progress;
+		if (next.equals(this.playerProgress))
+		{
+			return;
+		}
+		this.playerProgress = next;
+		fire();
+	}
+
+	/** null label = requirements met. Otherwise label lists only the unmet parts. */
+	private String unmetRequirementLabel(int activityIndex)
+	{
+		if (ignoreRequirements)
+		{
+			return null;
+		}
+		ActivityRequirements req = data.requirementsFor(activityIndex);
+		if (req.isEmpty())
+		{
+			return null;
+		}
+		List<String> missing = new ArrayList<>();
+		for (Map.Entry<Skill, Integer> e : req.getSkillLevels().entrySet())
+		{
+			if (playerProgress.level(e.getKey()) < e.getValue())
+			{
+				missing.add(e.getValue() + " " + e.getKey().getName());
+			}
+		}
+		List<Quest> quests = req.getQuests();
+		for (int i = 0; i < quests.size(); i++)
+		{
+			if (!playerProgress.isFinished(quests.get(i)))
+			{
+				missing.add(quests.get(i).getName());
+			}
+		}
+		return missing.isEmpty() ? null : String.join(", ", missing);
+	}
+
 	/** Recompute everything and fire — call after the underlying iron/main signal changes
 	 *  (e.g. account-type varbit settled after login). Must be invoked on the client thread. */
 	public void refreshRates()
@@ -218,15 +282,27 @@ public class AdviserEngine
 				continue;
 			}
 			int[] slots = cachedSlotCounts.getOrDefault(a.getIndex(), new int[]{0, 0});
+			String missing = unmetRequirementLabel(a.getIndex());
 			out.add(new RankedActivity(
 				a,
 				t,
 				cachedEasiest.get(a.getIndex()),
 				cachedFastest.get(a.getIndex()),
 				slots[0],
-				slots[1]));
+				slots[1],
+				missing != null,
+				missing));
 		}
-		out.sort((x, y) -> Double.compare(x.getTimeToNextSlotHours(), y.getTimeToNextSlotHours()));
+		// Unlocked first (by time-to-slot), then locked activities demoted to the
+		// bottom — themselves still ordered by time so the closest unlock floats up.
+		out.sort((x, y) ->
+		{
+			if (x.isLocked() != y.isLocked())
+			{
+				return x.isLocked() ? 1 : -1;
+			}
+			return Double.compare(x.getTimeToNextSlotHours(), y.getTimeToNextSlotHours());
+		});
 		return out;
 	}
 

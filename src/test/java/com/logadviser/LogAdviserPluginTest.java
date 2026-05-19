@@ -18,6 +18,18 @@ public class LogAdviserPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
+		// Isolate the dev client to its own RuneLite home BEFORE any RuneLite class
+		// loads (RuneLite.RUNELITE_DIR is derived from user.home at class-init time).
+		// Without this, gradlew run also loads the Plugin Hub copy of "Log Adviser"
+		// from ~/.runelite — two plugins with the same name, and the stale hub panel
+		// is the one you end up looking at.
+		java.io.File devHome = new java.io.File(System.getProperty("user.dir"), "build/runelite-dev");
+		//noinspection ResultOfMethodCallIgnored
+		devHome.mkdirs();
+		System.setProperty("user.home", devHome.getAbsolutePath());
+		System.out.println("[dev] isolated RuneLite home: " + devHome.getAbsolutePath()
+			+ "  (no Plugin Hub plugins load here — only the builtin dev plugin)");
+
 		// Sanity-check static data + engine before launching the dev client.
 		StaticData data = StaticDataLoader.loadAll(new Gson());
 		assert data.getActivities().size() == 251
@@ -27,7 +39,11 @@ public class LogAdviserPluginTest
 		assert data.getSlots().size() == 1700
 			: "expected 1700 slot rows, got " + data.getSlots().size();
 
+		// This is a data/ranking-math sanity check, not a requirements test. With no
+		// player progress everything gated would be locked, so ignore requirements
+		// here to keep the pre-feature expectation (gryphons fastest on a fresh log).
 		AdviserEngine engineMain = new AdviserEngine(data, () -> false);
+		engineMain.setIgnoreRequirements(true);
 		engineMain.setAccountMode(AccountMode.MAIN);
 		List<RankedActivity> rankedMain = engineMain.getRanking();
 		assert !rankedMain.isEmpty() : "main ranking is empty";
@@ -37,6 +53,7 @@ public class LogAdviserPluginTest
 			: "expected gryphons at the top, got: " + topMain;
 
 		AdviserEngine engineIron = new AdviserEngine(data, () -> true);
+		engineIron.setIgnoreRequirements(true);
 		engineIron.setAccountMode(AccountMode.IRONMAN);
 		List<RankedActivity> rankedIron = engineIron.getRanking();
 		assert !rankedIron.isEmpty() : "iron ranking is empty";

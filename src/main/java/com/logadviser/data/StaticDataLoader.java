@@ -11,10 +11,13 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Quest;
+import net.runelite.api.Skill;
 
 @Slf4j
 public final class StaticDataLoader
@@ -31,13 +34,83 @@ public final class StaticDataLoader
 		List<ActivityItem> items = loadActivityItems(gson);
 		List<LogSlot> slots = loadSlots(gson);
 		Map<Integer, ActivityNpcInfo> npcInfo = loadNpcInfo(gson);
-		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps",
-			activities.size(), items.size(), slots.size(), npcInfo.size());
+		Map<Integer, ActivityRequirements> requirements = loadRequirements(gson);
+		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps, {} requirement maps",
+			activities.size(), items.size(), slots.size(), npcInfo.size(), requirements.size());
 		return new StaticData(
 			Collections.unmodifiableList(activities),
 			Collections.unmodifiableList(items),
 			Collections.unmodifiableList(slots),
-			Collections.unmodifiableMap(npcInfo));
+			Collections.unmodifiableMap(npcInfo),
+			Collections.unmodifiableMap(requirements));
+	}
+
+	private static Map<Integer, ActivityRequirements> loadRequirements(Gson gson) throws IOException
+	{
+		try (InputStreamReader r = open("activity_requirements.json"))
+		{
+			JsonObject root = gson.fromJson(r, JsonObject.class);
+			Map<Integer, ActivityRequirements> out = new HashMap<>();
+			for (Map.Entry<String, JsonElement> e : root.entrySet())
+			{
+				if (e.getKey().startsWith("_"))
+				{
+					continue;
+				}
+				int idx;
+				try
+				{
+					idx = Integer.parseInt(e.getKey());
+				}
+				catch (NumberFormatException nfe)
+				{
+					continue;
+				}
+				JsonObject obj = e.getValue().getAsJsonObject();
+
+				Map<Skill, Integer> skills = new EnumMap<>(Skill.class);
+				if (obj.has("skills"))
+				{
+					for (Map.Entry<String, JsonElement> se : obj.getAsJsonObject("skills").entrySet())
+					{
+						Skill skill;
+						try
+						{
+							skill = Skill.valueOf(se.getKey().trim().toUpperCase());
+						}
+						catch (IllegalArgumentException iae)
+						{
+							log.warn("Unknown skill requirement '{}' for activity {} — ignoring",
+								se.getKey(), idx);
+							continue;
+						}
+						skills.put(skill, se.getValue().getAsInt());
+					}
+				}
+
+				List<Quest> quests = new ArrayList<>();
+				List<String> rawQuests = new ArrayList<>();
+				if (obj.has("quests"))
+				{
+					for (JsonElement qe : obj.getAsJsonArray("quests"))
+					{
+						String token = qe.getAsString();
+						rawQuests.add(token);
+						Quest q = QuestResolver.resolve(token);
+						if (q != null)
+						{
+							quests.add(q);
+						}
+					}
+				}
+
+				out.put(idx, new ActivityRequirements(
+					Collections.unmodifiableMap(skills),
+					Collections.unmodifiableList(quests),
+					Collections.unmodifiableList(rawQuests)));
+			}
+			return out;
+		}
 	}
 
 	private static List<Activity> loadActivities(Gson gson) throws IOException

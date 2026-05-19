@@ -12,6 +12,7 @@ public class StaticData
 	List<ActivityItem> activityItems;
 	List<LogSlot> slots;
 	Map<Integer, ActivityNpcInfo> npcInfoByActivity;
+	Map<Integer, ActivityRequirements> requirementsByActivity;
 
 	public Map<Integer, Activity> activitiesByIndex()
 	{
@@ -64,5 +65,11 @@ public class StaticData
 	{
 		ActivityNpcInfo info = npcInfoByActivity.get(activityIndex);
 		return info != null ? info : ActivityNpcInfo.empty();
+	}
+
+	public ActivityRequirements requirementsFor(int activityIndex)
+	{
+		ActivityRequirements req = requirementsByActivity.get(activityIndex);
+		return req != null ? req : ActivityRequirements.empty();
 	}
 }
