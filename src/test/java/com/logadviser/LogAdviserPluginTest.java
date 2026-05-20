@@ -34,10 +34,10 @@ public class LogAdviserPluginTest
 		StaticData data = StaticDataLoader.loadAll(new Gson());
 		assert data.getActivities().size() == 251
 			: "expected 251 activities, got " + data.getActivities().size();
-		assert data.getActivityItems().size() == 2498
-			: "expected 2498 activity_map rows, got " + data.getActivityItems().size();
-		assert data.getSlots().size() == 1700
-			: "expected 1700 slot rows, got " + data.getSlots().size();
+		assert data.getActivityItems().size() == 2499
+			: "expected 2499 activity_map rows, got " + data.getActivityItems().size();
+		assert data.getSlots().size() == 1701
+			: "expected 1701 slot rows, got " + data.getSlots().size();
 
 		// This is a data/ranking-math sanity check, not a requirements test. With no
 		// player progress everything gated would be locked, so ignore requirements

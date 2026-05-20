@@ -19190,6 +19190,16 @@
     "dropRateAttempts": 1.0
   },
   {
+    "activityIndex": 130,
+    "itemId": 33423,
+    "itemName": "Bosun's workbench schematic",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": true,
+    "independent": true,
+    "dropRateAttempts": 2.0
+  },
+  {
     "activityIndex": 131,
     "itemId": 24862,
     "itemName": "Karamjan monkey",
