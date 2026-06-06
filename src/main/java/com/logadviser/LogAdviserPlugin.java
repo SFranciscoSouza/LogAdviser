@@ -231,6 +231,10 @@ public class LogAdviserPlugin extends Plugin
 		{
 			clientToolbar.removeNavigation(navButton);
 		}
+		if (panel != null)
+		{
+			panel.shutdown();
+		}
 	}
 
 	@Provides

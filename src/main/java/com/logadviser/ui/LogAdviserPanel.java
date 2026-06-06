@@ -17,10 +17,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.swing.BorderFactory;
@@ -36,8 +49,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.util.AsyncBufferedImage;
 import net.runelite.client.game.ItemManager;
@@ -95,6 +110,19 @@ public class LogAdviserPanel extends PluginPanel
 	private boolean accountModeBoxLoading = false;
 	private boolean ignoreReqBoxLoading = false;
 
+	// Hover preview of an activity's log slots. The popup data is snapshotted on the EDT in
+	// applyRanking so the hover callbacks never read the engine off the client thread.
+	private final ActivityLogPopup logPopup;
+	private final Map<Integer, List<ActivityLogPopup.SlotEntry>> slotSnapshot = new HashMap<>();
+	private final Timer hideTimer;
+	// The current-target card, kept so the hide timer can test its on-screen bounds.
+	private JPanel currentCard;
+	// The list's scroll pane, kept so the popup anchors to the visible viewport region.
+	private JScrollPane listScroll;
+	// Tracks what the popup is currently showing so re-entering the same row doesn't flicker.
+	private int hoveredIndex = -1;
+	private RankedActivity hoveredCard;
+
 	public LogAdviserPanel(
 		AdviserEngine engine,
 		ItemManager itemManager,
@@ -146,9 +174,187 @@ public class LogAdviserPanel extends PluginPanel
 		bottom.add(buildFooter());
 		add(bottom, BorderLayout.SOUTH);
 
+		logPopup = new ActivityLogPopup(itemManager);
+		hideTimer = new Timer(200, e -> pollHide());
+		hideTimer.setRepeats(true);
+		installHover();
+
 		engine.addListener(this::onRankingChanged);
 		onRankingChanged(engine.getRanking());
 		updateCounts();
+	}
+
+	/** Wires hover preview onto the upcoming list and the current-target card. Motion-only:
+	 *  never touches selection, so the click-based skip flow is unaffected. */
+	private void installHover()
+	{
+		list.addMouseMotionListener(new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseMoved(MouseEvent e)
+			{
+				int idx = list.locationToIndex(e.getPoint());
+				if (idx < 0)
+				{
+					return;
+				}
+				Rectangle cell = list.getCellBounds(idx, idx);
+				if (cell == null || !cell.contains(e.getPoint()))
+				{
+					return;
+				}
+				if (idx == hoveredIndex && hoveredCard == null && logPopup.isShowing())
+				{
+					return;
+				}
+				hoveredIndex = idx;
+				hoveredCard = null;
+				showPopupFor(listModel.getElementAt(idx));
+			}
+		});
+
+		// A container's motion listener doesn't fire over opaque children, so add the same
+		// adapter to the card and each of its labels.
+		MouseMotionListener cardHover = new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseMoved(MouseEvent e)
+			{
+				if (currentTopRanked == null)
+				{
+					return;
+				}
+				if (hoveredCard == currentTopRanked && logPopup.isShowing())
+				{
+					return;
+				}
+				hoveredIndex = -1;
+				hoveredCard = currentTopRanked;
+				showPopupFor(currentTopRanked);
+			}
+		};
+		if (currentCard != null)
+		{
+			currentCard.addMouseMotionListener(cardHover);
+		}
+		for (JLabel l : new JLabel[]{currentIcon, currentItem, currentActivity, currentHint, currentTime})
+		{
+			l.addMouseMotionListener(cardHover);
+		}
+	}
+
+	private void showPopupFor(RankedActivity r)
+	{
+		if (r == null)
+		{
+			return;
+		}
+		int idx = r.getActivity().getIndex();
+		List<ActivityLogPopup.SlotEntry> entries =
+			slotSnapshot.getOrDefault(idx, Collections.emptyList());
+		logPopup.setContent(r.getActivity().getName(), entries);
+
+		JViewport vp = listScroll == null ? null : listScroll.getViewport();
+		if (vp == null || !vp.isShowing())
+		{
+			return;
+		}
+		// Anchor to a CONSTANT position derived only from the visible list region: flush to the
+		// left of the list and vertically centered. Independent of the row/cursor/scroll offset,
+		// so the box never drifts to the top when scrolling, and is always to the left.
+		Point vpLoc = vp.getLocationOnScreen();
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = Math.max(0, vpLoc.x - ActivityLogPopup.FIXED_W - 8);
+		int y = vpLoc.y + (vp.getHeight() - ActivityLogPopup.FIXED_H) / 2;
+		y = Math.max(0, Math.min(y, screen.height - ActivityLogPopup.FIXED_H));
+		logPopup.showAt(x, y);
+		if (!hideTimer.isRunning())
+		{
+			hideTimer.start();
+		}
+	}
+
+	/** Hides the popup once the pointer leaves the list, the card, and the popup itself — a
+	 *  poll rather than mouseExited so moving onto the popup to scroll doesn't dismiss it. */
+	private void pollHide()
+	{
+		if (!logPopup.isShowing())
+		{
+			hideTimer.stop();
+			return;
+		}
+		// Deliberately NOT keyed on window focus: the popup must stay put even when the client
+		// isn't the active window, otherwise it flickers (hidden each tick, re-shown each move)
+		// while the game runs in the background. Visibility depends only on the pointer location.
+		PointerInfo pi = MouseInfo.getPointerInfo();
+		if (pi == null)
+		{
+			return;
+		}
+		Point p = pi.getLocation();
+		JViewport vp = listScroll == null ? null : listScroll.getViewport();
+		boolean overList = vp != null && vp.isShowing()
+			&& new Rectangle(vp.getLocationOnScreen(), vp.getSize()).contains(p);
+		boolean overCard = currentCard != null && currentCard.isShowing()
+			&& new Rectangle(currentCard.getLocationOnScreen(), currentCard.getSize()).contains(p);
+		Rectangle pop = logPopup.getBoundsOnScreen();
+		boolean overPopup = pop != null && pop.contains(p);
+		if (!overList && !overCard && !overPopup)
+		{
+			hidePopup();
+		}
+	}
+
+	private void hidePopup()
+	{
+		logPopup.hide();
+		hideTimer.stop();
+		hoveredIndex = -1;
+		hoveredCard = null;
+	}
+
+	/** Builds the missing-first, then-collected slot list for one activity. EDT only. */
+	private List<ActivityLogPopup.SlotEntry> buildSlotEntries(int activityIndex)
+	{
+		LinkedHashSet<Integer> seen = new LinkedHashSet<>();
+		List<ActivityLogPopup.SlotEntry> missing = new ArrayList<>();
+		List<ActivityLogPopup.SlotEntry> done = new ArrayList<>();
+		for (ActivityItem it : engine.visibleItemsForActivity(activityIndex))
+		{
+			if (!seen.add(it.getItemId()))
+			{
+				continue;
+			}
+			boolean collected = engine.isObtained(it.getItemId());
+			ActivityLogPopup.SlotEntry entry = new ActivityLogPopup.SlotEntry(
+				it.getItemId(), safeName(it.getItemId(), it.getItemName()), collected,
+				it.getSlotDifficulty(), it.getDropRateAttempts());
+			(collected ? done : missing).add(entry);
+		}
+		// Within each group, easiest first: lower slotDifficulty, tie-broken by fewer attempts —
+		// mirrors AdviserEngine.recomputeActivity's "easiest" pick. Missing group precedes done.
+		Comparator<ActivityLogPopup.SlotEntry> easiest = Comparator
+			.comparingInt(ActivityLogPopup.SlotEntry::getSlotDifficulty)
+			.thenComparingDouble(ActivityLogPopup.SlotEntry::getDropRateAttempts);
+		missing.sort(easiest);
+		done.sort(easiest);
+		List<ActivityLogPopup.SlotEntry> out = new ArrayList<>(missing.size() + done.size());
+		out.addAll(missing);
+		out.addAll(done);
+		return out;
+	}
+
+	/** Stops the hover timer and disposes the popup window. Call from the plugin's shutDown. */
+	public void shutdown()
+	{
+		if (hideTimer != null)
+		{
+			hideTimer.stop();
+		}
+		if (logPopup != null)
+		{
+			logPopup.dispose();
+		}
 	}
 
 	private JPanel buildHeader()
@@ -292,6 +498,7 @@ public class LogAdviserPanel extends PluginPanel
 			}
 		});
 		card.add(skipButton, BorderLayout.SOUTH);
+		currentCard = card;
 		return card;
 	}
 
@@ -308,6 +515,8 @@ public class LogAdviserPanel extends PluginPanel
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		// Kept so the hover popup can anchor to (and hit-test against) the visible list region.
+		listScroll = scroll;
 		return scroll;
 	}
 
@@ -502,6 +711,22 @@ public class LogAdviserPanel extends PluginPanel
 		}
 
 		lastRanking = ranking;
+
+		// Snapshot each activity's log slots on the EDT so the hover preview never reads the
+		// engine off the client thread. Rebuilt every ranking change so it stays current.
+		slotSnapshot.clear();
+		for (RankedActivity r : ranking)
+		{
+			int idx = r.getActivity().getIndex();
+			slotSnapshot.put(idx, buildSlotEntries(idx));
+		}
+		// Skipped activities are absent from the normal ranking but still hoverable in the
+		// skip-list view, so snapshot them too.
+		for (RankedActivity r : engine.getSkippedRanking())
+		{
+			int idx = r.getActivity().getIndex();
+			slotSnapshot.computeIfAbsent(idx, this::buildSlotEntries);
+		}
 
 		// The current-target card should never point at a locked activity — surface the
 		// first one the player can actually do.

@@ -110,6 +110,22 @@ public class AdviserEngine
 		return Collections.unmodifiableSet(obtained);
 	}
 
+	/**
+	 * The visible (iron-aware) item list for one activity, mirroring exactly what the
+	 * ranking evaluated — so a hover preview shows the same slots as the ranked counts.
+	 * Empty for unknown indices or activities whose every slot is iron-auto-completed.
+	 * May contain duplicate itemIds; callers that want unique slots must dedup.
+	 */
+	public List<ActivityItem> visibleItemsForActivity(int activityIndex)
+	{
+		List<ActivityItem> items = itemsByActivity.get(activityIndex);
+		if (items == null || items.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+		return Collections.unmodifiableList(visibleItems(items));
+	}
+
 	public void markObtained(int itemId)
 	{
 		itemId = data.canonicalItemId(itemId);
