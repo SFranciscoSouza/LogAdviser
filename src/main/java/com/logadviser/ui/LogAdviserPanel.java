@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.MouseInfo;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.swing.BorderFactory;
@@ -72,6 +74,8 @@ public class LogAdviserPanel extends PluginPanel
 	private final Consumer<AccountMode> onAccountModeChanged;
 	private final Consumer<Boolean> onIgnoreRequirementsChanged;
 	private final IntSupplier upcomingListSize;
+	// When this supplies true, the hover preview popup is suppressed (config "Disable hover preview").
+	private final BooleanSupplier hoverDisabled;
 
 	// Header
 	private final JLabel playerLabel = new JLabel("(not logged in)");
@@ -131,7 +135,8 @@ public class LogAdviserPanel extends PluginPanel
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
 		Consumer<Boolean> onIgnoreRequirementsChanged,
-		IntSupplier upcomingListSize)
+		IntSupplier upcomingListSize,
+		BooleanSupplier hoverDisabled)
 	{
 		// Skip PluginPanel's built-in outer JScrollPane — we manage our own scrolling
 		// inside the upcoming-list region so the Reset button can stay pinned to the
@@ -145,6 +150,7 @@ public class LogAdviserPanel extends PluginPanel
 		this.onAccountModeChanged = onAccountModeChanged;
 		this.onIgnoreRequirementsChanged = onIgnoreRequirementsChanged;
 		this.upcomingListSize = upcomingListSize;
+		this.hoverDisabled = hoverDisabled;
 
 		setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 		setLayout(new BorderLayout());
@@ -245,7 +251,7 @@ public class LogAdviserPanel extends PluginPanel
 
 	private void showPopupFor(RankedActivity r)
 	{
-		if (r == null)
+		if (r == null || (hoverDisabled != null && hoverDisabled.getAsBoolean()))
 		{
 			return;
 		}
@@ -263,10 +269,17 @@ public class LogAdviserPanel extends PluginPanel
 		// left of the list and vertically centered. Independent of the row/cursor/scroll offset,
 		// so the box never drifts to the top when scrolling, and is always to the left.
 		Point vpLoc = vp.getLocationOnScreen();
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = Math.max(0, vpLoc.x - ActivityLogPopup.FIXED_W - 8);
+		// Clamp within the monitor RuneLite is actually on (its bounds can have a negative origin
+		// for a left-of-primary monitor) — not the primary screen — so the popup never jumps to the
+		// other monitor on a multi-display setup.
+		GraphicsConfiguration gc = vp.getGraphicsConfiguration();
+		Rectangle b = gc != null
+			? gc.getBounds()
+			: new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+		int x = vpLoc.x - ActivityLogPopup.FIXED_W - 8;
+		x = Math.max(b.x, Math.min(x, b.x + b.width - ActivityLogPopup.FIXED_W));
 		int y = vpLoc.y + (vp.getHeight() - ActivityLogPopup.FIXED_H) / 2;
-		y = Math.max(0, Math.min(y, screen.height - ActivityLogPopup.FIXED_H));
+		y = Math.max(b.y, Math.min(y, b.y + b.height - ActivityLogPopup.FIXED_H));
 		logPopup.showAt(x, y);
 		if (!hideTimer.isRunning())
 		{
@@ -281,6 +294,11 @@ public class LogAdviserPanel extends PluginPanel
 		if (!logPopup.isShowing())
 		{
 			hideTimer.stop();
+			return;
+		}
+		if (hoverDisabled != null && hoverDisabled.getAsBoolean())
+		{
+			hidePopup();
 			return;
 		}
 		// Deliberately NOT keyed on window focus: the popup must stay put even when the client
@@ -342,6 +360,19 @@ public class LogAdviserPanel extends PluginPanel
 		out.addAll(missing);
 		out.addAll(done);
 		return out;
+	}
+
+	/** Called when the "Disable hover preview" config toggle changes; hides any popup that's
+	 *  currently showing so the change takes effect immediately. */
+	public void onHoverDisabledChanged()
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			if (hoverDisabled != null && hoverDisabled.getAsBoolean() && logPopup.isShowing())
+			{
+				hidePopup();
+			}
+		});
 	}
 
 	/** Stops the hover timer and disposes the popup window. Call from the plugin's shutDown. */
@@ -515,6 +546,11 @@ public class LogAdviserPanel extends PluginPanel
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		// Repaint the whole viewport on every scroll instead of blit-copying. The list's cells are
+		// variable-height with async-loading item icons; under the default BLIT_SCROLL_MODE a
+		// scrollbar drag copies stale/blank pixels for rows whose icons loaded off-screen (the wheel
+		// works only because it scrolls in small contiguous steps). SIMPLE mode renders drag the same.
+		scroll.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		// Kept so the hover popup can anchor to (and hit-test against) the visible list region.
 		listScroll = scroll;
 		return scroll;
@@ -784,6 +820,7 @@ public class LogAdviserPanel extends PluginPanel
 				listModel.addElement(r);
 			}
 			registerIconRefresh();
+			forceListRelayout();
 			return;
 		}
 		int desired = upcomingListSize.getAsInt();
@@ -816,6 +853,20 @@ public class LogAdviserPanel extends PluginPanel
 			listModel.addElement(r);
 		}
 		registerIconRefresh();
+		forceListRelayout();
+	}
+
+	/** Forces the JList to recompute its variable cell heights after a model rebuild. The list
+	 *  uses a variable-height HTML renderer (no fixed cell height), and BasicListUI can leave some
+	 *  rows with a stale/zero cached height when the model is rebuilt while the panel isn't showing
+	 *  — those rows stay blank until a click recomputes the layout. Toggling fixedCellHeight fires
+	 *  the property change that invalidates that cache, so every row paints immediately. */
+	private void forceListRelayout()
+	{
+		list.setFixedCellHeight(10);
+		list.setFixedCellHeight(-1);
+		list.revalidate();
+		list.repaint();
 	}
 
 	/** Repaints the list once each row's item icon finishes loading. The cell

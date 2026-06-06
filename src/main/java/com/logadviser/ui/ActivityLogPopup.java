@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import lombok.Value;
@@ -75,7 +76,7 @@ final class ActivityLogPopup
 		header.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 		root.add(header, BorderLayout.NORTH);
 
-		rows = new JPanel();
+		rows = new ScrollableContent();
 		rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
 		rows.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 
@@ -146,6 +147,9 @@ final class ActivityLogPopup
 
 		JLabel name = new JLabel(s.isCollected() ? s.getName() + " ✔" : s.getName());
 		name.setForeground(s.isCollected() ? COLLECTED_COLOR : Color.WHITE);
+		// The row tracks the viewport width, so a long name is clipped to make room for the rate;
+		// the full name stays available on hover.
+		name.setToolTipText(s.getName());
 		row.add(name, BorderLayout.CENTER);
 
 		String rate = formatRate(s.getDropRateAttempts());
@@ -222,5 +226,44 @@ final class ActivityLogPopup
 	private static String escape(String s)
 	{
 		return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;");
+	}
+
+	/**
+	 * Rows container that always matches the scroll pane's viewport width (never its own, wider
+	 * content width). When the vertical scrollbar appears the viewport narrows and the rows reflow,
+	 * so a long item name is clipped instead of pushing the right-aligned drop rate out of view.
+	 * Height is left free so the panel can grow taller than the viewport and scroll vertically.
+	 */
+	private static final class ScrollableContent extends JPanel implements Scrollable
+	{
+		@Override
+		public Dimension getPreferredScrollableViewportSize()
+		{
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction)
+		{
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction)
+		{
+			return orientation == SwingConstants.VERTICAL ? visibleRect.height : visibleRect.width;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight()
+		{
+			return false;
+		}
 	}
 }

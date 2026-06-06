@@ -15,7 +15,6 @@ import com.logadviser.ui.CollectionLogSyncOverlay;
 import com.logadviser.ui.LogAdviserPanel;
 import com.logadviser.ui.TargetInfoBox;
 import com.logadviser.ui.TargetTextOverlay;
-import com.logadviser.ui.TargetWorldOverlay;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,7 +81,6 @@ public class LogAdviserPlugin extends Plugin
 	private LogAdviserPanel panel;
 	private NavigationButton navButton;
 	private TargetInfoBox currentInfoBox;
-	private TargetWorldOverlay worldOverlay;
 	private TargetTextOverlay textOverlay;
 	// Cached account-type flag. client.getAccountType() reads a varbit and asserts
 	// it's invoked on the client thread, so we never call it from startUp/EDT — only
@@ -142,12 +140,10 @@ public class LogAdviserPlugin extends Plugin
 			staticData,
 			this::onAccountModeSelected,
 			this::onIgnoreRequirementsSelected,
-			config::upcomingListSize);
+			config::upcomingListSize,
+			config::disableHover);
 
 		engine.addListener(this::onRankingChanged);
-
-		worldOverlay = new TargetWorldOverlay(client, engine, staticData, config);
-		overlayManager.add(worldOverlay);
 
 		textOverlay = new TargetTextOverlay(engine);
 		overlayManager.add(textOverlay);
@@ -166,7 +162,6 @@ public class LogAdviserPlugin extends Plugin
 
 		eventBus.register(tracker);
 		eventBus.register(syncState);
-		eventBus.register(worldOverlay);
 
 		syncState.addChangeListener(panel::onSyncStateChanged);
 		// A page sync with no new item doesn't fire the engine, so re-run the infobox /
@@ -211,11 +206,6 @@ public class LogAdviserPlugin extends Plugin
 		{
 			overlayManager.remove(syncOverlay);
 			syncOverlay = null;
-		}
-		if (worldOverlay != null)
-		{
-			eventBus.unregister(worldOverlay);
-			overlayManager.remove(worldOverlay);
 		}
 		if (textOverlay != null)
 		{
@@ -304,6 +294,11 @@ public class LogAdviserPlugin extends Plugin
 			// Push the new size into the panel by re-rebuilding the list from the
 			// most recent ranking — IntSupplier picks up the new value on read.
 			panel.onRankingChanged(engine.getRanking());
+		}
+		else if ("disableHover".equals(key) && panel != null)
+		{
+			// Hide any popup that's currently showing the moment the toggle flips on.
+			panel.onHoverDisabledChanged();
 		}
 	}
 
