@@ -73,6 +73,10 @@
   "132": { "skills": { "MINING": 30 }, "quests": [] },
   "133": { "skills": { "FIREMAKING": 35 }, "quests": [] },
   "139": { "skills": { "SAILING": 87 }, "quests": [] },
+  "140": { "skills": { "SAILING": 80 }, "quests": [] },
+  "142": { "skills": { "SAILING": 76 }, "quests": [] },
+  "144": { "skills": { "SLAYER": 75 }, "quests": [] },
+  "145": { "skills": { "SAILING": 80 }, "quests": [] },
   "146": { "skills": { "SAILING": 15 }, "quests": [] },
   "147": { "skills": { "SAILING": 26 }, "quests": [] },
   "148": { "skills": { "SAILING": 35 }, "quests": [] },
@@ -146,5 +150,8 @@
   "245": { "skills": {}, "quests": ["Song of the Elves"] },
   "246": { "skills": {}, "quests": ["Song of the Elves"] },
   "247": { "skills": {}, "quests": ["Bone Voyage"] },
-  "251": { "skills": {}, "quests": ["The Ides of Milk"] }
+  "251": { "skills": {}, "quests": ["The Ides of Milk"] },
+  "252": { "skills": { "SAILING": 80 }, "quests": [] },
+  "253": { "skills": { "SAILING": 80 }, "quests": [] },
+  "254": { "skills": { "SLAYER": 62, "SAILING": 60 }, "quests": [] }
 }

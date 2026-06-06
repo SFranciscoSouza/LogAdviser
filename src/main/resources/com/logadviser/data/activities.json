@@ -1105,7 +1105,7 @@
   },
   {
     "index": 139,
-    "name": "Killing frost dragons",
+    "name": "Killing frost dragons (on bounty task)",
     "completionsPerHrMain": 150.0,
     "completionsPerHrIron": 150.0,
     "extraTimeFirst": 0.0,
@@ -1113,7 +1113,7 @@
   },
   {
     "index": 140,
-    "name": "Killing orcas (boat combat)",
+    "name": "Killing orcas (boat combat, on bounty task)",
     "completionsPerHrMain": 90.0,
     "completionsPerHrIron": 60.0,
     "extraTimeFirst": 0.0,
@@ -1129,7 +1129,7 @@
   },
   {
     "index": 142,
-    "name": "Killing narwhal (boat combat)",
+    "name": "Killing narwhal (boat combat, on bounty task)",
     "completionsPerHrMain": 165.0,
     "completionsPerHrIron": 110.0,
     "extraTimeFirst": 0.0,
@@ -1145,7 +1145,7 @@
   },
   {
     "index": 144,
-    "name": "Killing great white shark (boat combat)",
+    "name": "Killing great white shark (boat combat, on bounty task)",
     "completionsPerHrMain": 180.0,
     "completionsPerHrIron": 120.0,
     "extraTimeFirst": 0.0,
@@ -1153,9 +1153,9 @@
   },
   {
     "index": 145,
-    "name": "Killing vampyre kraken (boat combat)",
-    "completionsPerHrMain": 110.0,
-    "completionsPerHrIron": 54.0,
+    "name": "Killing vampyre kraken (boat combat, on bounty task)",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 80.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
   },
@@ -2004,6 +2004,30 @@
     "name": "Killing Brutus",
     "completionsPerHrMain": 250.0,
     "completionsPerHrIron": 250.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 252,
+    "name": "Killing armoured kraken (boat combat, on bounty task)",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 253,
+    "name": "Killing veiled kraken (boat combat, on bounty task)",
+    "completionsPerHrMain": 100.0,
+    "completionsPerHrIron": 80.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 254,
+    "name": "Killing lava strykewyrm (on bounty task)",
+    "completionsPerHrMain": 150.0,
+    "completionsPerHrIron": 150.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
   }

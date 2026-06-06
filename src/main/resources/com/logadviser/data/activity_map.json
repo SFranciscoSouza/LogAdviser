@@ -20277,7 +20277,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 200.0
+    "dropRateAttempts": 40.0
   },
   {
     "activityIndex": 139,
@@ -20347,7 +20347,27 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 66.0
+    "dropRateAttempts": 35.0
+  },
+  {
+    "activityIndex": 140,
+    "itemId": 31996,
+    "itemName": "Dragon metal sheet",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 50.0
+  },
+  {
+    "activityIndex": 140,
+    "itemId": 31406,
+    "itemName": "Dragon nails",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 75.0
   },
   {
     "activityIndex": 140,
@@ -20387,7 +20407,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 120.0
+    "dropRateAttempts": 75.0
   },
   {
     "activityIndex": 142,
@@ -20437,7 +20457,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 1535.0
+    "dropRateAttempts": 60.0
   },
   {
     "activityIndex": 144,
@@ -20457,7 +20477,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 1023.0
+    "dropRateAttempts": 250.0
   },
   {
     "activityIndex": 144,
@@ -20497,7 +20517,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 426.0
+    "dropRateAttempts": 40.0
   },
   {
     "activityIndex": 145,
@@ -20517,7 +20537,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 512.0
+    "dropRateAttempts": 175.0
   },
   {
     "activityIndex": 145,
@@ -24988,5 +25008,85 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 1000.0
+  },
+  {
+    "activityIndex": 252,
+    "itemId": 31996,
+    "itemName": "Dragon metal sheet",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 45.0
+  },
+  {
+    "activityIndex": 252,
+    "itemId": 31949,
+    "itemName": "Bottled storm",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 250.0
+  },
+  {
+    "activityIndex": 252,
+    "itemId": 32093,
+    "itemName": "Inky paint",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 2000.0
+  },
+  {
+    "activityIndex": 253,
+    "itemId": 31996,
+    "itemName": "Dragon metal sheet",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 45.0
+  },
+  {
+    "activityIndex": 253,
+    "itemId": 32115,
+    "itemName": "Dragon cannon barrel",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 250.0
+  },
+  {
+    "activityIndex": 253,
+    "itemId": 31916,
+    "itemName": "Dragon cannonball",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 90.67
+  },
+  {
+    "activityIndex": 253,
+    "itemId": 32093,
+    "itemName": "Inky paint",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1900.0
+  },
+  {
+    "activityIndex": 254,
+    "itemId": 31996,
+    "itemName": "Dragon metal sheet",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 45.0
   }
 ]
