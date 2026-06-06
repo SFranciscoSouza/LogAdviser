@@ -351,9 +351,10 @@ public class LogAdviserPanel extends PluginPanel
 			+ "click again to return to the list");
 		viewSkipListButton.addActionListener(e ->
 		{
-			// JToggleButton's selected state is the affordance for "viewing the
-			// skip list", so its own label stays constant.
 			showingSkipList = viewSkipListButton.isSelected();
+			// Relabel the toggle so it doubles as the "go back" affordance while
+			// the skip list is showing.
+			viewSkipListButton.setText(showingSkipList ? "Return" : "Skipped");
 			skipSelectedButton.setText(showingSkipList ? "Unskip" : "Skip");
 			list.clearSelection();
 			refreshListView();
@@ -557,6 +558,7 @@ public class LogAdviserPanel extends PluginPanel
 			{
 				listModel.addElement(r);
 			}
+			registerIconRefresh();
 			return;
 		}
 		int desired = upcomingListSize.getAsInt();
@@ -587,6 +589,34 @@ public class LogAdviserPanel extends PluginPanel
 		for (RankedActivity r : lockedRows)
 		{
 			listModel.addElement(r);
+		}
+		registerIconRefresh();
+	}
+
+	/** Repaints the list once each row's item icon finishes loading. The cell
+	 *  renderer reuses one shared label and can't refresh itself, so a single
+	 *  list-wide repaint per load lets the renderer pick up the now-cached image.
+	 *  Runs once per refresh (not per paint) to avoid a repaint loop. */
+	private void registerIconRefresh()
+	{
+		if (itemManager == null)
+		{
+			return;
+		}
+		for (int i = 0; i < listModel.size(); i++)
+		{
+			RankedActivity r = listModel.get(i);
+			ActivityItem display = r.getEasiestItem() != null
+				? r.getEasiestItem() : r.getFastestItem();
+			if (display == null)
+			{
+				continue;
+			}
+			AsyncBufferedImage img = itemManager.getImage(display.getItemId());
+			if (img != null)
+			{
+				img.onLoaded(() -> SwingUtilities.invokeLater(list::repaint));
+			}
 		}
 	}
 
