@@ -47,7 +47,7 @@ public interface LogAdviserConfig extends Config
 	)
 	default DisplayMode displayMode()
 	{
-		return DisplayMode.OVERLAY_PANEL;
+		return DisplayMode.INFOBOX;
 	}
 
 	@ConfigItem(
