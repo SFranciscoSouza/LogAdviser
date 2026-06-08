@@ -9,9 +9,8 @@ import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.PlayerProgress;
 import com.logadviser.engine.RankedActivity;
-import com.logadviser.sync.CollectionLogSyncState;
+import com.logadviser.sync.CollectionLogSyncButton;
 import com.logadviser.sync.CollectionLogTracker;
-import com.logadviser.ui.CollectionLogSyncOverlay;
 import com.logadviser.ui.LogAdviserPanel;
 import com.logadviser.ui.TargetInfoBox;
 import com.logadviser.ui.TargetTextOverlay;
@@ -24,6 +23,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.vars.AccountType;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Quest;
@@ -76,8 +76,6 @@ public class LogAdviserPlugin extends Plugin
 	private StaticData staticData;
 	private AdviserEngine engine;
 	private CollectionLogTracker tracker;
-	private CollectionLogSyncState syncState;
-	private CollectionLogSyncOverlay syncOverlay;
 	private LogAdviserPanel panel;
 	private NavigationButton navButton;
 	private TargetInfoBox currentInfoBox;
@@ -86,6 +84,9 @@ public class LogAdviserPlugin extends Plugin
 	// it's invoked on the client thread, so we never call it from startUp/EDT — only
 	// from @Subscribe events (already on the client thread) and from clientThread.invokeLater.
 	private volatile boolean detectedIronman = false;
+	// One-shot guard so the "collection log not synced" chat warning fires at most once
+	// per login, not on every sync-status re-evaluation.
+	private volatile boolean clogWarnedThisLogin = false;
 	// Union of every skill/quest referenced by activity_requirements.json — so the
 	// per-tick progress poll only touches what actually gates an activity.
 	private Set<Skill> reqSkills = new HashSet<>();
@@ -124,19 +125,18 @@ public class LogAdviserPlugin extends Plugin
 		// Construct tracker manually — its @Inject ctor needs StaticData/AdviserEngine,
 		// which aren't Guice bindings. Guice would fail with "no implementation for ..."
 		// and the plugin toggle would refuse to enable.
-		syncState = new CollectionLogSyncState(configManager, clientThread);
+		CollectionLogSyncButton syncButton = new CollectionLogSyncButton();
 		tracker = new CollectionLogTracker(
 			client,
 			clientThread,
 			configManager,
 			staticData,
 			engine,
-			syncState);
+			syncButton);
 		panel = new LogAdviserPanel(
 			engine,
 			itemManager,
 			tracker,
-			syncState,
 			staticData,
 			this::onAccountModeSelected,
 			this::onIgnoreRequirementsSelected,
@@ -148,9 +148,6 @@ public class LogAdviserPlugin extends Plugin
 		textOverlay = new TargetTextOverlay(engine);
 		overlayManager.add(textOverlay);
 
-		syncOverlay = new CollectionLogSyncOverlay(client, syncState);
-		overlayManager.add(syncOverlay);
-
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/com/logadviser/icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Log Adviser")
@@ -161,16 +158,15 @@ public class LogAdviserPlugin extends Plugin
 		clientToolbar.addNavigation(navButton);
 
 		eventBus.register(tracker);
-		eventBus.register(syncState);
 
-		syncState.addChangeListener(panel::onSyncStateChanged);
-		// A page sync with no new item doesn't fire the engine, so re-run the infobox /
-		// overlay rebuild on the client thread to refresh the "data may be stale" line.
-		syncState.addChangeListener(() -> clientThread.invokeLater(() ->
-		{
-			onRankingChanged(engine.getRanking());
-			return true;
-		}));
+		// Sync-status changes drive the sidebar indication + login chat warning, and the
+		// infobox "data may be stale" marker. Listeners run on the client thread (tracker
+		// fires them there), so the infobox rebuild needs no extra marshalling.
+		tracker.addSyncListener(this::onSyncStatusChanged);
+		tracker.addSyncListener(() -> onRankingChanged(engine.getRanking()));
+		// "Syncing..." feedback on the panel, visible even while the collection-log redraw
+		// covers the in-interface button.
+		tracker.setSyncingListener(syncing -> panel.setSyncing(syncing));
 
 		// If we're already logged in when the plugin enables (toggling at runtime), pull
 		// state on the client thread — including the first read of the account-type varbit.
@@ -180,7 +176,7 @@ public class LogAdviserPlugin extends Plugin
 			{
 				refreshDetectedIronman();
 				tracker.load();
-				syncState.load();
+				tracker.evaluateSyncStatus();
 				applyAccountModeFromConfig();
 				applyIgnoreRequirementsFromConfig();
 				refreshPlayerProgress();
@@ -197,15 +193,6 @@ public class LogAdviserPlugin extends Plugin
 		if (tracker != null)
 		{
 			eventBus.unregister(tracker);
-		}
-		if (syncState != null)
-		{
-			eventBus.unregister(syncState);
-		}
-		if (syncOverlay != null)
-		{
-			overlayManager.remove(syncOverlay);
-			syncOverlay = null;
 		}
 		if (textOverlay != null)
 		{
@@ -238,6 +225,8 @@ public class LogAdviserPlugin extends Plugin
 	{
 		if (event.getGameState() == GameState.LOGGED_IN)
 		{
+			// Fresh login — allow one sync warning once the collection-log varp lands.
+			clogWarnedThisLogin = false;
 			clientThread.invokeLater(() ->
 			{
 				refreshDetectedIronman();
@@ -456,6 +445,24 @@ public class LogAdviserPlugin extends Plugin
 		panel.setPlayerLabel(name, detectedIronman());
 	}
 
+	/** Sync-status listener: pushes the sidebar indication and fires the one-shot login
+	 *  warning. Runs on the client thread (tracker fires its listeners there). */
+	private void onSyncStatusChanged()
+	{
+		boolean inSync = tracker.isInSync();
+		int playerCount = tracker.playerClogCount();
+		if (panel != null)
+		{
+			panel.setSyncStatus(inSync, playerCount);
+		}
+		if (!inSync && !clogWarnedThisLogin && client.getGameState() == GameState.LOGGED_IN)
+		{
+			clogWarnedThisLogin = true;
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
+				"Log Adviser: your collection log isn't fully synced — open it and click the Sync button.", null);
+		}
+	}
+
 	private void onRankingChanged(List<RankedActivity> ranking)
 	{
 		// Drop the old InfoBox unconditionally — it's cheaper to rebuild than to mutate.
@@ -496,7 +503,7 @@ public class LogAdviserPlugin extends Plugin
 		if (mode.infoBox() && displayItemId > 0)
 		{
 			BufferedImage img = itemManager.getImage(displayItemId);
-			currentInfoBox = new TargetInfoBox(img, this, top, itemName, hint, syncState.fullySynced());
+			currentInfoBox = new TargetInfoBox(img, this, top, itemName, hint, tracker.isInSync());
 			infoBoxManager.addInfoBox(currentInfoBox);
 		}
 	}

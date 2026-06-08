@@ -8,7 +8,6 @@ import com.logadviser.data.StaticData;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
-import com.logadviser.sync.CollectionLogSyncState;
 import com.logadviser.sync.CollectionLogTracker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -69,7 +68,6 @@ public class LogAdviserPanel extends PluginPanel
 	private final AdviserEngine engine;
 	private final ItemManager itemManager;
 	private final CollectionLogTracker tracker;
-	private final CollectionLogSyncState syncState;
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
 	private final Consumer<Boolean> onIgnoreRequirementsChanged;
@@ -86,9 +84,16 @@ public class LogAdviserPanel extends PluginPanel
 	// When ticked, activities you don't meet skill/quest requirements for are ranked
 	// normally instead of being demoted to the locked section.
 	private final JCheckBox ignoreReqBox = new JCheckBox("Ignore requirements", false);
-	// Progress lines shown directly under the "Show:" filter.
+	// Progress line shown directly under the "Show:" filter. Turns orange with a marker
+	// when the plugin's data is behind the player's real collection log.
 	private final JLabel progressCountLabel = new JLabel(" ");
-	private final JLabel syncCountLabel = new JLabel(" ");
+	// Latest known sync status, so updateCounts() can re-apply the indication after a
+	// ranking refresh rebuilds the progress text.
+	private boolean inSync = true;
+	private int playerClogCount = 0;
+	// True while a full sync is running — shown on the progress line so the feedback is
+	// visible even when the in-interface button is covered by the collection-log redraw.
+	private boolean syncing = false;
 	// Current target card
 	private final JLabel currentIcon = new JLabel();
 	private final JLabel currentItem = new JLabel("—");
@@ -131,7 +136,6 @@ public class LogAdviserPanel extends PluginPanel
 		AdviserEngine engine,
 		ItemManager itemManager,
 		CollectionLogTracker tracker,
-		CollectionLogSyncState syncState,
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
 		Consumer<Boolean> onIgnoreRequirementsChanged,
@@ -145,7 +149,6 @@ public class LogAdviserPanel extends PluginPanel
 		this.engine = engine;
 		this.itemManager = itemManager;
 		this.tracker = tracker;
-		this.syncState = syncState;
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
 		this.onIgnoreRequirementsChanged = onIgnoreRequirementsChanged;
@@ -441,9 +444,6 @@ public class LogAdviserPanel extends PluginPanel
 		progressCountLabel.setForeground(Color.WHITE);
 		progressCountLabel.setFont(progressCountLabel.getFont().deriveFont(Font.BOLD, 16f));
 		progressCountLabel.setAlignmentX(LEFT_ALIGNMENT);
-		syncCountLabel.setForeground(Color.LIGHT_GRAY);
-		syncCountLabel.setFont(syncCountLabel.getFont().deriveFont(13f));
-		syncCountLabel.setAlignmentX(LEFT_ALIGNMENT);
 
 		ignoreReqBox.setForeground(Color.LIGHT_GRAY);
 		ignoreReqBox.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -469,29 +469,61 @@ public class LogAdviserPanel extends PluginPanel
 		p.add(ignoreReqBox);
 		p.add(verticalGap(4));
 		p.add(progressCountLabel);
-		p.add(syncCountLabel);
 		return p;
 	}
 
-	/** Refreshes the item-progress and page-sync counter lines. Must run on the EDT. */
+	private static final Color OUT_OF_SYNC = new Color(255, 152, 0);
+	private static final Color SYNCING = new Color(120, 200, 255);
+
+	/** Refreshes the "X / Y log slots" line and its in-sync/out-of-sync indication.
+	 *  Must run on the EDT. */
 	private void updateCounts()
 	{
-		progressCountLabel.setText(engine.collectedSlotCount() + " / " + engine.totalSlots() + " log slots");
-		int known = syncState.knownCount();
-		if (known == 0)
+		String text = engine.collectedSlotCount() + " / " + engine.totalSlots() + " log slots";
+		if (syncing)
 		{
-			syncCountLabel.setText("Synced: open the collection log to begin");
+			progressCountLabel.setForeground(SYNCING);
+			progressCountLabel.setText("Syncing collection log...");
+			progressCountLabel.setToolTipText("Reading your full collection log");
+			return;
+		}
+		if (inSync)
+		{
+			progressCountLabel.setForeground(Color.WHITE);
+			progressCountLabel.setText(text);
+			progressCountLabel.setToolTipText(null);
 		}
 		else
 		{
-			syncCountLabel.setText("Synced: " + syncState.syncedCount() + " / " + known + " pages");
+			progressCountLabel.setForeground(OUT_OF_SYNC);
+			progressCountLabel.setText("<html>" + text + " <span style='font-size:9px'>&#9888; not synced</span></html>");
+			progressCountLabel.setToolTipText(playerClogCount > 0
+				? "Your collection log has " + playerClogCount + " items logged — open it and click Sync to catch up"
+				: "Open your collection log and click Sync to update Log Adviser");
 		}
 	}
 
-	/** Called by the plugin when page-sync state changes with no item change. */
-	public void onSyncStateChanged()
+	/** Pushes the latest collection-log sync status onto the progress line. Called by the
+	 *  plugin from the client thread; marshals to the EDT. */
+	public void setSyncStatus(boolean inSync, int playerClogCount)
 	{
-		SwingUtilities.invokeLater(this::updateCounts);
+		SwingUtilities.invokeLater(() ->
+		{
+			this.inSync = inSync;
+			this.playerClogCount = playerClogCount;
+			updateCounts();
+		});
+	}
+
+	/** Shows/clears the "Syncing collection log..." line while a full sync runs. Called by
+	 *  the plugin from the client thread; marshals to the EDT. */
+	public void setSyncing(boolean syncing)
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			this.syncing = syncing;
+			updateCounts();
+		});
 	}
 
 	private JPanel buildCurrentCard()

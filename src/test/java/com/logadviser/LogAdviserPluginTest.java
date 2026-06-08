@@ -6,11 +6,7 @@ import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
-import com.logadviser.sync.CollectionLogSyncState;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
@@ -58,16 +54,6 @@ public class LogAdviserPluginTest
 		List<RankedActivity> rankedIron = engineIron.getRanking();
 		assert !rankedIron.isEmpty() : "iron ranking is empty";
 		System.out.println("Top (iron, fresh log): " + rankedIron.get(0).getActivity().getName());
-
-		// Synced-page id persistence round-trip (CSV of tab*100000+category keys).
-		assert CollectionLogSyncState.parseInts(null).isEmpty() : "null csv should be empty";
-		assert CollectionLogSyncState.parseInts("").isEmpty() : "empty csv should be empty";
-		assert CollectionLogSyncState.parseInts("1, 2 ,x,3").equals(
-			new HashSet<>(Arrays.asList(1, 2, 3))) : "parseInts should skip blanks/garbage";
-		Set<Integer> keys = new HashSet<>(Arrays.asList(5, 100_006, 400_012));
-		assert CollectionLogSyncState.parseInts(CollectionLogSyncState.joinInts(keys)).equals(keys)
-			: "synced-id CSV round-trip failed";
-		System.out.println("Synced-id CSV round-trip OK");
 
 		// Hand-off to the dev client.
 		ExternalPluginManager.loadBuiltin(LogAdviserPlugin.class);
