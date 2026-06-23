@@ -110,9 +110,31 @@ A PR to `runelite/plugin-hub` shows three checks — read them precisely:
     routes the plugin into the human-review queue.
 
 LogAdviser will **not** auto-pass and that is expected: auto-pass is reserved for trivial plugins,
-and LogAdviser ships ~792 KB of bundled JSON, makes outbound HTTP calls (OSRS Hiscores /
-TempleOSRS via injected `OkHttpClient`), and has a multi-package source tree. Accept the
+and LogAdviser ships ~792 KB of bundled JSON and has a multi-package source tree. (Note: the
+plugin makes **no** outbound HTTP calls — there is no `OkHttpClient`/Hiscores/TempleOSRS usage
+in `src/main`; the only "Temple-OSRS" reference is a comment about the Sync button's visual
+styling. Don't claim network behavior in PR descriptions.) Accept the
 human-review queue as the normal path — **do not strip real features chasing the auto-pass gate.**
+
+### Why it routes to review — the differential-API mechanism (and a settled experiment)
+
+The bot is **differential**: a javac apirecorder logs every external (RuneLite/JDK) symbol the
+plugin references into a `.api` file, and on an update PR it diffs the old pinned commit's set
+against the new one. A **data/JSON-only** update introduces no new external symbols → it
+auto-passes (this is why earlier LogAdviser releases sailed through). Any update that adds new
+client-API surface routes to a maintainer.
+
+The v1.1.3 collection-log auto-sync (PR #12484) was the first to add **in-game UI creation**
+(`WidgetType`, `JavaScriptCallback`, `WidgetPositionMode`, `WidgetTextAlignment`, `SpriteID`,
+`FontID`) for the Sync button drawn onto the collection-log interface, plus the sync mechanism
+(`MenuAction` + `client.menuAction`/`client.runScript`, `ScriptPreFired`, `VarPlayerID`).
+
+**Settled experiment (do not re-run):** moving the Sync button to the **Swing sidebar** (deleting
+`CollectionLogSyncButton` and all six widget-creation APIs) was tested as a separate PR (#12487,
+v1.1.4). It **still routed to maintainer review** — the remaining sync-intrinsic surface
+(`menuAction`/`runScript`/`ScriptPreFired`/`VarPlayerID`) plus the bundled-JSON/multi-package
+profile keeps it out of auto-pass. Conclusion: **once the plugin uses any of these capabilities,
+relocating UI cannot win back auto-pass.** Don't degrade UX to chase it; just accept the queue.
 
 Inspect any PR's true state with:
 ```powershell
