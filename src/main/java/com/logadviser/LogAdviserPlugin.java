@@ -477,10 +477,10 @@ public class LogAdviserPlugin extends Plugin
 		}
 
 		RankedActivity top = ranking.get(0);
-		int displayItemId = top.getEasiestItem() != null
-			? top.getEasiestItem().getItemId()
+		int displayItemId = top.getDisplayItem() != null
+			? top.getDisplayItem().getItemId()
 			: (top.getFastestItem() != null ? top.getFastestItem().getItemId() : -1);
-		String itemName = top.getEasiestItem() != null ? top.getEasiestItem().getItemName()
+		String itemName = top.getDisplayItem() != null ? top.getDisplayItem().getItemName()
 			: (top.getFastestItem() != null ? top.getFastestItem().getItemName() : "");
 		String hint = staticData.npcInfoFor(top.getActivity().getIndex()).getHint();
 

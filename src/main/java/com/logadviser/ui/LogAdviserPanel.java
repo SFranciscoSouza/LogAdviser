@@ -349,8 +349,9 @@ public class LogAdviserPanel extends PluginPanel
 				it.getSlotDifficulty(), it.getDropRateAttempts());
 			(collected ? done : missing).add(entry);
 		}
-		// Within each group, easiest first: lower slotDifficulty, tie-broken by fewer attempts —
-		// mirrors AdviserEngine.recomputeActivity's "easiest" pick. Missing group precedes done.
+		// Within each group, easiest first: lower slotDifficulty, tie-broken by fewer attempts.
+		// This is the popup's own ordering for the slot list; it is independent of the headline
+		// display item (which follows the time estimate). Missing group precedes done.
 		Comparator<ActivityLogPopup.SlotEntry> easiest = Comparator
 			.comparingInt(ActivityLogPopup.SlotEntry::getSlotDifficulty)
 			.thenComparingDouble(ActivityLogPopup.SlotEntry::getDropRateAttempts);
@@ -794,7 +795,7 @@ public class LogAdviserPanel extends PluginPanel
 		}
 
 		currentTopRanked = top;
-		ActivityItem display = top.getEasiestItem() != null ? top.getEasiestItem() : top.getFastestItem();
+		ActivityItem display = top.getDisplayItem() != null ? top.getDisplayItem() : top.getFastestItem();
 		String itemName = display != null ? safeName(display.getItemId(), display.getItemName()) : "—";
 		currentItem.setText(itemName);
 		currentActivity.setText(top.getActivity().getName());
@@ -882,8 +883,8 @@ public class LogAdviserPanel extends PluginPanel
 		for (int i = 0; i < listModel.size(); i++)
 		{
 			RankedActivity r = listModel.get(i);
-			ActivityItem display = r.getEasiestItem() != null
-				? r.getEasiestItem() : r.getFastestItem();
+			ActivityItem display = r.getDisplayItem() != null
+				? r.getDisplayItem() : r.getFastestItem();
 			if (display == null)
 			{
 				continue;
@@ -940,7 +941,7 @@ public class LogAdviserPanel extends PluginPanel
 			if (value instanceof RankedActivity)
 			{
 				RankedActivity r = (RankedActivity) value;
-				ActivityItem display = r.getEasiestItem() != null ? r.getEasiestItem() : r.getFastestItem();
+				ActivityItem display = r.getDisplayItem() != null ? r.getDisplayItem() : r.getFastestItem();
 				String name = r.getActivity().getName();
 				String secondLine;
 				if (r.isLocked())

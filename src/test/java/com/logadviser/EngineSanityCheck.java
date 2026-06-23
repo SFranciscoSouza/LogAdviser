@@ -30,9 +30,9 @@ public class EngineSanityCheck
 		// Mark gryphon feather obtained — top should change.
 		RankedActivity top = main.getRanking().get(0);
 		System.out.println();
-		System.out.println("Marking " + top.getEasiestItem().getItemName()
-			+ " (id=" + top.getEasiestItem().getItemId() + ") obtained");
-		main.markObtained(top.getEasiestItem().getItemId());
+		System.out.println("Marking " + top.getDisplayItem().getItemName()
+			+ " (id=" + top.getDisplayItem().getItemId() + ") obtained");
+		main.markObtained(top.getDisplayItem().getItemId());
 		print("MAIN top 5 after one slot", main.getRanking(), 5);
 	}
 

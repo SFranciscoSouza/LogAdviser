@@ -46,7 +46,11 @@ public class AdviserEngine
 
 	private final Map<Integer, Double> cachedTime = new HashMap<>();
 	private final Map<Integer, ActivityItem> cachedFastest = new HashMap<>();
-	private final Map<Integer, ActivityItem> cachedEasiest = new HashMap<>();
+	// The slot the displayed estimate is actually for: the item that drives `best` — the
+	// smallest-attempts active item in whichever rate bucket wins. Pairing the icon/name with
+	// this (rather than the lowest-difficulty slot) keeps the headline consistent with the time,
+	// so a non-guaranteed slot is never shown next to the near-guaranteed slot's quick estimate.
+	private final Map<Integer, ActivityItem> cachedDisplay = new HashMap<>();
 	private final Map<Integer, int[]> cachedSlotCounts = new HashMap<>();
 
 	/**
@@ -322,7 +326,7 @@ public class AdviserEngine
 			out.add(new RankedActivity(
 				a,
 				t,
-				cachedEasiest.get(a.getIndex()),
+				cachedDisplay.get(a.getIndex()),
 				cachedFastest.get(a.getIndex()),
 				slots[0],
 				slots[1],
@@ -364,7 +368,7 @@ public class AdviserEngine
 			out.add(new RankedActivity(
 				a,
 				t,
-				cachedEasiest.get(a.getIndex()),
+				cachedDisplay.get(a.getIndex()),
 				cachedFastest.get(a.getIndex()),
 				slots[0],
 				slots[1],
@@ -406,7 +410,7 @@ public class AdviserEngine
 	{
 		cachedTime.clear();
 		cachedFastest.clear();
-		cachedEasiest.clear();
+		cachedDisplay.clear();
 		cachedSlotCounts.clear();
 		for (Integer idx : itemsByActivity.keySet())
 		{
@@ -463,17 +467,21 @@ public class AdviserEngine
 			prevCompleted = done;
 		}
 
-		// Bucket active items by (exact, independent).
+		// Bucket active items by (exact, independent). For each bucket also remember the
+		// smallest-attempts item — that's the single slot the bucket's time is driven by
+		// (for "Neither", the slot most likely to drop first), used to pick the display item.
 		double sumInverseNeither = 0.0;
+		double minK_neither = Double.POSITIVE_INFINITY;
 		double minK_indOnly = Double.POSITIVE_INFINITY;
 		double minK_exactOnly = Double.POSITIVE_INFINITY;
 		double minK_ei = Double.POSITIVE_INFINITY;
+		ActivityItem neitherMin = null;
+		ActivityItem indMin = null;
+		ActivityItem exactMin = null;
+		ActivityItem eiMin = null;
 
 		ActivityItem fastest = null;
 		double fastestK = Double.POSITIVE_INFINITY;
-		ActivityItem easiest = null;
-		int easiestDifficulty = Integer.MAX_VALUE;
-		double easiestKTie = Double.POSITIVE_INFINITY;
 
 		for (int i = 0; i < items.size(); i++)
 		{
@@ -492,12 +500,18 @@ public class AdviserEngine
 			if (!ex && !in)
 			{
 				sumInverseNeither += 1.0 / k;
+				if (k < minK_neither)
+				{
+					minK_neither = k;
+					neitherMin = it;
+				}
 			}
 			else if (!ex && in)
 			{
 				if (k < minK_indOnly)
 				{
 					minK_indOnly = k;
+					indMin = it;
 				}
 			}
 			else if (ex && !in)
@@ -505,6 +519,7 @@ public class AdviserEngine
 				if (k < minK_exactOnly)
 				{
 					minK_exactOnly = k;
+					exactMin = it;
 				}
 			}
 			else
@@ -512,6 +527,7 @@ public class AdviserEngine
 				if (k < minK_ei)
 				{
 					minK_ei = k;
+					eiMin = it;
 				}
 			}
 
@@ -519,13 +535,6 @@ public class AdviserEngine
 			{
 				fastestK = k;
 				fastest = it;
-			}
-			int diff = it.getSlotDifficulty();
-			if (diff < easiestDifficulty || (diff == easiestDifficulty && k < easiestKTie))
-			{
-				easiestDifficulty = diff;
-				easiestKTie = k;
-				easiest = it;
 			}
 		}
 
@@ -544,18 +553,40 @@ public class AdviserEngine
 
 		double best = Math.min(Math.min(timeNeither, timeInd), Math.min(timeExact, timeEI));
 		cachedTime.put(activityIndex, best);
+
+		// The display item is the slot that produced `best`: the min-attempts item of the
+		// winning bucket (ties broken toward the smaller-attempts item). `best` is a min of the
+		// exact bucket times, so `== best` reliably identifies the winner.
+		ActivityItem display = null;
+		double displayK = Double.POSITIVE_INFINITY;
+		if (neitherMin != null && timeNeither == best && minK_neither < displayK)
+		{
+			display = neitherMin;
+			displayK = minK_neither;
+		}
+		if (indMin != null && timeInd == best && minK_indOnly < displayK)
+		{
+			display = indMin;
+			displayK = minK_indOnly;
+		}
+		if (exactMin != null && timeExact == best && minK_exactOnly < displayK)
+		{
+			display = exactMin;
+			displayK = minK_exactOnly;
+		}
+		if (eiMin != null && timeEI == best && minK_ei < displayK)
+		{
+			display = eiMin;
+			displayK = minK_ei;
+		}
+
 		if (fastest != null)
 		{
 			cachedFastest.put(activityIndex, fastest);
 		}
-		if (easiest != null)
-		{
-			cachedEasiest.put(activityIndex, easiest);
-		}
-		else
-		{
-			cachedEasiest.put(activityIndex, fastest);
-		}
+		// Fall back to the global fastest only if no bucket won (e.g. `best` non-finite); when
+		// the activity is rankable `display` is always set.
+		cachedDisplay.put(activityIndex, display != null ? display : fastest);
 		cachedSlotCounts.put(activityIndex, slotCounts(items));
 	}
 

@@ -9,7 +9,9 @@ public class RankedActivity
 {
 	Activity activity;
 	double timeToNextSlotHours;
-	ActivityItem easiestItem;
+	// The slot the time estimate is for — the next slot you're most likely to obtain (the one
+	// driving timeToNextSlotHours). The UI headlines this so the icon/name always match the time.
+	ActivityItem displayItem;
 	ActivityItem fastestItem;
 	int slotsLeft;
 	int slotsTotal;
