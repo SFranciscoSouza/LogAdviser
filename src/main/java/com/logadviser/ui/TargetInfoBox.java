@@ -60,7 +60,7 @@ public class TargetInfoBox extends InfoBox
 		sb.append("Progress: ").append(slotsTotal - slotsLeft).append(" / ").append(slotsTotal);
 		if (!fullySynced)
 		{
-			sb.append("<br><col=8a8a8a>Data may be stale — open unopened collection log pages to sync</col>");
+			sb.append("<br><col=8a8a8a>Data may be stale — open the collection log and click Sync</col>");
 		}
 		return sb.toString();
 	}
