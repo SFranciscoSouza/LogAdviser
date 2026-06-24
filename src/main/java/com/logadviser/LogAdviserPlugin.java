@@ -140,6 +140,7 @@ public class LogAdviserPlugin extends Plugin
 			staticData,
 			this::onAccountModeSelected,
 			this::onIgnoreRequirementsSelected,
+			this::onPetsOnlySelected,
 			config::upcomingListSize,
 			config::disableHover);
 
@@ -387,6 +388,18 @@ public class LogAdviserPlugin extends Plugin
 		clientThread.invokeLater(() ->
 		{
 			engine.setIgnoreRequirements(ignore);
+			return true;
+		});
+	}
+
+	/** Toggling pets-only triggers a full engine recompute, which touches client-thread-confined
+	 *  state — so marshal it onto the client thread (the panel calls this from the EDT). The filter
+	 *  choice itself is transient (like the category filter) and intentionally not persisted. */
+	private void onPetsOnlySelected(boolean petsOnly)
+	{
+		clientThread.invokeLater(() ->
+		{
+			engine.setPetsOnly(petsOnly);
 			return true;
 		});
 	}

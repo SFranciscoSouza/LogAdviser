@@ -39,6 +39,7 @@ public class CollectionLogTracker
 	private static final String CONFIG_GROUP = "logadviser";
 	private static final String CONFIG_KEY = "obtained";
 	private static final String CONFIG_KEY_SKIPPED = "skipped";
+	private static final String CONFIG_KEY_SKIPPED_PETS = "skippedPets";
 	private static final int COLLECTION_LOG_DRAW_SCRIPT_ID = 2731;
 	private static final String NEW_ITEM_PREFIX = "New item added to your collection log:";
 
@@ -73,19 +74,24 @@ public class CollectionLogTracker
 	{
 		Set<Integer> ids = parseCsv(configManager.getRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY));
 		Set<Integer> skips = parseCsv(configManager.getRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY_SKIPPED));
+		Set<Integer> petSkips = parseCsv(configManager.getRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY_SKIPPED_PETS));
 		engine.replaceObtained(ids);
 		engine.replaceSkipped(skips);
+		engine.replacePetsSkipped(petSkips);
 	}
 
 	public void persist()
 	{
 		configManager.setRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY, toCsv(engine.obtainedItems()));
-		configManager.setRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY_SKIPPED, toCsv(engine.skippedActivities()));
+		persistSkipped();
 	}
 
+	/** Persists both skip lists (normal + pet-mode) — each mode owns its own config key, so the
+	 *  one not currently active is preserved rather than clobbered. */
 	public void persistSkipped()
 	{
 		configManager.setRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY_SKIPPED, toCsv(engine.skippedActivities()));
+		configManager.setRSProfileConfiguration(CONFIG_GROUP, CONFIG_KEY_SKIPPED_PETS, toCsv(engine.petsSkippedActivities()));
 	}
 
 	private void markAndPersist(int itemId)

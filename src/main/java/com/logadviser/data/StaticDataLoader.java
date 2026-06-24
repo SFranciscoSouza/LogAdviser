@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
@@ -35,14 +37,16 @@ public final class StaticDataLoader
 		List<LogSlot> slots = loadSlots(gson);
 		Map<Integer, ActivityNpcInfo> npcInfo = loadNpcInfo(gson);
 		Map<Integer, ActivityRequirements> requirements = loadRequirements(gson);
-		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps, {} requirement maps",
-			activities.size(), items.size(), slots.size(), npcInfo.size(), requirements.size());
+		Set<Integer> pets = loadPets(gson);
+		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps, {} requirement maps, {} pets",
+			activities.size(), items.size(), slots.size(), npcInfo.size(), requirements.size(), pets.size());
 		return new StaticData(
 			Collections.unmodifiableList(activities),
 			Collections.unmodifiableList(items),
 			Collections.unmodifiableList(slots),
 			Collections.unmodifiableMap(npcInfo),
-			Collections.unmodifiableMap(requirements));
+			Collections.unmodifiableMap(requirements),
+			Collections.unmodifiableSet(pets));
 	}
 
 	private static Map<Integer, ActivityRequirements> loadRequirements(Gson gson) throws IOException
@@ -108,6 +112,21 @@ public final class StaticDataLoader
 					Collections.unmodifiableMap(skills),
 					Collections.unmodifiableList(quests),
 					Collections.unmodifiableList(rawQuests)));
+			}
+			return out;
+		}
+	}
+
+	private static Set<Integer> loadPets(Gson gson) throws IOException
+	{
+		Type listType = new TypeToken<List<RawPet>>(){}.getType();
+		try (InputStreamReader r = open("pets.json"))
+		{
+			List<RawPet> raw = gson.fromJson(r, listType);
+			Set<Integer> out = new LinkedHashSet<>(raw.size() * 2);
+			for (RawPet p : raw)
+			{
+				out.add(p.itemId);
 			}
 			return out;
 		}
@@ -243,5 +262,11 @@ public final class StaticDataLoader
 		int itemId;
 		String slotName;
 		int activityCount;
+	}
+
+	private static final class RawPet
+	{
+		int itemId;
+		String name; // documentation only; the engine matches on itemId
 	}
 }

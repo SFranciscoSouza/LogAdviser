@@ -39,9 +39,15 @@ public class AdviserEngine
 
 	private final Set<Integer> obtained = new HashSet<>();
 	private final Set<Integer> skipped = new HashSet<>();
+	// Pet-mode keeps its own skip list, persisted separately, so skipping an activity while
+	// chasing pets never hides it from (or is affected by) the normal ranking, and vice versa.
+	private final Set<Integer> petsSkipped = new HashSet<>();
 	private EnumSet<Category> categoryFilter = EnumSet.allOf(Category.class);
 	private AccountMode accountMode = AccountMode.AUTO;
 	private boolean ignoreRequirements = false;
+	// When true the ranking is reframed around pets: each activity is timed against its
+	// remaining pet drop(s) only, ignoring every non-pet item on the table.
+	private boolean petsOnly = false;
 	private PlayerProgress playerProgress = PlayerProgress.EMPTY;
 
 	private final Map<Integer, Double> cachedTime = new HashMap<>();
@@ -157,9 +163,16 @@ public class AdviserEngine
 		}
 	}
 
+	/** The skip set in effect for the current mode — pet-mode skips while {@link #petsOnly},
+	 *  otherwise the normal skip set. Skip/unskip and the rankings all route through this. */
+	private Set<Integer> activeSkipSet()
+	{
+		return petsOnly ? petsSkipped : skipped;
+	}
+
 	public void skip(int activityIndex)
 	{
-		if (skipped.add(activityIndex))
+		if (activeSkipSet().add(activityIndex))
 		{
 			fire();
 		}
@@ -167,7 +180,7 @@ public class AdviserEngine
 
 	public void unskip(int activityIndex)
 	{
-		if (skipped.remove(activityIndex))
+		if (activeSkipSet().remove(activityIndex))
 		{
 			fire();
 		}
@@ -175,9 +188,9 @@ public class AdviserEngine
 
 	public void unskipAll()
 	{
-		if (!skipped.isEmpty())
+		if (!activeSkipSet().isEmpty())
 		{
-			skipped.clear();
+			activeSkipSet().clear();
 			fire();
 		}
 	}
@@ -191,6 +204,18 @@ public class AdviserEngine
 	{
 		skipped.clear();
 		skipped.addAll(ids);
+		fire();
+	}
+
+	public Set<Integer> petsSkippedActivities()
+	{
+		return Collections.unmodifiableSet(petsSkipped);
+	}
+
+	public void replacePetsSkipped(Set<Integer> ids)
+	{
+		petsSkipped.clear();
+		petsSkipped.addAll(ids);
 		fire();
 	}
 
@@ -235,6 +260,25 @@ public class AdviserEngine
 	public boolean isIgnoreRequirements()
 	{
 		return ignoreRequirements;
+	}
+
+	/** Toggle the pets-only ranking. Changes the per-activity time/display caches (a pet is
+	 *  timed against its own drop rate, not the whole table), so a full recompute is required —
+	 *  like an account-type flip. Must be invoked on the client thread. */
+	public void setPetsOnly(boolean value)
+	{
+		if (value == this.petsOnly)
+		{
+			return;
+		}
+		this.petsOnly = value;
+		recomputeAll();
+		fire();
+	}
+
+	public boolean isPetsOnly()
+	{
+		return petsOnly;
 	}
 
 	/** Pushed from the plugin on the client thread. No-op (no listener fan-out) when
@@ -312,7 +356,7 @@ public class AdviserEngine
 			{
 				continue;
 			}
-			if (skipped.contains(a.getIndex()))
+			if (activeSkipSet().contains(a.getIndex()))
 			{
 				continue;
 			}
@@ -343,6 +387,28 @@ public class AdviserEngine
 			}
 			return Double.compare(x.getTimeToNextSlotHours(), y.getTimeToNextSlotHours());
 		});
+		return petsOnly ? dedupeByPet(out) : out;
+	}
+
+	/**
+	 * Collapses a pets-mode ranking to one row per pet. The list must already be sorted
+	 * (unlocked-first, then by time), so keeping the first occurrence of each display-pet id yields
+	 * the fastest unlocked source — or, when every source is locked, the fastest locked one (which
+	 * stays in the demoted locked block). Rows without a display item are left untouched.
+	 */
+	private List<RankedActivity> dedupeByPet(List<RankedActivity> ranked)
+	{
+		List<RankedActivity> out = new ArrayList<>(ranked.size());
+		Set<Integer> seenPets = new HashSet<>();
+		for (RankedActivity r : ranked)
+		{
+			ActivityItem display = r.getDisplayItem();
+			if (display != null && !seenPets.add(display.getItemId()))
+			{
+				continue;
+			}
+			out.add(r);
+		}
 		return out;
 	}
 
@@ -354,7 +420,7 @@ public class AdviserEngine
 		List<RankedActivity> out = new ArrayList<>();
 		for (Activity a : data.getActivities())
 		{
-			if (!skipped.contains(a.getIndex()))
+			if (!activeSkipSet().contains(a.getIndex()))
 			{
 				continue;
 			}
@@ -383,7 +449,7 @@ public class AdviserEngine
 			}
 			return Double.compare(x.getTimeToNextSlotHours(), y.getTimeToNextSlotHours());
 		});
-		return out;
+		return petsOnly ? dedupeByPet(out) : out;
 	}
 
 	public int totalSlots()
@@ -399,6 +465,24 @@ public class AdviserEngine
 		for (int id : obtained)
 		{
 			if (known.contains(id))
+			{
+				n++;
+			}
+		}
+		return n;
+	}
+
+	public int totalPetCount()
+	{
+		return data.getPetItemIds().size();
+	}
+
+	public int collectedPetCount()
+	{
+		int n = 0;
+		for (int id : obtained)
+		{
+			if (data.isPet(id))
 			{
 				n++;
 			}
@@ -465,6 +549,21 @@ public class AdviserEngine
 				active[i] = prevCompleted;
 			}
 			prevCompleted = done;
+		}
+
+		// Pets-only: deactivate every non-pet drop, so the bucket math below times this activity
+		// against just its remaining pet(s). One pet → its own rate; several at once (Dagannoth
+		// Kings) → they share the "Neither" harmonic bucket, giving the combined shared rate.
+		// If no pet is left active, no bucket gets a finite time and getRanking drops the activity.
+		if (petsOnly)
+		{
+			for (int i = 0; i < items.size(); i++)
+			{
+				if (active[i] && !data.isPet(items.get(i).getItemId()))
+				{
+					active[i] = false;
+				}
+			}
 		}
 
 		// Bucket active items by (exact, independent). For each bucket also remember the
