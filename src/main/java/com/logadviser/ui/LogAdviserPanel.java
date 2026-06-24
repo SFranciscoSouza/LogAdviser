@@ -73,6 +73,7 @@ public class LogAdviserPanel extends PluginPanel
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
 	private final Consumer<Boolean> onIgnoreRequirementsChanged;
+	private final Consumer<Boolean> onPetsOnlyChanged;
 	private final IntSupplier upcomingListSize;
 	// When this supplies true, the hover preview popup is suppressed (config "Disable hover preview").
 	private final BooleanSupplier hoverDisabled;
@@ -106,6 +107,9 @@ public class LogAdviserPanel extends PluginPanel
 
 	// When true the list box shows the skipped activities instead of the ranking.
 	private boolean showingSkipList = false;
+	// Mirrors the engine's pets-only mode on the EDT so the renderer / current-card can drop the
+	// x/x slot count and relabel the time without reading the client-thread-confined engine.
+	private boolean petsOnlyView = false;
 	// Most recent normal ranking, so the skip-list toggle can rebuild the default
 	// view without re-querying the engine.
 	private List<RankedActivity> lastRanking = new ArrayList<>();
@@ -135,6 +139,7 @@ public class LogAdviserPanel extends PluginPanel
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
 		Consumer<Boolean> onIgnoreRequirementsChanged,
+		Consumer<Boolean> onPetsOnlyChanged,
 		IntSupplier upcomingListSize,
 		BooleanSupplier hoverDisabled)
 	{
@@ -149,6 +154,7 @@ public class LogAdviserPanel extends PluginPanel
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
 		this.onIgnoreRequirementsChanged = onIgnoreRequirementsChanged;
+		this.onPetsOnlyChanged = onPetsOnlyChanged;
 		this.upcomingListSize = upcomingListSize;
 		this.hoverDisabled = hoverDisabled;
 
@@ -477,7 +483,9 @@ public class LogAdviserPanel extends PluginPanel
 	/** Refreshes the item-progress and page-sync counter lines. Must run on the EDT. */
 	private void updateCounts()
 	{
-		progressCountLabel.setText(engine.collectedSlotCount() + " / " + engine.totalSlots() + " log slots");
+		progressCountLabel.setText(petsOnlyView
+			? engine.collectedPetCount() + " / " + engine.totalPetCount() + " pets"
+			: engine.collectedSlotCount() + " / " + engine.totalSlots() + " log slots");
 		int known = syncState.knownCount();
 		if (known == 0)
 		{
@@ -683,8 +691,20 @@ public class LogAdviserPanel extends PluginPanel
 	private void applyFilter()
 	{
 		FilterChoice choice = (FilterChoice) filterBox.getSelectedItem();
-		EnumSet<Category> set = (choice == null ? FilterChoice.ALL : choice).asCategorySet();
-		engine.setCategoryFilter(set);
+		if (choice == null)
+		{
+			choice = FilterChoice.ALL;
+		}
+		boolean pets = choice == FilterChoice.PETS_ONLY;
+		// Keep the EDT-side view flag in step with the mode before any repaint, so the renderer and
+		// current card pick it up. The category set is stored first (no recompute); the pets toggle
+		// is marshalled to the client thread and its recompute fires the authoritative snapshot last.
+		petsOnlyView = pets;
+		engine.setCategoryFilter(choice.asCategorySet());
+		if (onPetsOnlyChanged != null)
+		{
+			onPetsOnlyChanged.accept(pets);
+		}
 	}
 
 	private enum FilterChoice
@@ -692,7 +712,9 @@ public class LogAdviserPanel extends PluginPanel
 		ALL("All"),
 		COMBAT("Combat"),
 		MINIGAME("Minigame"),
-		MISCELLANEOUS("Miscellaneous");
+		MISCELLANEOUS("Miscellaneous"),
+		// Not a category filter — re-frames the ranking around remaining pets (see applyFilter).
+		PETS_ONLY("Pets Only");
 
 		private final String label;
 
@@ -712,6 +734,7 @@ public class LogAdviserPanel extends PluginPanel
 				case MISCELLANEOUS:
 					return EnumSet.of(Category.MISCELLANEOUS);
 				case ALL:
+				case PETS_ONLY:
 				default:
 					return EnumSet.allOf(Category.class);
 			}
@@ -782,7 +805,7 @@ public class LogAdviserPanel extends PluginPanel
 		{
 			currentTopRanked = null;
 			currentItem.setText(ranking.isEmpty()
-				? "All filtered activities complete"
+				? (petsOnlyView ? "All available pets collected" : "All filtered activities complete")
 				: "All available activities complete");
 			currentActivity.setText(ranking.isEmpty() ? " " : "(remaining activities are locked)");
 			currentHint.setText(" ");
@@ -801,7 +824,8 @@ public class LogAdviserPanel extends PluginPanel
 		currentActivity.setText(top.getActivity().getName());
 		ActivityNpcInfo info = staticData.npcInfoFor(top.getActivity().getIndex());
 		currentHint.setText(info.getHint().isEmpty() ? "(see activity name)" : info.getHint());
-		currentTime.setText("~ " + TargetInfoBox.formatHours(top.getTimeToNextSlotHours()) + " to slot");
+		currentTime.setText("~ " + TargetInfoBox.formatHours(top.getTimeToNextSlotHours())
+			+ (petsOnlyView ? " to pet" : " to slot"));
 		setIconAsync(currentIcon, display != null ? display.getItemId() : 0);
 		skipButton.setEnabled(true);
 
@@ -953,8 +977,11 @@ public class LogAdviserPanel extends PluginPanel
 				else
 				{
 					String time = TargetInfoBox.formatHours(r.getTimeToNextSlotHours());
-					secondLine = "<span style='color:#9bc7ff'>~ " + time + "</span>"
-						+ " - " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal();
+					String timeSpan = "<span style='color:#9bc7ff'>~ " + time + "</span>";
+					// Pets mode times the pet drop alone, so the slot x/x count is meaningless here.
+					secondLine = petsOnlyView
+						? timeSpan
+						: timeSpan + " - " + (r.getSlotsTotal() - r.getSlotsLeft()) + "/" + r.getSlotsTotal();
 				}
 				// Explicit body width so Swing's HTML renderer word-wraps long names
 				// instead of pushing the cell past the viewport (and adding a hscroll).

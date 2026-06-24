@@ -3,6 +3,7 @@ package com.logadviser.data;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.Value;
 
 @Value
@@ -13,6 +14,9 @@ public class StaticData
 	List<LogSlot> slots;
 	Map<Integer, ActivityNpcInfo> npcInfoByActivity;
 	Map<Integer, ActivityRequirements> requirementsByActivity;
+	// Canonical item ids of every collection-log pet (the 68-entry OSRS "All Pets" set),
+	// loaded from pets.json. Used by the "Pets Only" filter to keep only pet drops.
+	Set<Integer> petItemIds;
 
 	public Map<Integer, Activity> activitiesByIndex()
 	{
@@ -59,6 +63,12 @@ public class StaticData
 	public int canonicalItemId(int itemId)
 	{
 		return ItemAliases.canonical(itemId);
+	}
+
+	/** True if the item id is a collection-log pet (per pets.json). */
+	public boolean isPet(int itemId)
+	{
+		return petItemIds.contains(itemId);
 	}
 
 	public ActivityNpcInfo npcInfoFor(int activityIndex)
