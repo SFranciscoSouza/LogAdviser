@@ -74,6 +74,19 @@ public interface LogAdviserConfig extends Config
 		return false;
 	}
 
+	// How-to-sync guidance. Same empty-section trick as infoSection below: an item-less
+	// @ConfigSection still renders its header, so the HTML name carries the instruction.
+	@ConfigSection(
+		name = "<html>Syncing your collection log<br>"
+			+ "Open the Collection Log in-game and click the<br>"
+			+ "\"Log Sync\" button in its header to sync your data</html>",
+		description = "Open your in-game Collection Log and click the \"Log Sync\" button in the "
+			+ "header to bring Log Adviser up to date with your obtained slots.",
+		position = 99,
+		closedByDefault = true
+	)
+	String syncSection = "syncSection";
+
 	// Standing guidance placed BELOW the options. Kept as an empty section at the bottom: RuneLite
 	// builds every section into the config panel regardless of whether it holds items, so the header
 	// renders on its own. The name is HTML so the JLabel wraps it across lines instead of clipping,

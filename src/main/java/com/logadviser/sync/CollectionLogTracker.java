@@ -241,6 +241,15 @@ public class CollectionLogTracker
 			// The interface was (re)built — its dynamic children were wiped, so re-attach.
 			syncButton.reset();
 			syncButton.attach(client, this::triggerFullSync);
+			// Another plugin (e.g. Temple-OSRS) may also handle 7797 and call deleteAllChildren()
+			// on this same container AFTER us, deleting our button. Re-attach once more on the next
+			// client cycle — after every 7797 subscriber has run — so we survive that wipe
+			// regardless of EventBus ordering. attach() is idempotent → a no-op when nothing wiped us.
+			clientThread.invokeLater(() ->
+			{
+				syncButton.attach(client, this::triggerFullSync);
+				return true;
+			});
 		}
 	}
 
@@ -269,6 +278,11 @@ public class CollectionLogTracker
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
+		// Self-heal: if the collection log is open but our button was removed by another plugin
+		// wiping the container's children, re-create it. attach() no-ops when the log is closed
+		// or our button is already present.
+		syncButton.attach(client, this::triggerFullSync);
+
 		if (fullSyncRequested)
 		{
 			// A collection-log redraw can rebuild the button and revert it to "Sync";

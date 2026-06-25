@@ -29,20 +29,20 @@ import net.runelite.api.widgets.WidgetType;
 public final class CollectionLogSyncButton
 {
 	private static final String SYNC_ACTION = "Sync collection log";
-	private static final String LABEL_IDLE = "Sync";
+	private static final String LABEL_IDLE = "Log Sync";
 	private static final String LABEL_BUSY = "Syncing...";
 
 	private static final int FONT_COLOUR_IDLE = 0xd6d6d6;
 	private static final int FONT_COLOUR_HOVER = 0xffffff;
 
-	private static final int BUTTON_WIDTH = 80;
+	private static final int BUTTON_WIDTH = 78; // snug fit for "Log Sync" beside the icon
 	private static final int FALLBACK_RIGHT = 33; // distance from right edge if the Search button isn't loaded
-	private static final int GAP_FROM_SEARCH = 6; // gap between our button and the Search button
+	private static final int GAP_FROM_SEARCH = 4; // gap between our button and the Search button
 	private static final int CORNER = 9;
 	private static final int ICON_SIZE = 13;
-	private static final int PAD_LEFT = 6;   // border -> icon
-	private static final int ICON_GAP = 5;   // icon -> text
-	private static final int PAD_RIGHT = 12; // text -> border (extra breathing room at the end)
+	private static final int PAD_LEFT = 4;   // border -> icon
+	private static final int ICON_GAP = 4;   // icon -> text
+	private static final int PAD_RIGHT = 6;  // text -> border
 
 	// 9-slice sprite sets: index 0 = centre fill, 1-4 = corners (TL, TR, BL, BR),
 	// 5-8 = edges (left, top, right, bottom). Idle reuses the world-map metal button

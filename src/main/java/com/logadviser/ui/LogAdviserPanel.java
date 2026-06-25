@@ -88,6 +88,9 @@ public class LogAdviserPanel extends PluginPanel
 	// Progress line shown directly under the "Show:" filter. Turns orange with a marker
 	// when the plugin's data is behind the player's real collection log.
 	private final JLabel progressCountLabel = new JLabel(" ");
+	// Permanent hint under the slot count telling the player how to bring the data up to date.
+	private final JLabel syncHintLabel = new JLabel(
+		"<html><div style='width:180px'>Click the Log Sync button in the collection log to sync</div></html>");
 	// Latest known sync status, so updateCounts() can re-apply the indication after a
 	// ranking refresh rebuilds the progress text.
 	private boolean inSync = true;
@@ -452,6 +455,10 @@ public class LogAdviserPanel extends PluginPanel
 		progressCountLabel.setFont(progressCountLabel.getFont().deriveFont(Font.BOLD, 16f));
 		progressCountLabel.setAlignmentX(LEFT_ALIGNMENT);
 
+		syncHintLabel.setForeground(Color.GRAY);
+		syncHintLabel.setFont(syncHintLabel.getFont().deriveFont(Font.PLAIN, 10f));
+		syncHintLabel.setAlignmentX(LEFT_ALIGNMENT);
+
 		ignoreReqBox.setForeground(Color.LIGHT_GRAY);
 		ignoreReqBox.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		ignoreReqBox.setFocusable(false);
@@ -476,6 +483,7 @@ public class LogAdviserPanel extends PluginPanel
 		p.add(ignoreReqBox);
 		p.add(verticalGap(4));
 		p.add(progressCountLabel);
+		p.add(syncHintLabel);
 		return p;
 	}
 
@@ -507,8 +515,8 @@ public class LogAdviserPanel extends PluginPanel
 			progressCountLabel.setForeground(OUT_OF_SYNC);
 			progressCountLabel.setText("<html>" + text + " <span style='font-size:9px'>&#9888; not synced</span></html>");
 			progressCountLabel.setToolTipText(playerClogCount > 0
-				? "Your collection log has " + playerClogCount + " items logged — open it and click Sync to catch up"
-				: "Open your collection log and click Sync to update Log Adviser");
+				? "Your collection log has " + playerClogCount + " items logged — open it and click Log Sync to catch up"
+				: "Open your collection log and click Log Sync to update Log Adviser");
 		}
 	}
 
