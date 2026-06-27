@@ -36,13 +36,19 @@ public class AdviserEngine
 	private final BooleanSupplier detectedIronman;
 	private final Map<Integer, List<ActivityItem>> itemsByActivity;
 	private final Map<Integer, Activity> activitiesByIndex;
+	// Activities that count as "Slayer" for the Show filter: anything with a Slayer-level
+	// requirement, minus the boat-combat *bounty*-task entries (their names carry "bounty task"),
+	// which are sailing bounties rather than slayer tasks. Precomputed once at construction.
+	private final Set<Integer> slayerActivities;
 
 	private final Set<Integer> obtained = new HashSet<>();
 	private final Set<Integer> skipped = new HashSet<>();
 	// Pet-mode keeps its own skip list, persisted separately, so skipping an activity while
 	// chasing pets never hides it from (or is affected by) the normal ranking, and vice versa.
 	private final Set<Integer> petsSkipped = new HashSet<>();
-	private EnumSet<Category> categoryFilter = EnumSet.allOf(Category.class);
+	// Selected "Show" options. Empty = show everything (the "All" state). Multiple options
+	// are unioned (an activity is shown if it matches any). Pets-only is a separate mode below.
+	private EnumSet<ShowFilter> showFilter = EnumSet.noneOf(ShowFilter.class);
 	private AccountMode accountMode = AccountMode.AUTO;
 	private boolean ignoreRequirements = false;
 	// When true the ranking is reframed around pets: each activity is timed against its
@@ -90,6 +96,17 @@ public class AdviserEngine
 			immutable.put(e.getKey(), Collections.unmodifiableList(e.getValue()));
 		}
 		this.itemsByActivity = immutable;
+
+		Set<Integer> slayer = new HashSet<>();
+		for (Activity a : data.getActivities())
+		{
+			if (data.requirementsFor(a.getIndex()).getSkillLevels().containsKey(Skill.SLAYER)
+				&& !a.getName().toLowerCase().contains("bounty task"))
+			{
+				slayer.add(a.getIndex());
+			}
+		}
+		this.slayerActivities = Collections.unmodifiableSet(slayer);
 
 		recomputeAll();
 	}
@@ -219,15 +236,60 @@ public class AdviserEngine
 		fire();
 	}
 
-	public void setCategoryFilter(EnumSet<Category> filter)
+	/** Set the selected "Show" options. An empty/null set means "All" (show everything). */
+	public void setShowFilter(EnumSet<ShowFilter> filter)
 	{
-		this.categoryFilter = filter.isEmpty() ? EnumSet.allOf(Category.class) : EnumSet.copyOf(filter);
+		this.showFilter = filter == null ? EnumSet.noneOf(ShowFilter.class) : EnumSet.copyOf(filter);
 		fire();
 	}
 
-	public EnumSet<Category> getCategoryFilter()
+	public EnumSet<ShowFilter> getShowFilter()
 	{
-		return EnumSet.copyOf(categoryFilter);
+		return EnumSet.copyOf(showFilter);
+	}
+
+	/** True if {@code a} passes the current Show filter. Empty filter = All; otherwise the
+	 *  ticked options are unioned (match category for the three category options, or membership
+	 *  of the precomputed slayer set for SLAYER). */
+	private boolean matchesShowFilter(Activity a)
+	{
+		if (showFilter.isEmpty())
+		{
+			return true;
+		}
+		for (ShowFilter f : showFilter)
+		{
+			switch (f)
+			{
+				case COMBAT:
+					if (a.getCategory() == Category.COMBAT)
+					{
+						return true;
+					}
+					break;
+				case MINIGAME:
+					if (a.getCategory() == Category.MINIGAME)
+					{
+						return true;
+					}
+					break;
+				case MISCELLANEOUS:
+					if (a.getCategory() == Category.MISCELLANEOUS)
+					{
+						return true;
+					}
+					break;
+				case SLAYER:
+					if (slayerActivities.contains(a.getIndex()))
+					{
+						return true;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		return false;
 	}
 
 	public void setAccountMode(AccountMode mode)
@@ -352,7 +414,7 @@ public class AdviserEngine
 		List<RankedActivity> out = new ArrayList<>();
 		for (Activity a : data.getActivities())
 		{
-			if (!categoryFilter.contains(a.getCategory()))
+			if (!matchesShowFilter(a))
 			{
 				continue;
 			}

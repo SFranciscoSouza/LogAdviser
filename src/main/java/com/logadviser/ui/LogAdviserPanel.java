@@ -2,18 +2,20 @@ package com.logadviser.ui;
 
 import com.logadviser.data.ActivityItem;
 import com.logadviser.data.ActivityNpcInfo;
-import com.logadviser.data.Category;
 import com.logadviser.data.LogSlot;
 import com.logadviser.data.StaticData;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
 import com.logadviser.engine.RankedActivity;
+import com.logadviser.engine.ShowFilter;
 import com.logadviser.sync.CollectionLogTracker;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -21,6 +23,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -29,6 +32,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -48,12 +52,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.util.AsyncBufferedImage;
 import net.runelite.client.game.ItemManager;
@@ -80,8 +87,31 @@ public class LogAdviserPanel extends PluginPanel
 	private final JLabel playerLabel = new JLabel("(not logged in)");
 	private final JComboBox<AccountMode> accountModeBox = new JComboBox<>(AccountMode.values());
 	private final JLabel modeBadge = new JLabel("");
-	// Filter row — single dropdown: {All, Combat, Minigame, Misc}.
-	private final JComboBox<FilterChoice> filterBox = new JComboBox<>(FilterChoice.values());
+	// Filter row — multi-select "Show": tick any of Combat/Minigame/Misc/Slayer (unioned), or the
+	// exclusive "Pets Only". A button shows the current selection and opens the checkbox popup; the
+	// down-arrow is painted flush-right (matching the other dropdowns) rather than sitting inline.
+	private final JPopupMenu filterPopup = new JPopupMenu();
+	private final JButton filterTrigger = new JButton()
+	{
+		@Override
+		protected void paintComponent(Graphics g)
+		{
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g.create();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setColor(getForeground());
+			int aw = 8;
+			int x = getWidth() - aw - 7;
+			int y = getHeight() / 2 - 2;
+			g2.fillPolygon(new int[]{x, x + aw, x + aw / 2}, new int[]{y, y, y + 4}, 3);
+			g2.dispose();
+		}
+	};
+	private final Map<ShowFilter, JCheckBox> filterBoxes = new EnumMap<>(ShowFilter.class);
+	private final JCheckBox petsOnlyBox = new JCheckBox("Pets Only", false);
+	// When the "Show" popup last closed. Lets a click on an open trigger toggle it shut instead of
+	// flashing it: the popup grab cancels on mouse-press, before the trigger's action fires on release.
+	private long filterPopupHiddenAt;
 	// When ticked, activities you don't meet skill/quest requirements for are ranked
 	// normally instead of being demoted to the locked section.
 	private final JCheckBox ignoreReqBox = new JCheckBox("Ignore requirements", false);
@@ -423,6 +453,9 @@ public class LogAdviserPanel extends PluginPanel
 		JLabel modeLabel = new JLabel("Account mode:");
 		modeLabel.setForeground(Color.LIGHT_GRAY);
 		modePanel.add(modeLabel, BorderLayout.WEST);
+		// Match the "Show" dropdown: render a filled triangle instead of FlatLaf's default unfilled
+		// chevron. String key (FlatClientProperties.STYLE) avoids a FlatLaf import; a no-op otherwise.
+		accountModeBox.putClientProperty("FlatLaf.style", "arrowType: triangle");
 		accountModeBox.addActionListener(e ->
 		{
 			if (accountModeBoxLoading)
@@ -446,10 +479,9 @@ public class LogAdviserPanel extends PluginPanel
 		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		JLabel label = new JLabel("Show:");
 		label.setForeground(Color.LIGHT_GRAY);
-		filterBox.setSelectedItem(FilterChoice.ALL);
-		filterBox.addActionListener(e -> applyFilter());
+		buildFilterControl();
 		row.add(label, BorderLayout.WEST);
-		row.add(filterBox, BorderLayout.CENTER);
+		row.add(filterTrigger, BorderLayout.CENTER);
 
 		progressCountLabel.setForeground(Color.WHITE);
 		progressCountLabel.setFont(progressCountLabel.getFont().deriveFont(Font.BOLD, 16f));
@@ -728,63 +760,143 @@ public class LogAdviserPanel extends PluginPanel
 		}
 	}
 
+	// Builds the "Show" trigger button and its checkbox popup. Plain JCheckBoxes (not
+	// JCheckBoxMenuItems) are added to the JPopupMenu so toggling one does NOT close the popup —
+	// the user can tick several before clicking away. Categories union; Pets Only is exclusive.
+	private void buildFilterControl()
+	{
+		filterTrigger.setHorizontalAlignment(SwingConstants.LEFT);
+		// Reserve room on the right so a long summary never runs under the painted arrow.
+		filterTrigger.setMargin(new Insets(2, 6, 2, 18));
+		filterTrigger.setFocusable(false);
+		// Record when the popup closes so clicking an open trigger toggles it shut: the click's
+		// mouse-press cancels the popup grab (firing this listener), then the trigger's action fires
+		// on release — if that release lands right after the close, treat it as the toggle, not a reopen.
+		filterPopup.addPopupMenuListener(new PopupMenuListener()
+		{
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+			{
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e)
+			{
+				filterPopupHiddenAt = System.currentTimeMillis();
+			}
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e)
+			{
+			}
+		});
+		filterTrigger.addActionListener(e ->
+		{
+			if (System.currentTimeMillis() - filterPopupHiddenAt > 200)
+			{
+				filterPopup.show(filterTrigger, 0, filterTrigger.getHeight());
+			}
+		});
+
+		filterPopup.setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+		for (ShowFilter f : ShowFilter.values())
+		{
+			JCheckBox cb = new JCheckBox(f.displayName(), false);
+			cb.setForeground(Color.LIGHT_GRAY);
+			cb.setBackground(ColorScheme.DARK_GRAY_COLOR);
+			cb.setFocusable(false);
+			cb.addActionListener(e ->
+			{
+				// Categories and Pets Only are mutually exclusive: picking a category leaves pets mode.
+				if (cb.isSelected())
+				{
+					petsOnlyBox.setSelected(false);
+				}
+				applyFilter();
+			});
+			filterBoxes.put(f, cb);
+			filterPopup.add(cb);
+		}
+
+		filterPopup.addSeparator();
+
+		petsOnlyBox.setForeground(Color.LIGHT_GRAY);
+		petsOnlyBox.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		petsOnlyBox.setFocusable(false);
+		petsOnlyBox.setToolTipText("Re-frame the ranking around the pets you still need "
+			+ "(exclusive — ignores the category selection)");
+		petsOnlyBox.addActionListener(e ->
+		{
+			// Pets Only clears every category tick so the two modes never apply at once.
+			if (petsOnlyBox.isSelected())
+			{
+				for (JCheckBox cb : filterBoxes.values())
+				{
+					cb.setSelected(false);
+				}
+			}
+			applyFilter();
+		});
+		filterPopup.add(petsOnlyBox);
+
+		updateFilterSummary();
+	}
+
 	private void applyFilter()
 	{
-		FilterChoice choice = (FilterChoice) filterBox.getSelectedItem();
-		if (choice == null)
+		boolean pets = petsOnlyBox.isSelected();
+		EnumSet<ShowFilter> selected = EnumSet.noneOf(ShowFilter.class);
+		if (!pets)
 		{
-			choice = FilterChoice.ALL;
+			for (Map.Entry<ShowFilter, JCheckBox> e : filterBoxes.entrySet())
+			{
+				if (e.getValue().isSelected())
+				{
+					selected.add(e.getKey());
+				}
+			}
 		}
-		boolean pets = choice == FilterChoice.PETS_ONLY;
 		// Keep the EDT-side view flag in step with the mode before any repaint, so the renderer and
-		// current card pick it up. The category set is stored first (no recompute); the pets toggle
+		// current card pick it up. The show-filter is stored first (no recompute); the pets toggle
 		// is marshalled to the client thread and its recompute fires the authoritative snapshot last.
+		// In pets mode the show-filter is left empty (= All) so the pet ranking sees every category.
 		petsOnlyView = pets;
-		engine.setCategoryFilter(choice.asCategorySet());
+		engine.setShowFilter(selected);
 		if (onPetsOnlyChanged != null)
 		{
 			onPetsOnlyChanged.accept(pets);
 		}
+		updateFilterSummary();
 	}
 
-	private enum FilterChoice
+	// Reflects the current selection on the trigger button: "Pets Only", "All" (nothing ticked),
+	// or the ticked categories joined in enum order (e.g. "Combat, Slayer").
+	private void updateFilterSummary()
 	{
-		ALL("All"),
-		COMBAT("Combat"),
-		MINIGAME("Minigame"),
-		MISCELLANEOUS("Miscellaneous"),
-		// Not a category filter — re-frames the ranking around remaining pets (see applyFilter).
-		PETS_ONLY("Pets Only");
-
-		private final String label;
-
-		FilterChoice(String label)
+		String summary;
+		if (petsOnlyBox.isSelected())
 		{
-			this.label = label;
+			summary = "Pets Only";
 		}
-
-		EnumSet<Category> asCategorySet()
+		else
 		{
-			switch (this)
+			StringBuilder sb = new StringBuilder();
+			for (Map.Entry<ShowFilter, JCheckBox> e : filterBoxes.entrySet())
 			{
-				case COMBAT:
-					return EnumSet.of(Category.COMBAT);
-				case MINIGAME:
-					return EnumSet.of(Category.MINIGAME);
-				case MISCELLANEOUS:
-					return EnumSet.of(Category.MISCELLANEOUS);
-				case ALL:
-				case PETS_ONLY:
-				default:
-					return EnumSet.allOf(Category.class);
+				if (e.getValue().isSelected())
+				{
+					if (sb.length() > 0)
+					{
+						sb.append(", ");
+					}
+					sb.append(e.getKey().displayName());
+				}
 			}
+			summary = sb.length() == 0 ? "All" : sb.toString();
 		}
-
-		@Override
-		public String toString()
-		{
-			return label;
-		}
+		// Arrow is painted separately (see field); the text holds just the summary.
+		filterTrigger.setText(summary);
 	}
 
 	public void onRankingChanged(List<RankedActivity> ranking)
