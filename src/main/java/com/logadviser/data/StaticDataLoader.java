@@ -38,15 +38,17 @@ public final class StaticDataLoader
 		Map<Integer, ActivityNpcInfo> npcInfo = loadNpcInfo(gson);
 		Map<Integer, ActivityRequirements> requirements = loadRequirements(gson);
 		Set<Integer> pets = loadPets(gson);
-		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps, {} requirement maps, {} pets",
-			activities.size(), items.size(), slots.size(), npcInfo.size(), requirements.size(), pets.size());
+		Set<Integer> f2p = loadF2pSlots(gson);
+		log.debug("Loaded static data: {} activities, {} items, {} slots, {} npc maps, {} requirement maps, {} pets, {} f2p slots",
+			activities.size(), items.size(), slots.size(), npcInfo.size(), requirements.size(), pets.size(), f2p.size());
 		return new StaticData(
 			Collections.unmodifiableList(activities),
 			Collections.unmodifiableList(items),
 			Collections.unmodifiableList(slots),
 			Collections.unmodifiableMap(npcInfo),
 			Collections.unmodifiableMap(requirements),
-			Collections.unmodifiableSet(pets));
+			Collections.unmodifiableSet(pets),
+			Collections.unmodifiableSet(f2p));
 	}
 
 	private static Map<Integer, ActivityRequirements> loadRequirements(Gson gson) throws IOException
@@ -127,6 +129,21 @@ public final class StaticDataLoader
 			for (RawPet p : raw)
 			{
 				out.add(p.itemId);
+			}
+			return out;
+		}
+	}
+
+	private static Set<Integer> loadF2pSlots(Gson gson) throws IOException
+	{
+		Type listType = new TypeToken<List<RawF2pSlot>>(){}.getType();
+		try (InputStreamReader r = open("f2p_slots.json"))
+		{
+			List<RawF2pSlot> raw = gson.fromJson(r, listType);
+			Set<Integer> out = new LinkedHashSet<>(raw.size() * 2);
+			for (RawF2pSlot s : raw)
+			{
+				out.add(s.itemId);
 			}
 			return out;
 		}
@@ -265,6 +282,12 @@ public final class StaticDataLoader
 	}
 
 	private static final class RawPet
+	{
+		int itemId;
+		String name; // documentation only; the engine matches on itemId
+	}
+
+	private static final class RawF2pSlot
 	{
 		int itemId;
 		String name; // documentation only; the engine matches on itemId

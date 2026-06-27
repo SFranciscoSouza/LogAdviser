@@ -17,6 +17,10 @@ public class StaticData
 	// Canonical item ids of every collection-log pet (the 68-entry OSRS "All Pets" set),
 	// loaded from pets.json. Used by the "Pets Only" filter to keep only pet drops.
 	Set<Integer> petItemIds;
+	// Canonical item ids of every free-to-play obtainable collection-log slot, loaded from
+	// f2p_slots.json (sourced from the wiki's "Collection log/Free-to-play" page). Used by the
+	// "Membership" filter to hide members-only slots in F2P mode.
+	Set<Integer> f2pItemIds;
 
 	public Map<Integer, Activity> activitiesByIndex()
 	{
@@ -69,6 +73,12 @@ public class StaticData
 	public boolean isPet(int itemId)
 	{
 		return petItemIds.contains(itemId);
+	}
+
+	/** True if the item id is a free-to-play obtainable collection-log slot (per f2p_slots.json). */
+	public boolean isF2p(int itemId)
+	{
+		return f2pItemIds.contains(itemId);
 	}
 
 	public ActivityNpcInfo npcInfoFor(int activityIndex)

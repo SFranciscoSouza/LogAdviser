@@ -50,6 +50,10 @@ public class AdviserEngine
 	// are unioned (an activity is shown if it matches any). Pets-only is a separate mode below.
 	private EnumSet<ShowFilter> showFilter = EnumSet.noneOf(ShowFilter.class);
 	private AccountMode accountMode = AccountMode.AUTO;
+	// The "Membership" filter. P2P (default) applies no filter — a member can collect every slot;
+	// F2P keeps only the free-to-play obtainable slots (data.isF2p). Like account type it changes
+	// which items an activity is evaluated against, so flipping it triggers a full recompute.
+	private MembershipMode membershipMode = MembershipMode.P2P;
 	private boolean ignoreRequirements = false;
 	// When true the ranking is reframed around pets: each activity is timed against its
 	// remaining pet drop(s) only, ignoring every non-pet item on the table.
@@ -307,6 +311,25 @@ public class AdviserEngine
 	public AccountMode getAccountMode()
 	{
 		return accountMode;
+	}
+
+	/** Set the Membership filter. Changes the items each activity is evaluated against (F2P drops
+	 *  members-only slots), so a full recompute is required. Must be invoked on the client thread. */
+	public void setMembershipMode(MembershipMode mode)
+	{
+		MembershipMode m = mode == null ? MembershipMode.P2P : mode;
+		if (m == this.membershipMode)
+		{
+			return;
+		}
+		this.membershipMode = m;
+		recomputeAll();
+		fire();
+	}
+
+	public MembershipMode getMembershipMode()
+	{
+		return membershipMode;
 	}
 
 	public void setIgnoreRequirements(boolean ignore)
@@ -752,35 +775,35 @@ public class AdviserEngine
 	}
 
 	/**
-	 * The items an activity should be evaluated against for the current account type.
-	 * On iron rates this drops {@link #IRON_AUTO_COMPLETED} slots so they neither show
-	 * up in the ranking nor count toward the activity's slot total; mains get the list
-	 * untouched. Recomputed via {@link #refreshRates()} whenever the iron/main signal
-	 * settles, so toggling account type re-includes/excludes these correctly.
+	 * The items an activity should be evaluated against for the current account type and
+	 * membership filter. On iron rates this drops {@link #IRON_AUTO_COMPLETED} slots; in F2P
+	 * mode it keeps only free-to-play obtainable slots ({@link StaticData#isF2p}). Dropped slots
+	 * neither show up in the ranking nor count toward the activity's slot total — an activity
+	 * left with no items is treated as having nothing to chase (see {@link #recomputeActivity}).
+	 * Recomputed whenever the iron/main signal or the membership mode changes.
 	 */
 	private List<ActivityItem> visibleItems(List<ActivityItem> items)
 	{
-		if (!isUsingIronRates())
+		boolean iron = isUsingIronRates();
+		boolean f2pOnly = membershipMode == MembershipMode.F2P;
+		if (!iron && !f2pOnly)
 		{
 			return items;
 		}
-		List<ActivityItem> out = null;
-		for (int i = 0; i < items.size(); i++)
+		List<ActivityItem> out = new ArrayList<>(items.size());
+		for (ActivityItem it : items)
 		{
-			ActivityItem it = items.get(i);
-			if (IRON_AUTO_COMPLETED.contains(it.getItemId()))
+			if (iron && IRON_AUTO_COMPLETED.contains(it.getItemId()))
 			{
-				if (out == null)
-				{
-					out = new ArrayList<>(items.subList(0, i));
-				}
+				continue;
 			}
-			else if (out != null)
+			if (f2pOnly && !data.isF2p(it.getItemId()))
 			{
-				out.add(it);
+				continue;
 			}
+			out.add(it);
 		}
-		return out == null ? items : out;
+		return out;
 	}
 
 	private int[] slotCounts(List<ActivityItem> items)

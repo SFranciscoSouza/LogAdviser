@@ -7,6 +7,7 @@ import com.logadviser.data.StaticData;
 import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
+import com.logadviser.engine.MembershipMode;
 import com.logadviser.engine.PlayerProgress;
 import com.logadviser.engine.RankedActivity;
 import com.logadviser.sync.CollectionLogSyncButton;
@@ -29,6 +30,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
+import net.runelite.api.WorldType;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.StatChanged;
@@ -58,6 +60,7 @@ public class LogAdviserPlugin extends Plugin
 		new java.util.concurrent.atomic.AtomicInteger();
 	private static final String CONFIG_GROUP = "logadviser";
 	private static final String CFG_ACCOUNT_MODE = "accountModeOverride";
+	private static final String CFG_MEMBERSHIP_MODE = "membershipModeOverride";
 	private static final String CFG_IGNORE_REQ = "ignoreRequirements";
 	// Quest completion has no dedicated event, so we re-poll on a throttled GameTick.
 	private static final int PROGRESS_POLL_TICKS = 10;
@@ -139,6 +142,7 @@ public class LogAdviserPlugin extends Plugin
 			tracker,
 			staticData,
 			this::onAccountModeSelected,
+			this::onMembershipModeSelected,
 			this::onIgnoreRequirementsSelected,
 			this::onPetsOnlySelected,
 			config::upcomingListSize,
@@ -179,6 +183,7 @@ public class LogAdviserPlugin extends Plugin
 				tracker.load();
 				tracker.evaluateSyncStatus();
 				applyAccountModeFromConfig();
+				applyMembershipModeFromConfig();
 				applyIgnoreRequirementsFromConfig();
 				refreshPlayerProgress();
 				updatePlayerLabel();
@@ -232,6 +237,7 @@ public class LogAdviserPlugin extends Plugin
 			{
 				refreshDetectedIronman();
 				applyAccountModeFromConfig();
+				applyMembershipModeFromConfig();
 				applyIgnoreRequirementsFromConfig();
 				refreshPlayerProgress();
 				updatePlayerLabel();
@@ -445,6 +451,40 @@ public class LogAdviserPlugin extends Plugin
 		if (panel != null)
 		{
 			panel.setAccountMode(mode);
+		}
+	}
+
+	private void onMembershipModeSelected(MembershipMode mode)
+	{
+		configManager.setRSProfileConfiguration(CONFIG_GROUP, CFG_MEMBERSHIP_MODE, mode.name());
+		clientThread.invokeLater(() ->
+		{
+			engine.setMembershipMode(mode);
+			updatePlayerLabel();
+			return true;
+		});
+	}
+
+	/**
+	 * Loads the saved Membership choice, seeding it on the first login for a profile from the
+	 * world type (members world → P2P, free world → F2P) and persisting that concrete value —
+	 * RuneLite exposes no account-membership flag, so the world is the only reliable signal.
+	 * After the seed the saved value always wins. Must run on the client thread (reads getWorldType).
+	 */
+	private void applyMembershipModeFromConfig()
+	{
+		String saved = configManager.getRSProfileConfiguration(CONFIG_GROUP, CFG_MEMBERSHIP_MODE);
+		MembershipMode mode = MembershipMode.parse(saved);
+		if (mode == null)
+		{
+			boolean membersWorld = client.getWorldType().contains(WorldType.MEMBERS);
+			mode = membersWorld ? MembershipMode.P2P : MembershipMode.F2P;
+			configManager.setRSProfileConfiguration(CONFIG_GROUP, CFG_MEMBERSHIP_MODE, mode.name());
+		}
+		engine.setMembershipMode(mode);
+		if (panel != null)
+		{
+			panel.setMembershipMode(mode);
 		}
 	}
 

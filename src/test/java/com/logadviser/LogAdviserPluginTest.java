@@ -34,6 +34,8 @@ public class LogAdviserPluginTest
 			: "expected 2509 activity_map rows, got " + data.getActivityItems().size();
 		assert data.getSlots().size() == 1701
 			: "expected 1701 slot rows, got " + data.getSlots().size();
+		assert data.getF2pItemIds().size() == 101
+			: "expected 101 f2p slots, got " + data.getF2pItemIds().size();
 
 		// This is a data/ranking-math sanity check, not a requirements test. With no
 		// player progress everything gated would be locked, so ignore requirements

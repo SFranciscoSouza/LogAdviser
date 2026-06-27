@@ -6,6 +6,7 @@ import com.logadviser.data.LogSlot;
 import com.logadviser.data.StaticData;
 import com.logadviser.engine.AccountMode;
 import com.logadviser.engine.AdviserEngine;
+import com.logadviser.engine.MembershipMode;
 import com.logadviser.engine.RankedActivity;
 import com.logadviser.engine.ShowFilter;
 import com.logadviser.sync.CollectionLogTracker;
@@ -77,6 +78,7 @@ public class LogAdviserPanel extends PluginPanel
 	private final CollectionLogTracker tracker;
 	private final StaticData staticData;
 	private final Consumer<AccountMode> onAccountModeChanged;
+	private final Consumer<MembershipMode> onMembershipModeChanged;
 	private final Consumer<Boolean> onIgnoreRequirementsChanged;
 	private final Consumer<Boolean> onPetsOnlyChanged;
 	private final IntSupplier upcomingListSize;
@@ -86,6 +88,7 @@ public class LogAdviserPanel extends PluginPanel
 	// Header
 	private final JLabel playerLabel = new JLabel("(not logged in)");
 	private final JComboBox<AccountMode> accountModeBox = new JComboBox<>(AccountMode.values());
+	private final JComboBox<MembershipMode> membershipModeBox = new JComboBox<>(MembershipMode.values());
 	private final JLabel modeBadge = new JLabel("");
 	// Filter row — multi-select "Show": tick any of Combat/Minigame/Misc/Slayer (unioned), or the
 	// exclusive "Pets Only". A button shows the current selection and opens the checkbox popup; the
@@ -154,6 +157,7 @@ public class LogAdviserPanel extends PluginPanel
 
 	private RankedActivity currentTopRanked;
 	private boolean accountModeBoxLoading = false;
+	private boolean membershipModeBoxLoading = false;
 	private boolean ignoreReqBoxLoading = false;
 
 	// Hover preview of an activity's log slots. The popup data is snapshotted on the EDT in
@@ -175,6 +179,7 @@ public class LogAdviserPanel extends PluginPanel
 		CollectionLogTracker tracker,
 		StaticData staticData,
 		Consumer<AccountMode> onAccountModeChanged,
+		Consumer<MembershipMode> onMembershipModeChanged,
 		Consumer<Boolean> onIgnoreRequirementsChanged,
 		Consumer<Boolean> onPetsOnlyChanged,
 		IntSupplier upcomingListSize,
@@ -189,6 +194,7 @@ public class LogAdviserPanel extends PluginPanel
 		this.tracker = tracker;
 		this.staticData = staticData;
 		this.onAccountModeChanged = onAccountModeChanged;
+		this.onMembershipModeChanged = onMembershipModeChanged;
 		this.onIgnoreRequirementsChanged = onIgnoreRequirementsChanged;
 		this.onPetsOnlyChanged = onPetsOnlyChanged;
 		this.upcomingListSize = upcomingListSize;
@@ -469,7 +475,36 @@ public class LogAdviserPanel extends PluginPanel
 			}
 		});
 		modePanel.add(accountModeBox, BorderLayout.CENTER);
-		p.add(modePanel, BorderLayout.SOUTH);
+
+		// Membership filter, a sibling of "Account mode": F2P hides members-only slots, P2P shows all.
+		JPanel memberPanel = new JPanel(new BorderLayout(4, 2));
+		memberPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		JLabel memberLabel = new JLabel("Membership:");
+		memberLabel.setForeground(Color.LIGHT_GRAY);
+		memberPanel.add(memberLabel, BorderLayout.WEST);
+		membershipModeBox.putClientProperty("FlatLaf.style", "arrowType: triangle");
+		membershipModeBox.addActionListener(e ->
+		{
+			if (membershipModeBoxLoading)
+			{
+				return;
+			}
+			MembershipMode m = (MembershipMode) membershipModeBox.getSelectedItem();
+			if (m != null)
+			{
+				onMembershipModeChanged.accept(m);
+			}
+		});
+		memberPanel.add(membershipModeBox, BorderLayout.CENTER);
+
+		// Stack the two dropdown rows; BorderLayout.SOUTH only takes one component.
+		JPanel modeStack = new JPanel();
+		modeStack.setLayout(new BoxLayout(modeStack, BoxLayout.Y_AXIS));
+		modeStack.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		modeStack.add(modePanel);
+		modeStack.add(verticalGap(4));
+		modeStack.add(memberPanel);
+		p.add(modeStack, BorderLayout.SOUTH);
 		return p;
 	}
 
@@ -725,6 +760,22 @@ public class LogAdviserPanel extends PluginPanel
 			finally
 			{
 				accountModeBoxLoading = false;
+			}
+		});
+	}
+
+	public void setMembershipMode(MembershipMode mode)
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			membershipModeBoxLoading = true;
+			try
+			{
+				membershipModeBox.setSelectedItem(mode);
+			}
+			finally
+			{
+				membershipModeBoxLoading = false;
 			}
 		});
 	}
