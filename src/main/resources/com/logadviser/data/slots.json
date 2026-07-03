@@ -4962,7 +4962,7 @@
   {
     "itemId": 20724,
     "slotName": "Imbued heart",
-    "activityCount": 10
+    "activityCount": 11
   },
   {
     "itemId": 20727,
@@ -4972,12 +4972,12 @@
   {
     "itemId": 20730,
     "slotName": "Mist battlestaff",
-    "activityCount": 11
+    "activityCount": 12
   },
   {
     "itemId": 20736,
     "slotName": "Dust battlestaff",
-    "activityCount": 10
+    "activityCount": 11
   },
   {
     "itemId": 20754,
@@ -5112,7 +5112,7 @@
   {
     "itemId": 21270,
     "slotName": "Eternal gem",
-    "activityCount": 10
+    "activityCount": 11
   },
   {
     "itemId": 21273,
@@ -6372,7 +6372,7 @@
   {
     "itemId": 24777,
     "slotName": "Blood shard",
-    "activityCount": 2
+    "activityCount": 3
   },
   {
     "itemId": 24844,
@@ -8503,5 +8503,30 @@
     "itemId": 33423,
     "slotName": "Bosun's workbench schematic",
     "activityCount": 1
+  },
+  {
+    "itemId": 33631,
+    "slotName": "Crimson kisten",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33634,
+    "slotName": "Elder venator fang",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33642,
+    "slotName": "Maggot marquess",
+    "activityCount": 1
+  },
+  {
+    "itemId": 33661,
+    "slotName": "Venator fang",
+    "activityCount": 2
+  },
+  {
+    "itemId": 33663,
+    "slotName": "Venator tooth",
+    "activityCount": 2
   }
 ]

@@ -25088,5 +25088,145 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 45.0
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33661,
+    "itemName": "Venator fang",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 80.0
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33663,
+    "itemName": "Venator tooth",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 80.0
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33634,
+    "itemName": "Elder venator fang",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 333.3
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33631,
+    "itemName": "Crimson kisten",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 500.0
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33642,
+    "itemName": "Maggot marquess",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 3250.0
+  },
+  {
+    "activityIndex": 255,
+    "itemId": 33642,
+    "itemName": "Maggot marquess",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": true,
+    "dropRateAttempts": 1625.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 33663,
+    "itemName": "Venator tooth",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 40.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 33661,
+    "itemName": "Venator fang",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 40.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 24777,
+    "itemName": "Blood shard",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1000.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 24777,
+    "itemName": "Blood shard",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1000.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 20730,
+    "itemName": "Mist battlestaff",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 30600.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 20736,
+    "itemName": "Dust battlestaff",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 30600.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 21270,
+    "itemName": "Eternal gem",
+    "slotDifficulty": 8,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 107200.0
+  },
+  {
+    "activityIndex": 256,
+    "itemId": 20724,
+    "itemName": "Imbued heart",
+    "slotDifficulty": 8,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 107200.0
   }
 ]

@@ -2030,5 +2030,21 @@
     "completionsPerHrIron": 150.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
+  },
+  {
+    "index": 255,
+    "name": "Killing Maggot King",
+    "completionsPerHrMain": 27.0,
+    "completionsPerHrIron": 25.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 256,
+    "name": "Killing Venators (on task)",
+    "completionsPerHrMain": 90.0,
+    "completionsPerHrIron": 90.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
   }
 ]

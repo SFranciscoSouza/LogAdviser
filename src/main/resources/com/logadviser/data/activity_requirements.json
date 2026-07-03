@@ -153,5 +153,7 @@
   "251": { "skills": {}, "quests": ["The Ides of Milk"] },
   "252": { "skills": { "SAILING": 80 }, "quests": [] },
   "253": { "skills": { "SAILING": 80 }, "quests": [] },
-  "254": { "skills": { "SLAYER": 62, "SAILING": 60 }, "quests": [] }
+  "254": { "skills": { "SLAYER": 62, "SAILING": 60 }, "quests": [] },
+  "255": { "skills": {}, "quests": ["The Blood Moon Rises"] },
+  "256": { "skills": {}, "quests": ["The Blood Moon Rises"] }
 }

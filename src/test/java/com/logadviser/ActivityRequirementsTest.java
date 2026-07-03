@@ -2,6 +2,7 @@ package com.logadviser;
 
 import com.google.gson.Gson;
 import com.logadviser.data.ActivityRequirements;
+import com.logadviser.data.QuestResolver;
 import com.logadviser.data.StaticData;
 import com.logadviser.data.StaticDataLoader;
 import com.logadviser.engine.AdviserEngine;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Proves the skill/quest gating end-to-end against the real activity_requirements.json,
@@ -30,6 +32,15 @@ import static org.junit.Assert.assertTrue;
  */
 public class ActivityRequirementsTest
 {
+	// Quest tokens intentionally present in activity_requirements.json but not yet in the
+	// released RuneLite Quest enum (the build resolves 'latest.release'). QuestResolver returns
+	// null for these, so the gate stays inert until a RuneLite release adds the quest, at which
+	// point it activates automatically. Listed here (normalised lower-case) so
+	// everyQuestTokenResolves treats them as pending rather than as typos. Remove an entry once
+	// RuneLite ships the quest.
+	private static final Set<String> PENDING_QUESTS = new HashSet<>(Collections.singletonList(
+		"the blood moon rises"));
+
 	private StaticData data;
 
 	@Before
@@ -71,15 +82,55 @@ public class ActivityRequirementsTest
 			: data.getRequirementsByActivity().entrySet())
 		{
 			ActivityRequirements r = e.getValue();
-			if (r.getQuests().size() != r.getRawQuestStrings().size())
+			for (String q : r.getRawQuestStrings())
 			{
-				unresolved.append("\n  activity ").append(e.getKey())
-					.append(": raw=").append(r.getRawQuestStrings())
-					.append(" resolved=").append(r.getQuests().size());
+				// A pending quest (not yet in the running RuneLite's Quest enum) is allowed to be
+				// unresolved; any other token that fails to resolve is a real typo. Once RuneLite
+				// ships the quest, resolve() returns non-null and this still passes — remove the
+				// allowlist entry then so the guard resumes catching that token.
+				if (QuestResolver.resolve(q) == null
+					&& !PENDING_QUESTS.contains(q.trim().toLowerCase()))
+				{
+					unresolved.append("\n  activity ").append(e.getKey())
+						.append(": unresolved quest '").append(q).append('\'');
+				}
 			}
 		}
 		assertEquals("some quest tokens did not resolve to a RuneLite Quest:"
 			+ unresolved, 0, unresolved.length());
+	}
+
+	@Test
+	public void bloodMoonGateActivatesWhenRuneLiteKnowsTheQuest()
+	{
+		// "The Blood Moon Rises" gates activities 255 (Killing Maggot King) and 256 (Killing
+		// Venators). It only reached RuneLite's Quest enum in 1.12.32; on older clients the token
+		// is unresolvable, so this skips there and asserts once the running RuneLite has it —
+		// proving the gate wires up (rather than silently doing nothing).
+		Quest bloodMoon = QuestResolver.resolve("The Blood Moon Rises");
+		assumeTrue("skipped: this RuneLite build has no 'The Blood Moon Rises' quest yet",
+			bloodMoon != null);
+
+		assertTrue("Blood Moon must be the resolved gate for activity 255",
+			data.requirementsFor(255).getQuests().contains(bloodMoon));
+		assertTrue("Blood Moon must be the resolved gate for activity 256",
+			data.requirementsFor(256).getQuests().contains(bloodMoon));
+
+		AdviserEngine engine = new AdviserEngine(data, () -> false);
+		engine.setPlayerProgress(new PlayerProgress(
+			new EnumMap<>(Skill.class), Collections.<Quest>emptySet()));
+		List<RankedActivity> ranking = engine.getRanking();
+		assertTrue("Killing Maggot King (255) is locked without the quest",
+			find(ranking, 255).isLocked());
+		assertTrue("Killing Venators (256) is locked without the quest",
+			find(ranking, 256).isLocked());
+		assertEquals("The Blood Moon Rises", find(ranking, 255).getRequirementLabel());
+
+		Set<Quest> done = new HashSet<>();
+		done.add(bloodMoon);
+		engine.setPlayerProgress(new PlayerProgress(new EnumMap<>(Skill.class), done));
+		assertFalse("255 unlocks once the quest is complete",
+			find(engine.getRanking(), 255).isLocked());
 	}
 
 	@Test
