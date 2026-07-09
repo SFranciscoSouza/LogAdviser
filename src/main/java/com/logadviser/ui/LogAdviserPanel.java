@@ -313,9 +313,10 @@ public class LogAdviserPanel extends PluginPanel
 		{
 			return;
 		}
-		// Anchor to a CONSTANT position derived only from the visible list region: flush to the
-		// left of the list and vertically centered. Independent of the row/cursor/scroll offset,
-		// so the box never drifts to the top when scrolling, and is always to the left.
+		// Anchor to a CONSTANT position derived only from the visible list region: top-aligned with
+		// the first row and flush against the list's left edge. Independent of the row/cursor/scroll
+		// offset, so the box never drifts when scrolling, and is always to the left. Flush (no gap)
+		// so pollHide's hit test stays contiguous as the pointer moves from a row onto the popup.
 		Point vpLoc = vp.getLocationOnScreen();
 		// Clamp within the monitor RuneLite is actually on (its bounds can have a negative origin
 		// for a left-of-primary monitor) — not the primary screen — so the popup never jumps to the
@@ -324,9 +325,9 @@ public class LogAdviserPanel extends PluginPanel
 		Rectangle b = gc != null
 			? gc.getBounds()
 			: new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-		int x = vpLoc.x - ActivityLogPopup.FIXED_W - 8;
+		int x = vpLoc.x - ActivityLogPopup.FIXED_W;
 		x = Math.max(b.x, Math.min(x, b.x + b.width - ActivityLogPopup.FIXED_W));
-		int y = vpLoc.y + (vp.getHeight() - ActivityLogPopup.FIXED_H) / 2;
+		int y = vpLoc.y;
 		y = Math.max(b.y, Math.min(y, b.y + b.height - ActivityLogPopup.FIXED_H));
 		logPopup.showAt(x, y);
 		if (!hideTimer.isRunning())
