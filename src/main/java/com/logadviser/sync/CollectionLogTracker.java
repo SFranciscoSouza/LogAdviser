@@ -320,8 +320,11 @@ public class CollectionLogTracker
 			{
 				added++;
 			}
-			engine.markObtained(itemId);
 		}
+		// Merge in one shot: a per-item markObtained() fires the listener fan-out (and a full
+		// panel rebuild on the EDT) once per new item, which on a first-time sync is thousands
+		// of rebuilds and locks up the client's mouse input until they drain.
+		engine.markObtainedAll(harvest);
 		if (added > 0)
 		{
 			persist();

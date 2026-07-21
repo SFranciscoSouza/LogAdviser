@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -154,6 +155,10 @@ public class LogAdviserPanel extends PluginPanel
 	// Most recent normal ranking, so the skip-list toggle can rebuild the default
 	// view without re-querying the engine.
 	private List<RankedActivity> lastRanking = new ArrayList<>();
+	// Newest ranking awaiting an EDT rebuild, or null when none is queued. applyRanking() is
+	// expensive (a full slot snapshot + list rebuild), so a burst of engine updates coalesces
+	// into a single rebuild of the latest snapshot rather than one rebuild each.
+	private final AtomicReference<List<RankedActivity>> pendingRanking = new AtomicReference<>();
 
 	private RankedActivity currentTopRanked;
 	private boolean accountModeBoxLoading = false;
@@ -953,8 +958,21 @@ public class LogAdviserPanel extends PluginPanel
 
 	public void onRankingChanged(List<RankedActivity> ranking)
 	{
-		List<RankedActivity> snapshot = new ArrayList<>(ranking);
-		SwingUtilities.invokeLater(() -> applyRanking(snapshot));
+		// Park the newest snapshot and only queue a rebuild if one isn't already pending —
+		// the queued task always applies the latest snapshot, so intermediate ones are dropped
+		// instead of each costing a full (and immediately superseded) rebuild on the EDT.
+		if (pendingRanking.getAndSet(new ArrayList<>(ranking)) != null)
+		{
+			return;
+		}
+		SwingUtilities.invokeLater(() ->
+		{
+			List<RankedActivity> snapshot = pendingRanking.getAndSet(null);
+			if (snapshot != null)
+			{
+				applyRanking(snapshot);
+			}
+		});
 	}
 
 	private void applyRanking(List<RankedActivity> ranking)

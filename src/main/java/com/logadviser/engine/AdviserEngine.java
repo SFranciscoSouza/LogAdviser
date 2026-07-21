@@ -8,6 +8,7 @@ import com.logadviser.data.StaticData;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -182,6 +183,36 @@ public class AdviserEngine
 		{
 			fire();
 		}
+	}
+
+	/**
+	 * Bulk equivalent of {@link #markObtained(int)} for a whole batch of items — merges them all,
+	 * then recomputes and notifies listeners <em>once</em>.
+	 *
+	 * <p>The full collection-log sync discovers up to a few thousand items in one go. Feeding those
+	 * through {@link #markObtained(int)} one at a time fires a listener fan-out per newly obtained
+	 * item, and each fan-out queues a complete panel rebuild on the EDT — which is also the thread
+	 * RuneLite dispatches mouse events on, so a first-time sync froze the client's input until the
+	 * backlog drained. One recompute for the batch is both cheaper and invisible to the user.
+	 */
+	public void markObtainedAll(Collection<Integer> itemIds)
+	{
+		boolean changed = false;
+		for (int itemId : itemIds)
+		{
+			if (obtained.add(data.canonicalItemId(itemId)))
+			{
+				changed = true;
+			}
+		}
+		if (!changed)
+		{
+			return;
+		}
+		// Past a handful of items a single sweep beats N targeted recomputes, and it keeps this
+		// path identical to replaceObtained().
+		recomputeAll();
+		fire();
 	}
 
 	/** The skip set in effect for the current mode — pet-mode skips while {@link #petsOnly},
