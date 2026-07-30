@@ -64,7 +64,7 @@ public class PetsOnlyTest
 	@Test
 	public void petsJsonHasThePetSetAndEveryIdIsAKnownSlot()
 	{
-		assertEquals("pets.json should hold the canonical OSRS pet set", 69, data.getPetItemIds().size());
+		assertEquals("pets.json should hold the canonical OSRS pet set", 71, data.getPetItemIds().size());
 		for (int id : data.getPetItemIds())
 		{
 			assertTrue("pet id " + id + " must map to a real collection-log slot",

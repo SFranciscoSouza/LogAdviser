@@ -25228,5 +25228,75 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 107200.0
+  },
+  {
+    "activityIndex": 257,
+    "itemId": 34024,
+    "itemName": "Jeweller's chisel",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 315.0
+  },
+  {
+    "activityIndex": 258,
+    "itemId": 34040,
+    "itemName": "Mr mcgroot",
+    "slotDifficulty": 8,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": true,
+    "dropRateAttempts": 36000.0
+  },
+  {
+    "activityIndex": 259,
+    "itemId": 21726,
+    "itemName": "Granite dust",
+    "slotDifficulty": 1,
+    "requiresPrevious": false,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 1.0
+  },
+  {
+    "activityIndex": 259,
+    "itemId": 34033,
+    "itemName": "Ardeaglais teleport",
+    "slotDifficulty": 2,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 22.2857
+  },
+  {
+    "activityIndex": 259,
+    "itemId": 34027,
+    "itemName": "Hallowfell",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 128.0
+  },
+  {
+    "activityIndex": 259,
+    "itemId": 34030,
+    "itemName": "Jar of light",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 896.0
+  },
+  {
+    "activityIndex": 259,
+    "itemId": 34042,
+    "itemName": "Aggy",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": true,
+    "dropRateAttempts": 3000.0
   }
 ]

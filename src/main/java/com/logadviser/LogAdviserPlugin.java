@@ -16,6 +16,7 @@ import com.logadviser.ui.LogAdviserPanel;
 import com.logadviser.ui.TargetInfoBox;
 import com.logadviser.ui.TargetTextOverlay;
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +63,8 @@ public class LogAdviserPlugin extends Plugin
 	private static final String CFG_ACCOUNT_MODE = "accountModeOverride";
 	private static final String CFG_MEMBERSHIP_MODE = "membershipModeOverride";
 	private static final String CFG_IGNORE_REQ = "ignoreRequirements";
+	// Calendar day (epoch days) the out-of-sync warning was last shown on, per RS profile.
+	private static final String CFG_WARN_DAY = "clogWarnDay";
 	// Quest completion has no dedicated event, so we re-poll on a throttled GameTick.
 	private static final int PROGRESS_POLL_TICKS = 10;
 
@@ -87,9 +90,12 @@ public class LogAdviserPlugin extends Plugin
 	// it's invoked on the client thread, so we never call it from startUp/EDT — only
 	// from @Subscribe events (already on the client thread) and from clientThread.invokeLater.
 	private volatile boolean detectedIronman = false;
-	// One-shot guard so the "collection log not synced" chat warning fires at most once
-	// per login, not on every sync-status re-evaluation.
-	private volatile boolean clogWarnedThisLogin = false;
+	// The "collection log not synced" warning is login-only: armed when we leave the game
+	// (login screen / logging in) and spent on the first sync evaluation after we are back
+	// in with real data. LOGGED_IN on its own is NOT a login — RuneLite re-fires it on every
+	// teleport, region cross and world hop, which is what used to spam the warning. Starts
+	// armed so enabling the plugin while already logged in still warns once.
+	private volatile boolean loginWarnArmed = true;
 	// Union of every skill/quest referenced by activity_requirements.json — so the
 	// per-tick progress poll only touches what actually gates an activity.
 	private Set<Skill> reqSkills = new HashSet<>();
@@ -231,8 +237,6 @@ public class LogAdviserPlugin extends Plugin
 	{
 		if (event.getGameState() == GameState.LOGGED_IN)
 		{
-			// Fresh login — allow one sync warning once the collection-log varp lands.
-			clogWarnedThisLogin = false;
 			clientThread.invokeLater(() ->
 			{
 				refreshDetectedIronman();
@@ -244,8 +248,14 @@ public class LogAdviserPlugin extends Plugin
 				return true;
 			});
 		}
-		else if (event.getGameState() == GameState.LOGIN_SCREEN)
+		else if (event.getGameState() == GameState.LOGIN_SCREEN
+			|| event.getGameState() == GameState.LOGGING_IN)
 		{
+			// Leaving / re-entering the game is the only thing that counts as a login, so this
+			// is where the warning gets re-armed. LOGGING_IN is covered too because the client
+			// can go straight LOGGING_IN -> LOADING -> LOGGED_IN without passing back through
+			// the login screen. Deliberately not HOPPING: a world hop is not a login.
+			loginWarnArmed = true;
 			if (panel != null)
 			{
 				panel.setPlayerLabel(null, false);
@@ -498,8 +508,8 @@ public class LogAdviserPlugin extends Plugin
 		panel.setPlayerLabel(name, detectedIronman());
 	}
 
-	/** Sync-status listener: pushes the sidebar indication and fires the one-shot login
-	 *  warning. Runs on the client thread (tracker fires its listeners there). */
+	/** Sync-status listener: pushes the sidebar indication and fires the login warning (at
+	 *  most once a day). Runs on the client thread (tracker fires its listeners there). */
 	private void onSyncStatusChanged()
 	{
 		boolean inSync = tracker.isInSync();
@@ -508,11 +518,45 @@ public class LogAdviserPlugin extends Plugin
 		{
 			panel.setSyncStatus(inSync, playerCount);
 		}
-		if (!inSync && !clogWarnedThisLogin && client.getGameState() == GameState.LOGGED_IN)
+		// playerCount > 0 means the COLLECTION_COUNT varp has actually landed. Without it the
+		// first post-login evaluation (varp still 0) reports inSync == true, spends the armed
+		// flag, and the real out-of-sync state never gets announced.
+		if (loginWarnArmed && playerCount > 0 && client.getGameState() == GameState.LOGGED_IN)
 		{
-			clogWarnedThisLogin = true;
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
-				"Log Adviser: your collection log isn't fully synced — open it and click the Sync button.", null);
+			loginWarnArmed = false;
+			if (!inSync && !alreadyWarnedToday())
+			{
+				configManager.setRSProfileConfiguration(CONFIG_GROUP, CFG_WARN_DAY,
+					Integer.toString(today()));
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
+					"Log Adviser: your collection log isn't fully synced — open it and click the Sync button.", null);
+			}
+		}
+	}
+
+	/** Days since the epoch, local time. Day granularity on purpose: the warning is "about
+	 *  once a day", so it resets at local midnight instead of running a rolling 24h timer. */
+	private static int today()
+	{
+		return (int) LocalDate.now().toEpochDay();
+	}
+
+	/** Read straight from config — no cached field, so there is no load-ordering concern and
+	 *  nothing to reset. A missing or unparseable value means "not warned yet". */
+	private boolean alreadyWarnedToday()
+	{
+		String saved = configManager.getRSProfileConfiguration(CONFIG_GROUP, CFG_WARN_DAY);
+		if (saved == null || saved.trim().isEmpty())
+		{
+			return false;
+		}
+		try
+		{
+			return Integer.parseInt(saved.trim()) == today();
+		}
+		catch (NumberFormatException e)
+		{
+			return false;
 		}
 	}
 

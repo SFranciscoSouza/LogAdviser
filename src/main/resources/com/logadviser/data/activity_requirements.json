@@ -155,5 +155,8 @@
   "253": { "skills": { "SAILING": 80 }, "quests": [] },
   "254": { "skills": { "SLAYER": 62, "SAILING": 60 }, "quests": [] },
   "255": { "skills": {}, "quests": ["The Blood Moon Rises"] },
-  "256": { "skills": {}, "quests": ["The Blood Moon Rises"] }
+  "256": { "skills": {}, "quests": ["The Blood Moon Rises"] },
+  "257": { "skills": { "CRAFTING": 60, "SAILING": 62 }, "quests": ["Fallen From Grace"] },
+  "258": { "skills": { "HUNTER": 60, "SAILING": 62 }, "quests": ["Sheep Herder", "Fallen From Grace"] },
+  "259": { "skills": { "SAILING": 62 }, "quests": ["Fallen From Grace"] }
 }

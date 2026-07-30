@@ -2046,5 +2046,29 @@
     "completionsPerHrIron": 90.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
+  },
+  {
+    "index": 257,
+    "name": "Golem crafting (Wyrmscraig)",
+    "completionsPerHrMain": 58.0,
+    "completionsPerHrIron": 58.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 258,
+    "name": "Hunting Wyrmscraig goats",
+    "completionsPerHrMain": 900.0,
+    "completionsPerHrIron": 900.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
+  },
+  {
+    "index": 259,
+    "name": "Killing Mad Angel",
+    "completionsPerHrMain": 60.0,
+    "completionsPerHrIron": 60.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
   }
 ]

@@ -67,5 +67,7 @@
   { "itemId": 31283, "name": "Soup" },
   { "itemId": 31285, "name": "Gull" },
   { "itemId": 33124, "name": "Beef" },
-  { "itemId": 33642, "name": "Maggot marquess" }
+  { "itemId": 33642, "name": "Maggot marquess" },
+  { "itemId": 34040, "name": "Mr mcgroot" },
+  { "itemId": 34042, "name": "Aggy" }
 ]

@@ -5262,7 +5262,7 @@
   {
     "itemId": 21726,
     "slotName": "Granite dust",
-    "activityCount": 1
+    "activityCount": 2
   },
   {
     "itemId": 21730,
@@ -8528,5 +8528,35 @@
     "itemId": 33663,
     "slotName": "Venator tooth",
     "activityCount": 2
+  },
+  {
+    "itemId": 34024,
+    "slotName": "Jeweller's chisel",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34027,
+    "slotName": "Hallowfell",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34030,
+    "slotName": "Jar of light",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34033,
+    "slotName": "Ardeaglais teleport",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34040,
+    "slotName": "Mr mcgroot",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34042,
+    "slotName": "Aggy",
+    "activityCount": 1
   }
 ]

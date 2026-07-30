@@ -28,12 +28,12 @@ public class LogAdviserPluginTest
 
 		// Sanity-check static data + engine before launching the dev client.
 		StaticData data = StaticDataLoader.loadAll(new Gson());
-		assert data.getActivities().size() == 256
-			: "expected 256 activities, got " + data.getActivities().size();
-		assert data.getActivityItems().size() == 2523
-			: "expected 2523 activity_map rows, got " + data.getActivityItems().size();
-		assert data.getSlots().size() == 1706
-			: "expected 1706 slot rows, got " + data.getSlots().size();
+		assert data.getActivities().size() == 259
+			: "expected 259 activities, got " + data.getActivities().size();
+		assert data.getActivityItems().size() == 2530
+			: "expected 2530 activity_map rows, got " + data.getActivityItems().size();
+		assert data.getSlots().size() == 1712
+			: "expected 1712 slot rows, got " + data.getSlots().size();
 		assert data.getF2pItemIds().size() == 101
 			: "expected 101 f2p slots, got " + data.getF2pItemIds().size();
 

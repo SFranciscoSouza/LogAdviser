@@ -38,8 +38,10 @@ public class ActivityRequirementsTest
 	// point it activates automatically. Listed here (normalised lower-case) so
 	// everyQuestTokenResolves treats them as pending rather than as typos. Remove an entry once
 	// RuneLite ships the quest.
+	// "The Blood Moon Rises" was removed from this list once RuneLite shipped it (the running
+	// build resolves it, so the guard now covers that token again).
 	private static final Set<String> PENDING_QUESTS = new HashSet<>(Collections.singletonList(
-		"the blood moon rises"));
+		"fallen from grace"));
 
 	private StaticData data;
 
@@ -131,6 +133,48 @@ public class ActivityRequirementsTest
 		engine.setPlayerProgress(new PlayerProgress(new EnumMap<>(Skill.class), done));
 		assertFalse("255 unlocks once the quest is complete",
 			find(engine.getRanking(), 255).isLocked());
+	}
+
+	@Test
+	public void fallenFromGraceGateActivatesWhenRuneLiteKnowsTheQuest()
+	{
+		// "Fallen From Grace" gates the three Wyrmscraig activities: 257 (Golem crafting),
+		// 258 (Hunting Wyrmscraig goats) and 259 (Killing Mad Angel). It shipped 29 July 2026
+		// and only reaches RuneLite's Quest enum in a later release, so this skips on older
+		// clients and asserts once the running RuneLite has it — proving the gate wires up
+		// rather than silently doing nothing.
+		Quest fallen = QuestResolver.resolve("Fallen From Grace");
+		assumeTrue("skipped: this RuneLite build has no 'Fallen From Grace' quest yet",
+			fallen != null);
+
+		for (int idx : new int[]{257, 258, 259})
+		{
+			assertTrue("Fallen From Grace must be a resolved gate for activity " + idx,
+				data.requirementsFor(idx).getQuests().contains(fallen));
+		}
+
+		// Max the gated skills so the quest is the only thing that can still hold these locked.
+		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
+		levels.put(Skill.CRAFTING, 99);
+		levels.put(Skill.HUNTER, 99);
+		levels.put(Skill.SAILING, 99);
+
+		AdviserEngine engine = new AdviserEngine(data, () -> false);
+		engine.setPlayerProgress(new PlayerProgress(levels, Collections.<Quest>emptySet()));
+		assertTrue("Golem crafting (257) stays locked on the quest alone",
+			find(engine.getRanking(), 257).isLocked());
+		assertTrue("Killing Mad Angel (259) stays locked on the quest alone",
+			find(engine.getRanking(), 259).isLocked());
+
+		// 258 is deliberately left out below: it also requires Sheep Herder, so completing
+		// Fallen From Grace alone must not unlock it.
+		Set<Quest> done = new HashSet<>();
+		done.add(fallen);
+		engine.setPlayerProgress(new PlayerProgress(levels, done));
+		assertFalse("257 unlocks once the quest is complete",
+			find(engine.getRanking(), 257).isLocked());
+		assertFalse("259 unlocks once the quest is complete",
+			find(engine.getRanking(), 259).isLocked());
 	}
 
 	@Test
