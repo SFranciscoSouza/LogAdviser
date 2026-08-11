@@ -18,6 +18,9 @@ import static org.junit.Assert.assertTrue;
  * hand-entered rows whose only other check is a row count, so the arithmetic that the ranking
  * depends on — attempts / completions-per-hour, and which bucket each drop lands in — is
  * asserted here explicitly.
+ * <p>
+ * The Mad Angel rates are the wiki's published post-quest figures, measured by its drop-log
+ * project over ~3.8M kills; the earlier estimates they replaced were noticeably off.
  */
 public class WyrmscraigDataTest
 {
@@ -72,10 +75,11 @@ public class WyrmscraigDataTest
 	@Test
 	public void madAngelFallsBackToTheCombinedPreRollOnceGraniteDustIsObtained()
 	{
-		// With Granite dust gone the "neither" bucket decides: Ardeaglais teleport (7/156),
-		// Hallowfell (7/896) and Jar of light (1/896) combine harmonically.
+		// With Granite dust gone the "neither" bucket decides: the wiki's pre-roll table —
+		// Ardeaglais teleport (1/25), Hallowfell (1/128) and Jar of light (1/1000) — is a
+		// single mutually-exclusive roll, so the three combine harmonically.
 		engine.markObtained(21726);
-		double combined = 1.0 / (1.0 / 22.2857 + 1.0 / 128.0 + 1.0 / 896.0);
+		double combined = 1.0 / (1.0 / 25.0 + 1.0 / 128.0 + 1.0 / 1000.0);
 		RankedActivity r = find(MAD_ANGEL);
 		assertEquals(combined / 60.0, r.getTimeToNextSlotHours(), 1e-6);
 		assertEquals("four slots left once Granite dust is in", 4, r.getSlotsLeft());

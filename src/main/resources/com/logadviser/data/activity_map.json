@@ -25267,7 +25267,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 22.2857
+    "dropRateAttempts": 25.0
   },
   {
     "activityIndex": 259,
@@ -25287,7 +25287,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 896.0
+    "dropRateAttempts": 1000.0
   },
   {
     "activityIndex": 259,
@@ -25297,6 +25297,6 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": true,
-    "dropRateAttempts": 3000.0
+    "dropRateAttempts": 2000.0
   }
 ]
