@@ -17577,7 +17577,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": true,
-    "dropRateAttempts": 100.0
+    "dropRateAttempts": 50.0
   },
   {
     "activityIndex": 101,
@@ -17587,7 +17587,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": true,
-    "dropRateAttempts": 100.0
+    "dropRateAttempts": 50.0
   },
   {
     "activityIndex": 101,
@@ -17597,7 +17597,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": true,
-    "dropRateAttempts": 100.0
+    "dropRateAttempts": 50.0
   },
   {
     "activityIndex": 101,
@@ -17607,7 +17607,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": true,
-    "dropRateAttempts": 100.0
+    "dropRateAttempts": 50.0
   },
   {
     "activityIndex": 101,
@@ -17657,7 +17657,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": true,
-    "dropRateAttempts": 1000.0
+    "dropRateAttempts": 500.0
   },
   {
     "activityIndex": 102,

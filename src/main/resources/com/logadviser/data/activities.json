@@ -802,8 +802,8 @@
   {
     "index": 101,
     "name": "Collecting pearls while aerial fishing",
-    "completionsPerHrMain": 32.0,
-    "completionsPerHrIron": 32.0,
+    "completionsPerHrMain": 48.0,
+    "completionsPerHrIron": 48.0,
     "extraTimeFirst": 0.0,
     "category": "miscellaneous"
   },
