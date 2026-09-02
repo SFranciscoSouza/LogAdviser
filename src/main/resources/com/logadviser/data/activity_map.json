@@ -25298,5 +25298,55 @@
     "exact": false,
     "independent": true,
     "dropRateAttempts": 2000.0
+  },
+  {
+    "activityIndex": 176,
+    "itemId": 34401,
+    "itemName": "Necklace of fangs",
+    "slotDifficulty": 4,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 128.0
+  },
+  {
+    "activityIndex": 198,
+    "itemId": 34422,
+    "itemName": "Fire ruby",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 64.0
+  },
+  {
+    "activityIndex": 260,
+    "itemId": 34416,
+    "itemName": "Earth emerald",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 64.0
+  },
+  {
+    "activityIndex": 261,
+    "itemId": 34410,
+    "itemName": "Water sapphire",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 64.0
+  },
+  {
+    "activityIndex": 262,
+    "itemId": 34404,
+    "itemName": "Air diamond",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 64.0
   }
 ]

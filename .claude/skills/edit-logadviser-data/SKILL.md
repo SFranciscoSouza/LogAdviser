@@ -1,6 +1,6 @@
 ---
 name: edit-logadviser-data
-description: Use before changing any LogAdviser ranking DATA or MATH — activities, the activity→item mapping, slot definitions, quest/skill requirements, the skip list, account-type (iron vs main) rates, or the time-to-next-slot calculation in AdviserEngine. Explains the full data model and the four-bucket probability math so changes don't silently break the ranking. For adding a single new slot, use add-logadviser-slot instead.
+description: Use before changing any LogAdviser ranking DATA or MATH — activities, the activity→item mapping, slot definitions, quest/skill requirements, the skip list, account-type (iron vs main) rates, or the time-to-next-slot calculation in AdviserEngine. Explains the full data model and the four-bucket probability math so changes don't silently break the ranking. Covers adding a slot, a whole activity, or a rate change.
 user_invocable: true
 ---
 
@@ -13,29 +13,21 @@ exclusion. Read this before touching any of it so a change doesn't silently corr
 
 ## Repo
 
-`C:\Users\Chico\source\repos\SFranciscoSouza\LogAdviser` — `master` is shippable; owner pushes
+`C:\Users\Administrador\Documents\GitHub\LogAdviser` — `master` is shippable; owner pushes
 directly. Data: `src/main/resources/com/logadviser/data/*.json`. Models + engine:
 `src/main/java/com/logadviser/{data,engine}/`.
-
-## When to use this vs add-logadviser-slot
-
-- **This skill** — understanding the model and making *broader* changes: a new activity, rate
-  tuning, requirement edits, mapping/flag changes, or touching the engine math itself.
-- **[[add-logadviser-slot]]** — the step-by-step checklist for adding **one** collection-log
-  item/slot. If that's the whole task, use it directly; it already covers the per-slot edits and
-  the test-assert bumps.
 
 ## The data files
 
 All under `src/main/resources/com/logadviser/data/`. Row counts are asserted in
-`src/test/java/com/logadviser/LogAdviserPluginTest.java` (~lines 35-40) — **bump those asserts
+`src/test/java/com/logadviser/LogAdviserPluginTest.java` (~lines 31-38) — **bump those asserts
 whenever a row count changes**, or `.\gradlew run` (`-ea`) crashes before the panel opens.
 
 | File | Model (`data/*.java`) | Key fields |
 |---|---|---|
-| `activities.json` (251 rows) | `Activity` | `index, name, completionsPerHrMain, completionsPerHrIron, extraTimeFirst, category` |
-| `activity_map.json` (2499 rows) | `ActivityItem` | `activityIndex, itemId, itemName, slotDifficulty, requiresPrevious, exact, independent, dropRateAttempts` |
-| `slots.json` (1701 rows) | `LogSlot` | `itemId, slotName, activityCount` |
+| `activities.json` (262 rows) | `Activity` | `index, name, completionsPerHrMain, completionsPerHrIron, extraTimeFirst, category` |
+| `activity_map.json` (2535 rows) | `ActivityItem` | `activityIndex, itemId, itemName, slotDifficulty, requiresPrevious, exact, independent, dropRateAttempts` |
+| `slots.json` (1717 rows) | `LogSlot` | `itemId, slotName, activityCount` |
 | `activity_requirements.json` | `ActivityRequirements` | per-activity `{ "skills": {SKILL: lvl}, "quests": [...] }` (all AND) |
 | `activity_npcs.json` | — | per-activity NPC info (highlight/hints) |
 
@@ -127,7 +119,9 @@ over-gates the activity's other items.
   row-count asserts affected.
 - **New activity** → add to `activities.json` + its `activity_map` rows + any `slots.json` rows,
   then **bump the test asserts**; optionally `activity_requirements.json` / `activity_npcs.json`.
-- **Add / remove a single slot or item** → use [[add-logadviser-slot]].
+- **Add / remove a single slot or item** → one `slots.json` row + one `activity_map` row per
+  dropping activity, then **bump the test asserts**. Bump `activityCount` instead of adding a
+  row when the slot already exists.
 - **Change drop math / flags** → first identify which bucket a row falls in; flipping
   `exact` / `independent` / `requiresPrevious` changes the formula and can change the activity's
   min-time. Re-reason it before committing.
@@ -140,12 +134,17 @@ over-gates the activity's other items.
 
 ```powershell
 # 1. JSON parses + counts match the asserts
-python -c "import json; am=json.load(open('src/main/resources/com/logadviser/data/activity_map.json',encoding='utf-8')); sl=json.load(open('src/main/resources/com/logadviser/data/slots.json',encoding='utf-8')); ac=json.load(open('src/main/resources/com/logadviser/data/activities.json',encoding='utf-8')); print('map',len(am),'slots',len(sl),'activities',len(ac))"
+# (no python on this box — parse with PowerShell)
+foreach ($n in 'activities','activity_map','slots') {
+  $j = Get-Content "src/main/resources/com/logadviser/data/$n.json" -Raw | ConvertFrom-Json
+  "{0}: {1}" -f $n, @($j).Count
+}
 
 # 2. Loader + engine logic tests
-.\gradlew test   # LogAdviserPluginTest, ActivityRequirementsTest, SkipRankingTest, EngineSanityCheck
+.\gradlew test   # ActivityRequirementsTest, SkipRankingTest, PetsOnlyTest, and the per-content
+                 # data tests (WyrmscraigDataTest, SummerSweepUpDataTest)
 
-# 3. Dev launch — -ea fires the row-count asserts (~LogAdviserPluginTest.java:35-40)
+# 3. Dev launch — -ea fires the row-count asserts (~LogAdviserPluginTest.java:31-38)
 .\gradlew run
 ```
 
@@ -162,5 +161,5 @@ iron-vs-main denominator difference if the activity has an `IRON_AUTO_COMPLETED`
 
 ## Related
 
-- [[add-logadviser-slot]] — single-slot add checklist
+- [[bump-logadviser-version]] — the MAJOR/MINOR/PATCH rule (a new slot is a MINOR bump)
 - [[release-logadviser-to-plugin-hub]] — shipping the change to the Plugin Hub

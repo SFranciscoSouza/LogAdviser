@@ -158,5 +158,8 @@
   "256": { "skills": {}, "quests": ["The Blood Moon Rises"] },
   "257": { "skills": { "CRAFTING": 60, "SAILING": 62 }, "quests": ["Fallen From Grace"] },
   "258": { "skills": { "HUNTER": 60, "SAILING": 62 }, "quests": ["Sheep Herder", "Fallen From Grace"] },
-  "259": { "skills": { "SAILING": 62 }, "quests": ["Fallen From Grace"] }
+  "259": { "skills": { "SAILING": 62 }, "quests": ["Fallen From Grace"] },
+  "260": { "skills": { "SLAYER": 39 }, "quests": ["Death to the Dorgeshuun"] },
+  "261": { "skills": { "SLAYER": 40 }, "quests": ["Royal Trouble"] },
+  "262": { "skills": { "SLAYER": 37 }, "quests": ["Ernest the Chicken"] }
 }

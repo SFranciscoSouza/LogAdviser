@@ -8558,5 +8558,30 @@
     "itemId": 34042,
     "slotName": "Aggy",
     "activityCount": 1
+  },
+  {
+    "itemId": 34401,
+    "slotName": "Necklace of fangs",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34404,
+    "slotName": "Air diamond",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34410,
+    "slotName": "Water sapphire",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34416,
+    "slotName": "Earth emerald",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34422,
+    "slotName": "Fire ruby",
+    "activityCount": 1
   }
 ]

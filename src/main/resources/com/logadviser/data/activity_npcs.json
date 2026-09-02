@@ -202,5 +202,8 @@
   "230": { "npcIds": [9669, 9670], "hint": "Rune Dragons — Lithkren Vault." },
   "240": { "npcIds": [10976, 10977], "hint": "Underwater crabs — Fossil Island underwater." },
   "241": { "npcIds": [9774, 9775], "hint": "Undead Druids — Forthos Dungeon." },
-  "248": { "npcIds": [9626, 9627, 9628, 9629, 9630], "hint": "Armoured Zombies — Zemouregal's Fort." }
+  "248": { "npcIds": [9626, 9627, 9628, 9629, 9630], "hint": "Armoured Zombies — Zemouregal's Fort." },
+  "260": { "npcIds": [1], "hint": "Molanisk — Dorgesh-Kaan South Dungeon. Slayer bell required to summon; bring a light source." },
+  "261": { "npcIds": [1098], "hint": "Sea snake hatchling — Miscellania & Etceteria Dungeon. Poisonous; bring antipoison." },
+  "262": { "npcIds": [469, 470], "hint": "Killerwatt — Killerwatt plane, via Professor Oddenstein's machine atop Draynor Manor." }
 }

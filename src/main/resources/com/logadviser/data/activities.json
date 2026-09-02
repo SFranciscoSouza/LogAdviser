@@ -2070,5 +2070,29 @@
     "completionsPerHrIron": 60.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
+  },
+  {
+    "index": 260,
+    "name": "Killing molanisks",
+    "completionsPerHrMain": 300.0,
+    "completionsPerHrIron": 300.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 261,
+    "name": "Killing sea snake hatchlings",
+    "completionsPerHrMain": 560.0,
+    "completionsPerHrIron": 560.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 262,
+    "name": "Killing killerwatts",
+    "completionsPerHrMain": 400.0,
+    "completionsPerHrIron": 400.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
   }
 ]
