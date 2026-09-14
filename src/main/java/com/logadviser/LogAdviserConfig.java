@@ -74,6 +74,18 @@ public interface LogAdviserConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+		keyName = "hideSyncButton",
+		name = "Hide Log Sync button",
+		description = "Stop adding the \"Log Sync\" button to the in-game Collection Log header. "
+			+ "New drops are still tracked from chat, but a full sync is unavailable while hidden.",
+		position = 4
+	)
+	default boolean hideSyncButton()
+	{
+		return false;
+	}
+
 	// How-to-sync guidance. Same empty-section trick as infoSection below: an item-less
 	// @ConfigSection still renders its header, so the HTML name carries the instruction.
 	@ConfigSection(

@@ -92,10 +92,11 @@ public final class CollectionLogSyncButton
 		// If the button already exists (a redraw that didn't wipe the container's children),
 		// re-adopt our overlay so the busy label keeps updating instead of going stale — then
 		// re-apply the current sync state so it shows "Syncing..." again.
-		Widget existing = findExistingText(parent);
-		if (existing != null)
+		Widget[] dyn = parent.getDynamicChildren();
+		int existing = findExistingText(dyn);
+		if (existing >= 0)
 		{
-			text = existing;
+			adopt(dyn, existing);
 			attached = true;
 			applyBusyState();
 			return;
@@ -184,6 +185,39 @@ public final class CollectionLogSyncButton
 		applyBusyState();
 	}
 
+	/** Takes a live button off the collection log header (the "hide button" option was switched
+	 *  on while the log is open). Widgets can't be removed one by one without wiping other
+	 *  plugins' children too, so ours are hidden and the overlay loses its action and listeners —
+	 *  {@link #findExistingText} no longer matches it and a later {@link #attach} builds fresh.
+	 *  The inert leftovers go away with the next interface rebuild. */
+	public void detach()
+	{
+		for (Widget s : slices)
+		{
+			hide(s);
+		}
+		hide(icon);
+		if (text != null)
+		{
+			text.setAction(0, null);
+			text.setHasListener(false);
+			text.setOnOpListener((Object[]) null);
+			text.setOnMouseOverListener((Object[]) null);
+			text.setOnMouseLeaveListener((Object[]) null);
+			hide(text);
+		}
+		reset();
+	}
+
+	private static void hide(Widget w)
+	{
+		if (w != null)
+		{
+			w.setHidden(true);
+			w.revalidate();
+		}
+	}
+
 	/** Forgets the button — call when the interface closes/rebuilds (its children are wiped).
 	 *  The {@link #busy} flag is intentionally kept so an in-flight sync re-renders correctly. */
 	public void reset()
@@ -244,17 +278,47 @@ public final class CollectionLogSyncButton
 		return s;
 	}
 
-	/** Finds our clickable text overlay among the container's children (identified by its
-	 *  menu action), or null if the button isn't present. */
-	private static Widget findExistingText(Widget parent)
+	/** Re-adopts a button that survived a redraw. {@link #attach} creates the nine slices, the
+	 *  icon and the overlay back to back on the client thread, so they sit directly before the
+	 *  overlay in the child array; they are only picked up if that still checks out, so the hover
+	 *  swap and {@link #detach} reach the whole button rather than just its label. */
+	private void adopt(Widget[] dyn, int textIndex)
 	{
-		Widget[] dyn = parent.getDynamicChildren();
+		text = dyn[textIndex];
+		int iconIndex = textIndex - 1;
+		int firstSlice = iconIndex - slices.length;
+		if (firstSlice < 0 || !isGraphic(dyn[iconIndex], SpriteID.UNKNOWN_WHITE_REFRESH_ARROWS))
+		{
+			return;
+		}
+		for (int i = 0; i < slices.length; i++)
+		{
+			Widget s = dyn[firstSlice + i];
+			if (!isGraphic(s, SLICE_IDLE[i]) && !isGraphic(s, SLICE_HOVER[i]))
+			{
+				return;
+			}
+		}
+		icon = dyn[iconIndex];
+		System.arraycopy(dyn, firstSlice, slices, 0, slices.length);
+	}
+
+	private static boolean isGraphic(Widget w, int spriteId)
+	{
+		return w != null && w.getType() == WidgetType.GRAPHIC && w.getSpriteId() == spriteId;
+	}
+
+	/** Index of our clickable text overlay among the container's dynamic children (identified
+	 *  by its menu action), or -1 if the button isn't present. */
+	private static int findExistingText(Widget[] dyn)
+	{
 		if (dyn == null)
 		{
-			return null;
+			return -1;
 		}
-		for (Widget w : dyn)
+		for (int i = 0; i < dyn.length; i++)
 		{
+			Widget w = dyn[i];
 			if (w == null)
 			{
 				continue;
@@ -268,10 +332,10 @@ public final class CollectionLogSyncButton
 			{
 				if (SYNC_ACTION.equals(a))
 				{
-					return w;
+					return i;
 				}
 			}
 		}
-		return null;
+		return -1;
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -72,6 +73,8 @@ public class CollectionLogTracker
 	private final StaticData staticData;
 	private final AdviserEngine engine;
 	private final CollectionLogSyncButton syncButton;
+	// Read live from config, so the option takes effect on the next attach without a restart.
+	private final BooleanSupplier hideSyncButton;
 
 	private final Map<String, Integer> itemIdsByName;
 
@@ -102,7 +105,8 @@ public class CollectionLogTracker
 		ConfigManager configManager,
 		StaticData staticData,
 		AdviserEngine engine,
-		CollectionLogSyncButton syncButton)
+		CollectionLogSyncButton syncButton,
+		BooleanSupplier hideSyncButton)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
@@ -110,6 +114,7 @@ public class CollectionLogTracker
 		this.staticData = staticData;
 		this.engine = engine;
 		this.syncButton = syncButton;
+		this.hideSyncButton = hideSyncButton;
 		this.itemIdsByName = staticData.itemIdsByName();
 	}
 
@@ -240,14 +245,14 @@ public class CollectionLogTracker
 		{
 			// The interface was (re)built — its dynamic children were wiped, so re-attach.
 			syncButton.reset();
-			syncButton.attach(client, this::triggerFullSync);
+			attachButton();
 			// Another plugin (e.g. Temple-OSRS) may also handle 7797 and call deleteAllChildren()
 			// on this same container AFTER us, deleting our button. Re-attach once more on the next
 			// client cycle — after every 7797 subscriber has run — so we survive that wipe
 			// regardless of EventBus ordering. attach() is idempotent → a no-op when nothing wiped us.
 			clientThread.invokeLater(() ->
 			{
-				syncButton.attach(client, this::triggerFullSync);
+				attachButton();
 				return true;
 			});
 		}
@@ -281,7 +286,7 @@ public class CollectionLogTracker
 		// Self-heal: if the collection log is open but our button was removed by another plugin
 		// wiping the container's children, re-create it. attach() no-ops when the log is closed
 		// or our button is already present.
-		syncButton.attach(client, this::triggerFullSync);
+		attachButton();
 
 		if (fullSyncRequested)
 		{
@@ -294,6 +299,29 @@ public class CollectionLogTracker
 			return;
 		}
 		consumeHarvest();
+	}
+
+	/** Builds the Sync button on the collection log header unless the user has hidden it. */
+	private void attachButton()
+	{
+		if (!hideSyncButton.getAsBoolean())
+		{
+			syncButton.attach(client, this::triggerFullSync);
+		}
+	}
+
+	/** Applies a flip of the "hide Log Sync button" option to a collection log that is already
+	 *  open; a closed log just picks it up the next time it is built. Client thread. */
+	public void onHideSyncButtonChanged()
+	{
+		if (hideSyncButton.getAsBoolean())
+		{
+			syncButton.detach();
+		}
+		else
+		{
+			attachButton();
+		}
 	}
 
 	/** Press the in-game Search and run the enumerate script; harvested in onScriptPreFired. */

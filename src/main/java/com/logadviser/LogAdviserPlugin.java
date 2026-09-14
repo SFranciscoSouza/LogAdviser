@@ -141,7 +141,8 @@ public class LogAdviserPlugin extends Plugin
 			configManager,
 			staticData,
 			engine,
-			syncButton);
+			syncButton,
+			config::hideSyncButton);
 		panel = new LogAdviserPanel(
 			engine,
 			itemManager,
@@ -305,6 +306,11 @@ public class LogAdviserPlugin extends Plugin
 		{
 			// Hide any popup that's currently showing the moment the toggle flips on.
 			panel.onHoverDisabledChanged();
+		}
+		else if ("hideSyncButton".equals(key) && tracker != null)
+		{
+			// ConfigChanged arrives off the client thread; widget edits must run on it.
+			clientThread.invokeLater(tracker::onHideSyncButtonChanged);
 		}
 	}
 
