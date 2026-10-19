@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -76,7 +77,7 @@ public class CollectionLogTracker
 	// Read live from config, so the option takes effect on the next attach without a restart.
 	private final BooleanSupplier hideSyncButton;
 
-	private final Map<String, Integer> itemIdsByName;
+	private final Map<String, List<Integer>> itemIdsByName;
 
 	// Full-sync harvest state (client thread only).
 	private final Set<Integer> harvest = new HashSet<>();
@@ -115,7 +116,7 @@ public class CollectionLogTracker
 		this.engine = engine;
 		this.syncButton = syncButton;
 		this.hideSyncButton = hideSyncButton;
-		this.itemIdsByName = staticData.itemIdsByName();
+		this.itemIdsByName = staticData.itemIdsByNameAll();
 	}
 
 	public void load()
@@ -216,26 +217,59 @@ public class CollectionLogTracker
 		{
 			return;
 		}
-		// A new collection log unlock advances the player's COLLECTION_COUNT by one and we
-		// just captured it — keep the baseline in lockstep so this doesn't read as drift.
-		// (Only once a baseline exists; a never-synced account stays out of sync until a
-		// full Sync so we still nudge it to run one.)
-		if (baseline >= 0)
-		{
-			baseline++;
-			persistBaseline();
-		}
 		String itemName = message.substring(NEW_ITEM_PREFIX.length()).trim();
-		Integer id = itemIdsByName.get(itemName.toLowerCase());
+		Integer id = resolveChatItem(itemIdsByName.get(itemName.toLowerCase()), engine::isObtained);
 		if (id == null)
 		{
+			// Unknown, or a shared name (e.g. Mysterious page) with several slots still missing.
+			// Don't guess and don't advance the baseline: the player's count then runs ahead of
+			// it, flagging out-of-sync so a full Sync records the exact item id.
 			log.debug("Could not resolve collection log item name: {}", itemName);
 		}
 		else
 		{
+			// A new collection log unlock advances the player's COLLECTION_COUNT by one and we
+			// just captured it — keep the baseline in lockstep so this doesn't read as drift.
+			// (Only once a baseline exists; a never-synced account stays out of sync until a
+			// full Sync so we still nudge it to run one.)
+			if (baseline >= 0)
+			{
+				baseline++;
+				persistBaseline();
+			}
 			markAndPersist(id);
 		}
 		evaluateSyncStatus();
+	}
+
+	/**
+	 * Picks the slot a "New item added" chat name refers to. The message only fires for a new
+	 * unlock, so among slots sharing that name only a not-yet-obtained one can be it; returns
+	 * it when exactly one is left, else null rather than guessing.
+	 */
+	static Integer resolveChatItem(List<Integer> candidates, Predicate<Integer> isObtained)
+	{
+		if (candidates == null || candidates.isEmpty())
+		{
+			return null;
+		}
+		if (candidates.size() == 1)
+		{
+			return candidates.get(0);
+		}
+		Integer match = null;
+		for (Integer id : candidates)
+		{
+			if (!isObtained.test(id))
+			{
+				if (match != null)
+				{
+					return null;
+				}
+				match = id;
+			}
+		}
+		return match;
 	}
 
 	@Subscribe
@@ -349,16 +383,45 @@ public class CollectionLogTracker
 				added++;
 			}
 		}
-		// Merge in one shot: a per-item markObtained() fires the listener fan-out (and a full
-		// panel rebuild on the EDT) once per new item, which on a first-time sync is thousands
-		// of rebuilds and locks up the client's mouse input until they drain.
-		engine.markObtainedAll(harvest);
-		if (added > 0)
+		// A complete full-sync harvest is the player's whole log, so it replaces our set —
+		// dropping anything wrongly recorded (e.g. a shared-name chat unlock credited to the
+		// wrong slot). Passive 4100s from browsing, or a harvest short of the player's count,
+		// only merge so a partial read can never lose data.
+		int pc = client.getVarpValue(VarPlayerID.COLLECTION_COUNT);
+		boolean authoritative = fullSyncRequested && pc > 0 && harvest.size() >= pc;
+		int removed = 0;
+		if (authoritative)
+		{
+			Set<Integer> canonicalHarvest = new HashSet<>();
+			for (int itemId : harvest)
+			{
+				canonicalHarvest.add(staticData.canonicalItemId(itemId));
+			}
+			for (int itemId : engine.obtainedItems())
+			{
+				if (!canonicalHarvest.contains(itemId))
+				{
+					removed++;
+				}
+			}
+			if (added > 0 || removed > 0)
+			{
+				engine.replaceObtained(canonicalHarvest);
+			}
+		}
+		else
+		{
+			// Merge in one shot: a per-item markObtained() fires the listener fan-out (and a full
+			// panel rebuild on the EDT) once per new item, which on a first-time sync is thousands
+			// of rebuilds and locks up the client's mouse input until they drain.
+			engine.markObtainedAll(harvest);
+		}
+		if (added > 0 || removed > 0)
 		{
 			persist();
 		}
-		log.debug("Collection log harvest: {} items seen, {} newly obtained (fullSync={})",
-			harvest.size(), added, fullSyncRequested);
+		log.debug("Collection log harvest: {} items seen, {} newly obtained, {} removed (fullSync={}, authoritative={})",
+			harvest.size(), added, removed, fullSyncRequested, authoritative);
 		harvest.clear();
 		gameTickToSync = null;
 
@@ -368,7 +431,6 @@ public class CollectionLogTracker
 			syncButton.setBusy(false);
 			notifySyncing(false);
 			// A full sync makes us complete: pin the baseline to the player's true count.
-			int pc = client.getVarpValue(VarPlayerID.COLLECTION_COUNT);
 			if (pc > 0)
 			{
 				baseline = pc;

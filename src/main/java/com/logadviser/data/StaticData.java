@@ -64,6 +64,26 @@ public class StaticData
 		return Collections.unmodifiableMap(m);
 	}
 
+	/**
+	 * Every item id per lowercase chat name. Several slots share a name (Mysterious page,
+	 * Decorative armour, Graceful hood, ...), so a chat notification alone can't say which
+	 * one was unlocked — callers must disambiguate rather than take {@link #itemIdsByName()}'s
+	 * last-wins pick.
+	 */
+	public Map<String, List<Integer>> itemIdsByNameAll()
+	{
+		java.util.Map<String, List<Integer>> m = new java.util.HashMap<>(slots.size() * 2);
+		for (LogSlot s : slots)
+		{
+			m.computeIfAbsent(s.getSlotName().toLowerCase(), k -> new java.util.ArrayList<>()).add(s.getItemId());
+		}
+		for (Map.Entry<String, Integer> e : ItemAliases.extraNames().entrySet())
+		{
+			m.put(e.getKey(), Collections.singletonList(e.getValue()));
+		}
+		return Collections.unmodifiableMap(m);
+	}
+
 	public int canonicalItemId(int itemId)
 	{
 		return ItemAliases.canonical(itemId);
