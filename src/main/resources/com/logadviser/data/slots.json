@@ -8583,5 +8583,90 @@
     "itemId": 34422,
     "slotName": "Fire ruby",
     "activityCount": 1
+  },
+  {
+    "itemId": 34646,
+    "slotName": "Orion",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34717,
+    "slotName": "Obligator (uncharged)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34681,
+    "slotName": "Ascension crossbows",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34727,
+    "slotName": "Zorya's tome (uncharged)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34719,
+    "slotName": "Rondache",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34679,
+    "slotName": "Horn of Bran",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34675,
+    "slotName": "Fragment of whispering wind",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34677,
+    "slotName": "Fragment of burning fire",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34673,
+    "slotName": "Fragment of deep water",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34671,
+    "slotName": "Fragment of living earth",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34669,
+    "slotName": "Ascension shards",
+    "activityCount": 2
+  },
+  {
+    "itemId": 34722,
+    "slotName": "Archivist's folio (inert)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34659,
+    "slotName": "Living record (tier 1)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34661,
+    "slotName": "Living record (tier 2)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34663,
+    "slotName": "Living record (tier 3)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34665,
+    "slotName": "Living record (tier 4)",
+    "activityCount": 1
+  },
+  {
+    "itemId": 34667,
+    "slotName": "Living record (tier 5)",
+    "activityCount": 1
   }
 ]

@@ -2094,5 +2094,21 @@
     "completionsPerHrIron": 400.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
+  },
+  {
+    "index": 263,
+    "name": "The Fractured Archive",
+    "completionsPerHrMain": 0.0,
+    "completionsPerHrIron": 0.0,
+    "extraTimeFirst": 0.0,
+    "category": "combat"
+  },
+  {
+    "index": 264,
+    "name": "Mining ascension rocks",
+    "completionsPerHrMain": 720.0,
+    "completionsPerHrIron": 720.0,
+    "extraTimeFirst": 0.0,
+    "category": "miscellaneous"
   }
 ]

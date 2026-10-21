@@ -25348,5 +25348,185 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 64.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34646,
+    "itemName": "Orion",
+    "slotDifficulty": 8,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34717,
+    "itemName": "Obligator (uncharged)",
+    "slotDifficulty": 8,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34681,
+    "itemName": "Ascension crossbows",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34727,
+    "itemName": "Zorya's tome (uncharged)",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34719,
+    "itemName": "Rondache",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34679,
+    "itemName": "Horn of Bran",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34675,
+    "itemName": "Fragment of whispering wind",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34677,
+    "itemName": "Fragment of burning fire",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34673,
+    "itemName": "Fragment of deep water",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34671,
+    "itemName": "Fragment of living earth",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34669,
+    "itemName": "Ascension shards",
+    "slotDifficulty": 3,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34722,
+    "itemName": "Archivist's folio (inert)",
+    "slotDifficulty": 5,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34659,
+    "itemName": "Living record (tier 1)",
+    "slotDifficulty": 7,
+    "requiresPrevious": false,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34661,
+    "itemName": "Living record (tier 2)",
+    "slotDifficulty": 8,
+    "requiresPrevious": true,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34663,
+    "itemName": "Living record (tier 3)",
+    "slotDifficulty": 8,
+    "requiresPrevious": true,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34665,
+    "itemName": "Living record (tier 4)",
+    "slotDifficulty": 9,
+    "requiresPrevious": true,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 263,
+    "itemId": 34667,
+    "itemName": "Living record (tier 5)",
+    "slotDifficulty": 9,
+    "requiresPrevious": true,
+    "exact": true,
+    "independent": false,
+    "dropRateAttempts": 0.0
+  },
+  {
+    "activityIndex": 264,
+    "itemId": 34669,
+    "itemName": "Ascension shards",
+    "slotDifficulty": 1,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 1.0
   }
 ]
