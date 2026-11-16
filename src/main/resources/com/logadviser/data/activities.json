@@ -2098,8 +2098,8 @@
   {
     "index": 263,
     "name": "The Fractured Archive",
-    "completionsPerHrMain": 0.0,
-    "completionsPerHrIron": 0.0,
+    "completionsPerHrMain": 3.0,
+    "completionsPerHrIron": 3.0,
     "extraTimeFirst": 0.0,
     "category": "combat"
   },

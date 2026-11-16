@@ -25356,8 +25356,8 @@
     "slotDifficulty": 8,
     "requiresPrevious": false,
     "exact": false,
-    "independent": false,
-    "dropRateAttempts": 0.0
+    "independent": true,
+    "dropRateAttempts": 770.55
   },
   {
     "activityIndex": 263,
@@ -25367,7 +25367,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 562.5
   },
   {
     "activityIndex": 263,
@@ -25377,7 +25377,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 281.25
   },
   {
     "activityIndex": 263,
@@ -25387,7 +25387,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 140.625
   },
   {
     "activityIndex": 263,
@@ -25397,7 +25397,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 112.5
   },
   {
     "activityIndex": 263,
@@ -25407,7 +25407,7 @@
     "requiresPrevious": false,
     "exact": false,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 187.5
   },
   {
     "activityIndex": 263,
@@ -25415,39 +25415,39 @@
     "itemName": "Fragment of whispering wind",
     "slotDifficulty": 6,
     "requiresPrevious": false,
-    "exact": false,
+    "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 14.38
   },
   {
     "activityIndex": 263,
     "itemId": 34677,
     "itemName": "Fragment of burning fire",
     "slotDifficulty": 6,
-    "requiresPrevious": false,
-    "exact": false,
+    "requiresPrevious": true,
+    "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 14.38
   },
   {
     "activityIndex": 263,
     "itemId": 34673,
     "itemName": "Fragment of deep water",
     "slotDifficulty": 6,
-    "requiresPrevious": false,
-    "exact": false,
+    "requiresPrevious": true,
+    "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 14.38
   },
   {
     "activityIndex": 263,
     "itemId": 34671,
     "itemName": "Fragment of living earth",
     "slotDifficulty": 6,
-    "requiresPrevious": false,
-    "exact": false,
+    "requiresPrevious": true,
+    "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 14.38
   },
   {
     "activityIndex": 263,
@@ -25456,8 +25456,8 @@
     "slotDifficulty": 3,
     "requiresPrevious": false,
     "exact": false,
-    "independent": false,
-    "dropRateAttempts": 0.0
+    "independent": true,
+    "dropRateAttempts": 2.44
   },
   {
     "activityIndex": 263,
@@ -25466,8 +25466,8 @@
     "slotDifficulty": 5,
     "requiresPrevious": false,
     "exact": false,
-    "independent": false,
-    "dropRateAttempts": 0.0
+    "independent": true,
+    "dropRateAttempts": 15.41
   },
   {
     "activityIndex": 263,
@@ -25477,7 +25477,7 @@
     "requiresPrevious": false,
     "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 100.0
   },
   {
     "activityIndex": 263,
@@ -25487,7 +25487,7 @@
     "requiresPrevious": true,
     "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 400.0
   },
   {
     "activityIndex": 263,
@@ -25497,7 +25497,7 @@
     "requiresPrevious": true,
     "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 500.0
   },
   {
     "activityIndex": 263,
@@ -25507,7 +25507,7 @@
     "requiresPrevious": true,
     "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 500.0
   },
   {
     "activityIndex": 263,
@@ -25517,7 +25517,7 @@
     "requiresPrevious": true,
     "exact": true,
     "independent": false,
-    "dropRateAttempts": 0.0
+    "dropRateAttempts": 500.0
   },
   {
     "activityIndex": 264,

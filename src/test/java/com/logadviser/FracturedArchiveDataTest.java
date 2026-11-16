@@ -15,19 +15,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Pins the data added for The Fractured Archive (20 October 2026, activities 263-264).
+ * Pins the data for The Fractured Archive (20 October 2026, activities 263-264).
  * <p>
- * The raid's rates were not known at release, so its completions/hour and every drop rate are
- * left at 0: the engine treats that as "no time" and keeps the raid out of the ranking, while
- * its 17 slots still count toward the log totals. Fill in the numbers here and in the JSON once
- * the wiki publishes them. Ascension shards also come from mining ascension rocks, timed at
- * 5 seconds per shard.
+ * The raid is timed at a trio running 3 completions/hour. At that scale a player's personal
+ * unique rate is 1/37.5 per raid, so the five purples are the usual shared-table ("neither")
+ * bucket whose reciprocals add back up to 1/37.5. Everything else rolls on the standard chest,
+ * which only appears when no unique did, so the wiki rates are divided by 1 - 1/37.5 = 0.973333.
+ * The four elemental fragments are 1/14 for a fragment the player does not own yet, so they chain
+ * off one another like the Sinhaza shrouds rather than combining. Ascension shards also come from
+ * mining ascension rocks, timed at 5 seconds per shard.
  */
 public class FracturedArchiveDataTest
 {
 	private static final int FRACTURED_ARCHIVE = 263;
 	private static final int ASCENSION_ROCKS = 264;
 	private static final int ASCENSION_SHARDS = 34669;
+
+	/** Personal unique rate for a trio: one raid in 37.5 ends in a purple for a given player. */
+	private static final double TRIO_UNIQUE_RATE = 37.5;
+	/** Raids per hour for the trio the raid is timed against. */
+	private static final double RAIDS_PER_HOUR = 3.0;
 
 	private StaticData data;
 	private AdviserEngine engine;
@@ -51,37 +58,86 @@ public class FracturedArchiveDataTest
 	}
 
 	@Test
-	public void raidWithOpenRatesStaysOutOfTheRanking()
+	public void theTrioRaidIsRankedOnItsFastestSlot()
 	{
-		for (RankedActivity r : engine.getRanking())
-		{
-			assertFalse("raid has no rates yet", r.getActivity().getIndex() == FRACTURED_ARCHIVE);
-		}
+		RankedActivity r = find(FRACTURED_ARCHIVE);
+		// Ascension shards are 55/330 over three standard-chest rolls, the quickest slot by far.
+		assertEquals(2.44 / RAIDS_PER_HOUR, r.getTimeToNextSlotHours(), 1e-9);
+		assertEquals(ASCENSION_SHARDS, r.getDisplayItem().getItemId());
 		assertEquals("the log entry has seventeen items", 17,
 			engine.visibleItemsForActivity(FRACTURED_ARCHIVE).size());
 	}
 
 	@Test
+	public void thePurplesShareOneRollWorthOneRaidInThirtySevenAndAHalf()
+	{
+		// Rondache 5/15, tome 4/15, horn 3/15, crossbows 2/15, obligator 1/15 of the unique roll.
+		int[] purples = {34719, 34727, 34679, 34681, 34717};
+		double sumInverse = 0.0;
+		for (int itemId : purples)
+		{
+			ActivityItem it = item(itemId);
+			assertFalse("purples share one roll, so they must stay in the combining bucket",
+				it.isExact() || it.isIndependent());
+			sumInverse += 1.0 / it.getDropRateAttempts();
+		}
+		assertEquals(TRIO_UNIQUE_RATE, 1.0 / sumInverse, 1e-6);
+	}
+
+	@Test
 	public void livingRecordTiersChainLikeSinhazaShrouds()
 	{
+		// 100 / 500 / 1000 / 1500 / 2000 completions, stored as the gap from the previous tier.
+		assertChain(new int[]{34659, 34661, 34663, 34665, 34667},
+			new double[]{100.0, 400.0, 500.0, 500.0, 500.0}, 1e-9);
+	}
+
+	@Test
+	public void elementalFragmentsChainBecauseDuplicatesAreAvoided()
+	{
+		// 1/14 for a fragment you don't own, so each one costs the same 14 raids in turn.
+		double perFragment = 14.38;
+		assertChain(new int[]{34675, 34677, 34673, 34671},
+			new double[]{perFragment, perFragment, perFragment, perFragment}, 1e-9);
+	}
+
+	/**
+	 * Asserts the given items appear in this order, are exact, and that only the first is free of
+	 * a {@code requiresPrevious} dependency - the idiom that keeps one tier active at a time.
+	 */
+	private void assertChain(int[] itemIds, double[] attempts, double delta)
+	{
 		List<ActivityItem> items = engine.visibleItemsForActivity(FRACTURED_ARCHIVE);
-		int[] tiers = {34659, 34661, 34663, 34665, 34667};
 		int first = -1;
 		for (int i = 0; i < items.size(); i++)
 		{
-			if (items.get(i).getItemId() == tiers[0])
+			if (items.get(i).getItemId() == itemIds[0])
 			{
 				first = i;
 			}
 		}
-		assertTrue("tier 1 must be present", first >= 0);
-		for (int t = 0; t < tiers.length; t++)
+		assertTrue("the chain must start somewhere", first >= 0);
+		for (int t = 0; t < itemIds.length; t++)
 		{
 			ActivityItem it = items.get(first + t);
-			assertEquals(tiers[t], it.getItemId());
+			assertEquals(itemIds[t], it.getItemId());
 			assertTrue(it.isExact());
-			assertEquals("only tiers 2-5 wait on the previous tier", t > 0, it.isRequiresPrevious());
+			assertEquals("only the later links wait on the previous one", t > 0,
+				it.isRequiresPrevious());
+			assertEquals(attempts[t], it.getDropRateAttempts(), delta);
 		}
+	}
+
+	private ActivityItem item(int itemId)
+	{
+		for (ActivityItem it : engine.visibleItemsForActivity(FRACTURED_ARCHIVE))
+		{
+			if (it.getItemId() == itemId)
+			{
+				return it;
+			}
+		}
+		throw new AssertionError("item " + itemId + " not mapped to the raid");
 	}
 
 	@Test

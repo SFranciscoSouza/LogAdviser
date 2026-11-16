@@ -38,8 +38,11 @@ public class LogAdviserPluginTest
 			: "expected 101 f2p slots, got " + data.getF2pItemIds().size();
 
 		// This is a data/ranking-math sanity check, not a requirements test. With no
-		// player progress everything gated would be locked, so ignore requirements
-		// here to keep the pre-feature expectation (gryphons fastest on a fresh log).
+		// player progress everything gated would be locked, so ignore requirements here.
+		// Ascension rocks took the top spot from gryphons when the Fractured Archive
+		// landed: one shard per 5s mine beats the gryphon drop at 6s. In game both the
+		// mine (80 Mining, While Guthix Sleeps) and the raid are gated, so a genuinely
+		// fresh account still sees gryphons first.
 		AdviserEngine engineMain = new AdviserEngine(data, () -> false);
 		engineMain.setIgnoreRequirements(true);
 		engineMain.setAccountMode(AccountMode.MAIN);
@@ -47,8 +50,8 @@ public class LogAdviserPluginTest
 		assert !rankedMain.isEmpty() : "main ranking is empty";
 		String topMain = rankedMain.get(0).getActivity().getName();
 		System.out.println("Top (main, fresh log): " + topMain);
-		assert "Killing gryphons (on task)".equalsIgnoreCase(topMain)
-			: "expected gryphons at the top, got: " + topMain;
+		assert "Mining ascension rocks".equalsIgnoreCase(topMain)
+			: "expected ascension rocks at the top, got: " + topMain;
 
 		AdviserEngine engineIron = new AdviserEngine(data, () -> true);
 		engineIron.setIgnoreRequirements(true);
