@@ -25528,5 +25528,45 @@
     "exact": false,
     "independent": false,
     "dropRateAttempts": 1.0
+  },
+  {
+    "activityIndex": 265,
+    "itemId": 35033,
+    "itemName": "Sunken treasure",
+    "slotDifficulty": 1,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": true,
+    "dropRateAttempts": 1.0
+  },
+  {
+    "activityIndex": 265,
+    "itemId": 35031,
+    "itemName": "Ghostly sail fabric",
+    "slotDifficulty": 1,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": true,
+    "dropRateAttempts": 1.0
+  },
+  {
+    "activityIndex": 265,
+    "itemId": 35027,
+    "itemName": "Fremennik graceful ornament kit",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 25.0
+  },
+  {
+    "activityIndex": 265,
+    "itemId": 35029,
+    "itemName": "Fremennik sail fabric",
+    "slotDifficulty": 6,
+    "requiresPrevious": false,
+    "exact": false,
+    "independent": false,
+    "dropRateAttempts": 50.0
   }
 ]

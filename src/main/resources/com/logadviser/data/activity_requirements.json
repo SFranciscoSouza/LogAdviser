@@ -163,5 +163,6 @@
   "261": { "skills": { "SLAYER": 40 }, "quests": ["Royal Trouble"] },
   "262": { "skills": { "SLAYER": 37 }, "quests": ["Ernest the Chicken"] },
   "263": { "skills": {}, "quests": ["While Guthix Sleeps"] },
-  "264": { "skills": { "MINING": 80 }, "quests": ["While Guthix Sleeps"] }
+  "264": { "skills": { "MINING": 80 }, "quests": ["While Guthix Sleeps"] },
+  "265": { "skills": {}, "quests": ["The Graveyard"] }
 }

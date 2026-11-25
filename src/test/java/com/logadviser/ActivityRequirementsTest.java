@@ -39,9 +39,10 @@ public class ActivityRequirementsTest
 	// everyQuestTokenResolves treats them as pending rather than as typos. Remove an entry once
 	// RuneLite ships the quest.
 	// "The Blood Moon Rises" was removed from this list once RuneLite shipped it (the running
-	// build resolves it, so the guard now covers that token again).
+	// build resolves it, so the guard now covers that token again). "Fallen From Grace" followed
+	// once RuneLite 1.13.8 shipped it.
 	private static final Set<String> PENDING_QUESTS = new HashSet<>(Collections.singletonList(
-		"fallen from grace"));
+		"the graveyard"));
 
 	private StaticData data;
 
@@ -133,6 +134,31 @@ public class ActivityRequirementsTest
 		engine.setPlayerProgress(new PlayerProgress(new EnumMap<>(Skill.class), done));
 		assertFalse("255 unlocks once the quest is complete",
 			find(engine.getRanking(), 255).isLocked());
+	}
+
+	@Test
+	public void theGraveyardGateActivatesWhenRuneLiteKnowsTheQuest()
+	{
+		// "The Graveyard" gates Prison of Raeun (265). It is in RuneLite's snapshot Quest enum but
+		// not yet a release, so this skips until the running RuneLite has it.
+		Quest graveyard = QuestResolver.resolve("The Graveyard");
+		assumeTrue("skipped: this RuneLite build has no 'The Graveyard' quest yet",
+			graveyard != null);
+
+		assertTrue("The Graveyard must be a resolved gate for activity 265",
+			data.requirementsFor(265).getQuests().contains(graveyard));
+
+		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
+		AdviserEngine engine = new AdviserEngine(data, () -> false);
+		engine.setPlayerProgress(new PlayerProgress(levels, Collections.<Quest>emptySet()));
+		assertTrue("Prison of Raeun (265) is locked without the quest",
+			find(engine.getRanking(), 265).isLocked());
+
+		Set<Quest> done = new HashSet<>();
+		done.add(graveyard);
+		engine.setPlayerProgress(new PlayerProgress(levels, done));
+		assertFalse("265 unlocks once the quest is complete",
+			find(engine.getRanking(), 265).isLocked());
 	}
 
 	@Test

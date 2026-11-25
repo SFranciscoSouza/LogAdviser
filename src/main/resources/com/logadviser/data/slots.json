@@ -8668,5 +8668,25 @@
     "itemId": 34667,
     "slotName": "Living record (tier 5)",
     "activityCount": 1
+  },
+  {
+    "itemId": 35033,
+    "slotName": "Sunken treasure",
+    "activityCount": 1
+  },
+  {
+    "itemId": 35027,
+    "slotName": "Fremennik graceful ornament kit",
+    "activityCount": 1
+  },
+  {
+    "itemId": 35029,
+    "slotName": "Fremennik sail fabric",
+    "activityCount": 1
+  },
+  {
+    "itemId": 35031,
+    "slotName": "Ghostly sail fabric",
+    "activityCount": 1
   }
 ]
